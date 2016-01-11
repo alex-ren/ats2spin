@@ -40,6 +40,18 @@ Promela$assert{b:bool}(bool(b)): [b==true] void
 //
 (* ****** ****** *)
 
+sortdef gname = int
+
+abstype garray (a:t@ype, g: gname, n: int)
+fun array_create {a:t@ype}{g:gname}{n:nat} (n: int n, init: a):
+  garray (a, g, n)
+
+fun array_get {a:t@ype}{g:gname}{i,n:nat | i < n} (
+  arr: garray (a, g, n), i: int i): a
+
+fun array_set {a:t@ype}{g:gname}{i,n:nat | i < n} (
+  arr: garray (a, g, n), i: int i, v: a): void
+
 fun
 Promela$wait_until(() -> bool): void
 fun
@@ -48,3 +60,5 @@ Promela$wait_unless(() -> bool): void
 (* ****** ****** *)
 
 (* end of [Promela.sats] *)
+
+
