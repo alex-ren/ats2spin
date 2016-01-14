@@ -43,6 +43,7 @@ Promela$assert{b:bool}(bool(b)): [b==true] void
 sortdef gname = int
 
 abstype garray (a:t@ype, g: gname, n: int)
+
 fun array_create {a:t@ype}{g:gname}{n:nat} (n: int n, init: a):
   garray (a, g, n)
 
@@ -56,6 +57,17 @@ fun
 Promela$wait_until(() -> bool): void
 fun
 Promela$wait_unless(() -> bool): void
+
+fun
+Promela$atomic {a:viewt@ype} (() -> a): a
+
+(* ****** ****** *)
+
+// absview atomic_view
+// viewdef atom_v = atomic_view
+// 
+// prfun Promela$begin_atomic (): (atomic_view | void)
+// prfun Promela$end_atomic(atomic_view): void
   
 (* ****** ****** *)
 
