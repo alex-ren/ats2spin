@@ -84,7 +84,7 @@ fun phil_release_rfork {n:phil_id}{f:fork_id | phil_right_num (n) == f}
 
 extern fun phil_dine (n: phil): void
 
-extern fun phil_think (n: phil): void
+extern fun phil_eat (n: phil): void
 
 extern fun phil_loop2 (n: phil): void
 
@@ -93,7 +93,7 @@ extern fun phil_loop2 (n: phil): void
 implement phil_dine (n) = {
   val (fvl | ()) = phil_acquire_lfork (n)
   val (fvr | ()) = phil_acquire_rfork (n)
-  val () = phil_think (n)
+  val () = phil_eat (n)
   val v = phil_release_rfork (fvr | n)
   val () = phil_release_lfork (fvl | n)
 }
@@ -102,59 +102,25 @@ implement phil_dine (n) = {
 fun phil (n: phil): void = phil_loop2 (n)
 
 implement phil_loop2 (n) = let
-  val () = phil_think (n)
   val () = phil_dine (n)
 in
   phil_loop2 (n)
 end
 
-local
 
-stacst fork_arr: gname
-
-val fork_arr = array_create {..}{fork_arr}(NPHIL, 0)
-
-extern prfun fork_v_get {n: fork_id} (): fork (n)
-extern prfun fork_v_release {n: fork_id} (n: fork n): void
-
-in
-
-implement fork_acquire (n) = Promela$atomic (
-  lam () => let
-    val () = Promela$wait_until (lam() => array_get{int} (fork_arr, n) <> 0)
-    val () = array_set (fork_arr, n, 1)
-    prval fork = fork_v_get ()
+// init
+fun init (): void = let
+  fun loop {c:phil_id} (c: int c): void = let
+    val () = Promela$run (lam () => phil (c))
+    val c' = c + 1
   in
-    (fork | ())
+    if c' < NPHIL then loop (c')
   end
-)
 
-implement fork_release (fv | n) = {
-  val () = array_set (fork_arr, n, 0)
-  prval () = fork_v_release (fv)
-}
+  val () = Promela$atomic (lam () => loop (0))
+in
+end
 
-end  // end of [local]
-
-
-
-
-// Configuration
-// abstype configure
-// 
-// fun initiate (ntot: int): configure = let
-//   val conf = configure_nil ()
-//   fun loop (i: int, conf: configure): configure =
-//     if i < ntot then let
-//       val proc = active_proc (phil, i)
-//       val conf' = concur_run (proc, conf)
-//     in
-//       loop (i + 1, conf')
-//     end else conf
-// 
-// in
-//   loop (0, conf)
-// end
 
 
 

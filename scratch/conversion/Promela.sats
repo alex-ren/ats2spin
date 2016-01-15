@@ -61,6 +61,9 @@ Promela$wait_unless(() -> bool): void
 fun
 Promela$atomic {a:viewt@ype} (() -> a): a
 
+fun
+Promela$run (() -> void): void
+
 (* ****** ****** *)
 
 // absview atomic_view
