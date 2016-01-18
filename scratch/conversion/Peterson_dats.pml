@@ -1,4 +1,8 @@
 
+
+// ============================
+// Manually written
+
 bit turn = 0;
 bool flag[2] = false;
 
