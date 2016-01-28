@@ -21,7 +21,8 @@ inline wakeup(x) {
     do
     :: i < N -> if
                 :: pstate[i] == Wakeme ->
-                   pstate[i] = Running
+                   pstate[i] = Running; 
+                   i++  // This line doesn't exist in the book.
                 :: else -> i++
                 fi
     :: else -> break
