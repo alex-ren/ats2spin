@@ -24,3 +24,7 @@ uts_model_scheduling_good:
 	./pan -a
 
 
+clean:
+	rm -rf pan*
+	rm -rf *.trail
+
