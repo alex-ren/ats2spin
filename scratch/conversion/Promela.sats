@@ -42,17 +42,6 @@ Promela$assert{b:bool}(bool(b)): [b==true] void
 
 sortdef gname = int
 
-abstype garray (a:t@ype, g: gname, n: int)
-
-fun array_create {a:t@ype}{g:gname}{n:nat} (n: int n, init: a):
-  garray (a, g, n)
-
-fun array_get {a:t@ype}{g:gname}{i,n:nat | i < n} (
-  arr: garray (a, g, n), i: int i): a
-
-fun array_set {a:t@ype}{g:gname}{i,n:nat | i < n} (
-  arr: garray (a, g, n), i: int i, v: a): void
-
 fun
 Promela$wait_until(() -> bool): void
 fun
@@ -64,6 +53,9 @@ Promela$atomic {a:viewt@ype} (() -> a): a
 fun
 Promela$run (() -> void): void
 
+prfun
+Promela$set_tag (tag: string): void
+
 (* ****** ****** *)
 
 // absview atomic_view
@@ -72,6 +64,17 @@ Promela$run (() -> void): void
 // prfun Promela$begin_atomic (): (atomic_view | void)
 // prfun Promela$end_atomic(atomic_view): void
   
+// abstype garray (a:t@ype, g: gname, n: int)
+// 
+// fun array_create {a:t@ype}{g:gname}{n:nat} (n: int n, init: a):
+//   garray (a, g, n)
+// 
+// fun array_get {a:t@ype}{g:gname}{i,n:nat | i < n} (
+//   arr: garray (a, g, n), i: int i): a
+// 
+// fun array_set {a:t@ype}{g:gname}{i,n:nat | i < n} (
+//   arr: garray (a, g, n), i: int i, v: a): void
+
 (* ****** ****** *)
 
 (* end of [Promela.sats] *)

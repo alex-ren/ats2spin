@@ -7,13 +7,38 @@ mtype = {Wakeme, Running };  /* process states */
 
 mtype pstate[N] = Running;
 
+/* *********** ************* */
+
+/* *********** ************* */
+
+
+// Manually constructed
 bit r_lock;
-bit r_wanted;  /* resource state */
-bit lk, sq;    /* locks */
+#define r_lock_get ()  r_lock
+#define r_lock_set (b) r_lock = b
+
+// Manually constructed
+bit r_wanted;
+#define r_wanted_get ()  r_wanted
+#define r_wanted_set (b) r_wanted = b
+
+/* *********** ************* */
+
+bit lk;    /* lock for resource */
 
 #define freelock(x) x = 0
 #define waitlock(x) (x == 0)
 #define spinlock(x) atomic {waitlock(x) -> x = 1}
+
+/* *********** ************* */
+
+bit sq;    /* lock for process states */
+#define freelock_sq() sq = 0
+#define spinlock_sq() atomic {waitlock(sq) -> sq = 1}
+
+/* *********** ************* */
+
+/* *********** ************* */
 
 inline wakeup(x) {
     spinlock(sq);

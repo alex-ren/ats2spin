@@ -1,22 +1,25 @@
 
-process_scheduling_trivial:
-	spin -f '<>[]p' > process_scheduling.ltl
-	spin -a -N process_scheduling.ltl process_scheduling.pml
+# Problem found in this is trivial:
+# One process is sleeping. One process doesn't
+# run. The third process keeps running.
+uts_model_trivial:
+	spin -f '<>[]p' > uts_model_dats.ltl
+	spin -a -N uts_model_dats.ltl uts_model_dats.pml
 	gcc -o pan pan.c
 	./pan -a -m60
-	spin -t -p process_scheduling.pml
+	spin -t -N uts_model_dats.ltl -p uts_model_dats.pml # -t trace, -p print
 
 
-rocess_scheduling_counterexample:
-	spin -f '<>[]p && []<>q && []<>r' > process_scheduling.ltl
-	spin -a -N process_scheduling.ltl process_scheduling.pml
+uts_model_counterexample:
+	spin -f '<>[]p && []<>q && []<>r' > uts_model_dats.ltl
+	spin -a -N uts_model_dats.ltl uts_model_dats.pml
 	gcc -o pan pan.c
 	./pan -a
-	spin -t process_scheduling.pml
+	spin -t -N uts_model_dats.ltl uts_model_dats.pml
 	
-process_scheduling_good:
-	spin -f '<>[]p && []<>q && []<>r' > process_scheduling.ltl
-	spin -a -N process_scheduling.ltl -DFIX process_scheduling.pml
+uts_model_scheduling_good:
+	spin -f '<>[]p && []<>q && []<>r' > uts_model_dats.ltl
+	spin -a -N uts_model_dats.ltl -DFIX uts_model_dats.pml  # -DFIX is for macro.
 	gcc -o pan pan.c
 	./pan -a
 

@@ -1,0 +1,24 @@
+never  {    /* <>[]p && []<>q && []<>r */
+T0_init:
+	do
+	:: ((p) && (q) && (r)) -> goto accept_S1149
+	:: ((p) && (q)) -> goto T2_S1149
+	:: ((p)) -> goto T0_S1149
+	:: (1) -> goto T0_init
+	od;
+accept_S1149:
+	do
+	:: ((p)) -> goto T0_S1149
+	od;
+T2_S1149:
+	do
+	:: ((p) && (r)) -> goto accept_S1149
+	:: ((p)) -> goto T2_S1149
+	od;
+T0_S1149:
+	do
+	:: ((p) && (q) && (r)) -> goto accept_S1149
+	:: ((p) && (q)) -> goto T2_S1149
+	:: ((p)) -> goto T0_S1149
+	od;
+}
