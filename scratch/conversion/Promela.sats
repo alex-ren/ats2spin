@@ -29,6 +29,8 @@ int2pid{i:nat}(int(i)): pid(i)
 
 fun 
 pid_eq{i1,i2:nat}(pid(i1), pid(i2)): bool(i1 == i2)
+
+overload = with pid_eq
 //
 (* ****** ****** *)
 //
