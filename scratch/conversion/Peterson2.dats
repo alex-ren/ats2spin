@@ -18,7 +18,7 @@ stacst curpid: () -> int
 // Can we do pure proof?
 extern prfun lemma_pid_max (): [0 <= curpid () && curpid () < 2] void
 //
-extern fun get_other_party (pid (curpid ())): pid(1- curpid ())
+extern fun get_other_party (pid (curpid ())): pid(1 - curpid ())
 
 (* ****** ****** *)
 

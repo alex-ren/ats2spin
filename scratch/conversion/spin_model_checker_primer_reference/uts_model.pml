@@ -85,8 +85,7 @@ active [N] proctype user()
 R:        /* use resource r */
 
         r_lock = 0;
-        waitlock(lk);  // rzq: This line is not necessary. It
-                         // has no effect on the result.
+        waitlock(lk);
         if
         :: r_wanted ->
             r_wanted = 0;

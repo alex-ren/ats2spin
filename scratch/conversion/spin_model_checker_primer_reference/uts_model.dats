@@ -47,11 +47,9 @@ extern fun spinlock_sq (): (lock_v (sq) | void)
 (* *********** ************* *)
 
 // atomic
-extern fun pstate_get {i:nat | i < N} (v: !lock_v sq | i: int i): mtype
+extern fun pstate_get {i:nat | i < N} (i: int i): mtype
 // atomic
 extern fun pstate_set {i:nat | i < N} (v: !lock_v sq | i: int i, x: mtype): void
-// atomic
-extern fun pstate_set_nolock {i:nat | i < N} (i: int i, x: mtype): void
 
 (* *********** ************* *)
 
@@ -61,7 +59,7 @@ fun wakeup () = let
 
   fun loop {i:nat | i <= N} (v: !lock_v sq | i: int i): void =
     if i < N then 
-      if pstate_get (v | i) = Wakeme then let
+      if pstate_get (i) = Wakeme then let
         val () = pstate_set (v | i, Running)
       in 
         loop (v | i + 1)
@@ -79,7 +77,9 @@ fun sleepl {l:gname} {i:nat| i < N} (
 
   val () = pstate_set (v_sq | i, Wakeme)
   val () = freelock_sq (v_sq)
-  val () = pstate_set_nolock (i, Running)
+
+  val () = Promela$wait_until(
+    lam () => pstate_get (i) = Running)
 
   val (v | ()) = spinlock (l)
 in (v | ()) end
@@ -93,6 +93,8 @@ fun proctype_user {i:nat | i < N} (i: int i) = let
     val (v_lk | ()) = spinlock (lk)
 
     fun loop2 (v_lk: lock_v lk): (lock_v lk | void) = 
+      // todo: If r_lock_get () == 1, then there exists a V.
+      // register itself to a global entry blockees.
       if r_lock_get () then let
         val () = r_wanted_set (true)
         val (v_lk | ()) = sleepl (v_lk | i, lk)
@@ -106,11 +108,36 @@ fun proctype_user {i:nat | i < N} (i: int i) = let
     prval () = Promela$set_tag ("R")
 
     val () = r_lock_set (false)
+
+    // Without the following, there is a problem as follows:
+    // Suppose there are two processes A and B. A goes first and
+    // block B.
+    // B checks "r_lock_get ()" and is about to "r_wanted_set (true)".
+    // A uses "r_wanted_get ()" to get false and totally skips
+    // waking B.
+    // With the following statement, there is no missed wake up
+    // for two processes.
     val () = waitlock (lk)
   in
+    // todo: If exists V, then true, else false.
     if (r_wanted_get ()) then let
+      // grab the current global entry blockees.
+      // grab all the V's
       val () = r_wanted_set (false)
+
+      // Without the following, there is a problem when there are
+      // three processes. A goes first and stop before "r_wanted_get ()".
+      // B goes second and B is not blocked by A at all since A already
+      // left its critical section. C goes third and "r_wanted_set (true)"
+      // due to B "r_lock_set (true)". A is completely asynchronous to
+      // C and then can "r_wanted_set (false)" before C actually enters
+      // sleep state, and thus A won't wake up C. B won't wake up C either
+      // since "r_wanted_get ()" is false.
       val () = waitlock (lk)
+      // Inside the wakeup, all the blockees must be
+      // of state Wakeme. :( This is not a valid statement.)
+      // The blockees may have been awaken by other processes.
+      // wakeup consumes all the V's collected so far.
       val () = wakeup ()
     in loop () end else loop ()
   end
@@ -120,7 +147,7 @@ in end
 
 (* *********** ************* *)
 
-// initizlize
+// initialize
 typedef Promela$proctype (bound: int) = {i: nat | i < bound} (int i) -> void
 
 extern fun Promela$active_proctype_n {n:nat} (
