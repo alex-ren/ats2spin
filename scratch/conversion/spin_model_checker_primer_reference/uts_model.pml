@@ -7,36 +7,13 @@ mtype = {Wakeme, Running };  /* process states */
 
 mtype pstate[N] = Running;
 
-/* *********** ************* */
-
-/* *********** ************* */
-
-
-// Manually constructed
 bit r_lock;
-#define r_lock_get ()  r_lock
-#define r_lock_set (b) r_lock = b
-
-// Manually constructed
-bit r_wanted;
-#define r_wanted_get ()  r_wanted
-#define r_wanted_set (b) r_wanted = b
-
-/* *********** ************* */
-
-bit lk;    /* lock for resource */
+bit r_wanted;  /* resource state */
+bit lk, sq;    /* locks */
 
 #define freelock(x) x = 0
 #define waitlock(x) (x == 0)
 #define spinlock(x) atomic {waitlock(x) -> x = 1}
-
-/* *********** ************* */
-
-bit sq;    /* lock for process states */
-#define freelock_sq() sq = 0
-#define spinlock_sq() atomic {waitlock(sq) -> sq = 1}
-
-/* *********** ************* */
 
 /* *********** ************* */
 
@@ -91,10 +68,9 @@ R:        /* use resource r */
             r_wanted = 0;
 #ifdef FIX
             waitlock(lk);
-         // atomic{spinlock(lk);freelock(lk);}
-         // rzq: If we use spinlock and freelock to enclose
-         // the if...fi block, then this case is similar to
-         // a normal user case of "condition" with signal.
+         // waitlock is equivalent to atomic{spinlock(lk);freelock(lk);}
+         // rzq: If we put r_wanted under the protection of
+         // the lock lk, then the reasoning becomes simpler.
 #endif
             wakeup(_);
          // The essence is that the wakeup should take place after

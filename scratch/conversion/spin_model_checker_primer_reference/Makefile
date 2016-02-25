@@ -23,6 +23,10 @@ uts_model_scheduling_good:
 	gcc -o pan pan.c
 	./pan -a
 
+client_server_checking:
+	spin -a client_server.pml
+	gcc -o pan pan.c
+	./pan
 
 clean:
 	rm -rf pan*

@@ -54,6 +54,10 @@ Promela$atomic {a:viewt@ype} (() -> a): a
 
 fun
 Promela$run (() -> void): void
+abstype process_end
+fun Promela$run2 (process_end): void
+
+fun Promela$process_end (): process_end
 
 prfun
 Promela$set_tag (tag: string): void
