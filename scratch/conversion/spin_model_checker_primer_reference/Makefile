@@ -29,6 +29,7 @@ client_server_checking:
 	./pan
 
 clean:
-	rm -rf pan*
+	rm -rf pan
+	rm -rf pan.*
 	rm -rf *.trail
 
