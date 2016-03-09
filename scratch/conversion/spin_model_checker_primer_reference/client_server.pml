@@ -1,3 +1,10 @@
+/*
+ * This example is from the book
+ * "The SPIN Model Checker: Primer and Reference Manual", 
+ * Chapter 15, Sample SPIN Models.
+ *
+*/
+
 #define N 2
 
 mtype = { request, deny, hold, grant, return0 };
