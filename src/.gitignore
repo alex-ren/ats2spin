@@ -3,3 +3,11 @@
 tags
 MYTAGS
 
+*_dats.c
+*_dats.o
+
+*_sats.c
+*_sats.o
+
+*.o
+

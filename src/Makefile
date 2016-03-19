@@ -46,26 +46,11 @@ PATSCC2= $(PATSCC) -atsccomp "$(CCOPT)" $(MALLOCFLAG) $(CFLAGS)
 
 ######
 
-# UTFPLSRC_sta := \
-#   utfpl.sats \
 
 ATS2PROMELA_sta := \
     postiats/utfpl.sats
 
-# UTFPLSRC_dyn := \
-#   utfpl_stamp.dats \
-#   utfpl_symbol.dats \
-#   utfpl_location.dats \
-#   utfpl_label.dats \
-#   utfpl_d2cst.dats \
-#   utfpl_d2var.dats \
-#   utfpl_d2sym.dats \
-#   utfpl_p2at.dats \
-#   utfpl_d2exp.dats \
-#   utfpl_d2ecl.dats \
-
 ATS2PROMELA_dyn := \
-    ats2promela.dats \
     postiats/utfpl_stamp.dats \
     postiats/utfpl_symbol.dats \
     postiats/utfpl_location.dats \
@@ -119,7 +104,9 @@ ATS2PROMELA:: ; \
 # # ATS2PROMELA:: ; \
 # #   $(MAKE) -C evaluating
 # 
+
 ATS2PROMELA:: ats2promela.o \
+  main_ats2promela_dats.o \
   parsing/parsing.o; \
   $(PATSCC2) -o ats2promela $^ $(LDFLAGS)
 
@@ -134,6 +121,12 @@ ATS2PROMELA:: ats2promela.o \
 #   $(PATSCC2) -o utfpleval $^ $(LDFLAGS)
 #
 ######
+
+unittest:: ATS2PROMELA
+unittest:: ats2promela.o \
+  test_ats2promela_dats.o \
+  parsing/parsing.o; \
+  $(PATSCC2) -o test_ats2promela $^ $(LDFLAGS)
 
 %_sats.o: %.sats ; $(PATSCC2) -c $< -o $@
 %_dats.o: %.dats ; $(PATSCC2) -c $< -o $@
