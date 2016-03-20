@@ -169,9 +169,13 @@ cleanats:: ; $(RMF) *_?ats.c
 ######
 
 cleanall:: ; $(RMF) ats2promela
+cleanall:: ; $(RMF) test_ats2promela
+
 cleanall:: ; $(RMF) ats2promela.o
+
 cleanall:: ; $(RMF) postiats/*_?ats.o
 cleanall:: ; make -C parsing cleanall
+
 # cleanall:: ; make -C TEST cleanall
 
 ######
