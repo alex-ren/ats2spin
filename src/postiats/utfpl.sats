@@ -24,12 +24,18 @@
 ** OTHER DEALINGS IN THE SOFTWARE.
 *)
 
+staload "./../utils/emiter.sats"
+
 (* ****** ****** *)
 //
 typedef
 fprint_type
   (a:t@ype) = (FILEref, a) -> void
 //
+(* ****** ****** *)
+
+fun the_utfpl_mgr_initialize (): void
+
 (* ****** ****** *)
 
 abst0ype
@@ -41,6 +47,11 @@ typedef stamp = stamp_t0ype
 fun
 fprint_stamp: fprint_type (stamp)
 overload fprint with fprint_stamp
+
+(* ****** ****** *)
+
+fun
+emit_stamp: emit_type (stamp)
 
 (* ****** ****** *)
 
@@ -60,9 +71,14 @@ typedef symbol = symbol_type
 
 (* ****** ****** *)
 
+fun the_symbol_mgr_initialize (): void
+
 fun
 fprint_symbol: fprint_type(symbol)
 overload fprint with fprint_symbol
+
+fun
+emit_symbol: emit_type (symbol)
 
 (* ****** ****** *)
 
@@ -72,8 +88,11 @@ fun symbol_make (string): symbol
 
 fun symbol_get_name (symbol): string
 
+fun symbol_to_string_unique (symbol): string
+
 (* ****** ****** *)
-//
+// The symbols to be compared needs to be created 
+// by the same symbol manager.
 fun
 compare_symbol_symbol
   (x1: symbol, x2: symbol):<> int

@@ -43,6 +43,10 @@ fun jsonval_get_field
 //
 (* ****** ****** *)
 
+// Call this function to initialize (or reset)
+// the inner state of the parser.
+fun parser_initialize (): void
+
 fun parse_int (jsv: jsonval): int
 fun parse_string (jsv: jsonval): string
 

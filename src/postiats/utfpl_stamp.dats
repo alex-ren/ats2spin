@@ -11,6 +11,7 @@
 (* ****** ****** *)
 
 staload "./utfpl.sats"
+staload "./../utils/emiter.sats"
 
 (* ****** ****** *)
 
@@ -26,6 +27,9 @@ implement
 fprint_stamp
   (out, stamp) = fprint_int (out, stamp)
 // end of [fprint_stamp]
+
+implement
+emit_stamp (stamp) = EUint (stamp)
 
 (* ****** ****** *)
 

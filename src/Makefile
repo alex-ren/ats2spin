@@ -17,14 +17,8 @@ include $(PATSHOME)/share/atsmake-post.mk
 
 ######
 
-CCOPT=gcc -std=c99 -D_XOPEN_SOURCE -D_GNU_SOURCE 
-
-######
-
 CFLAGS :=
-CFLAGS += -IIATS $(PATSHOMEQ)
-CFLAGS += -IIATS $(PATSHOMEQ)/ccomp/runtime
-CFLAGS += -IIATS $(PATSHOMERELOCQ)/contrib
+CFLAGS += -std=c99 -D_XOPEN_SOURCE -D_GNU_SOURCE 
 CFLAGS +=  $(shell pkg-config --cflags json-c)
 
 ######
@@ -42,15 +36,11 @@ MALLOCFLAG=-DATS_MEMALLOC_GCBDW
 
 ######
 
-PATSCC2= $(PATSCC) -atsccomp "$(CCOPT)" $(MALLOCFLAG) $(CFLAGS)
-
-######
-
-
 ATS2PROMELA_sta := \
     postiats/utfpl.sats
 
 ATS2PROMELA_dyn := \
+    postiats/utfpl.dats \
     postiats/utfpl_stamp.dats \
     postiats/utfpl_symbol.dats \
     postiats/utfpl_location.dats \
@@ -61,15 +51,11 @@ ATS2PROMELA_dyn := \
     postiats/utfpl_p2at.dats \
     postiats/utfpl_d2exp.dats \
     postiats/utfpl_d2ecl.dats \
-    postiats/utfpl_dynloadall_dats.o \
-    postiats/utfpleval_mylib_dats.o \
+    postiats/utfpleval_mylib.dats \
+    postiats/utfpl_dynloadall.dats \
+    utils/emiter.dats \
+    utils/utils.dats \
 
-    # postiats/utfpleval_symenv_dats.o \
-
-
-# UTFPLSRC := \
-#   $(UTFPLSRC_sta) \
-#   $(UTFPLSRC_dyn) \
 
 ATS2PROMELASRC := \
     $(ATS2PROMELA_sta) \
@@ -101,35 +87,31 @@ MAKE=make
 #
 ATS2PROMELA:: ; \
   $(MAKE) -C parsing
-# # ATS2PROMELA:: ; \
-# #   $(MAKE) -C evaluating
-# 
 
 ATS2PROMELA:: ats2promela.o \
   main_ats2promela_dats.o \
   parsing/parsing.o; \
-  $(PATSCC2) -o ats2promela $^ $(LDFLAGS)
+  $(CC) -o ats2promela $^ $(LDFLAGS)
 
-
-# ATS2PROMELA:: utfpl.o \
-#   parsing/parsing.o \
-#   evaluating/evaluating.o \
-#   utfpl_dynloadall_dats.o \
-#   utfpleval_dats.o \
-#   utfpleval_symenv_dats.o \
-#   utfpleval_mylib_dats.o ; \
-#   $(PATSCC2) -o utfpleval $^ $(LDFLAGS)
-#
 ######
 
 unittest:: ATS2PROMELA
 unittest:: ats2promela.o \
   test_ats2promela_dats.o \
   parsing/parsing.o; \
-  $(PATSCC2) -o test_ats2promela $^ $(LDFLAGS)
+  $(CC) -o test_ats2promela $^ $(LDFLAGS)
 
-%_sats.o: %.sats ; $(PATSCC2) -c $< -o $@
-%_dats.o: %.dats ; $(PATSCC2) -c $< -o $@
+# PATSCC2= $(PATSCC) -atsccomp "$(CCOPT)" $(MALLOCFLAG) $(CFLAGS)
+# %_sats.o: %.sats ; $(PATSCC2) -c $< -o $@
+# %_dats.o: %.dats ; $(PATSCC2) -c $< -o $@
+
+%_sats.o: %_sats.c ; $(CC) $(INCLUDE) $(CFLAGS) -c $< -o $@
+%_dats.o: %_dats.c ; $(CC) $(INCLUDE) $(CFLAGS) $(MALLOCFLAG) -c $< -o $@
+
+.PRECIOUS: %_sats.c %_dats.c
+
+%_sats.c: %.sats ; $(PATSOPT) $(INCLUDE_ATS) -o $@ -s $<
+%_dats.c: %.dats ; $(PATSOPT) $(INCLUDE_ATS) -o $@ -d $<
 
 ######
 
@@ -164,16 +146,20 @@ depend:: ; $(PATSOPT) --output-a .depend --depgen -d $(ATS2PROMELA_dyn)
 # ######
 
 cleanats:: ; $(RMF) postiats/*_?ats.c
+cleanats:: ; $(RMF) utils/*_?ats.c
 cleanats:: ; $(RMF) *_?ats.c
+
+######
+
+cleanall:: ; $(RMF) postiats/*_?ats.o
+cleanall:: ; $(RMF) utils/*_?ats.o
+cleanall:: ; $(RMF) ats2promela.o
 
 ######
 
 cleanall:: ; $(RMF) ats2promela
 cleanall:: ; $(RMF) test_ats2promela
 
-cleanall:: ; $(RMF) ats2promela.o
-
-cleanall:: ; $(RMF) postiats/*_?ats.o
 cleanall:: ; make -C parsing cleanall
 
 # cleanall:: ; make -C TEST cleanall

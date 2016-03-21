@@ -9,15 +9,17 @@
 "share/atspre_staload.hats"
 //
 (* ****** ****** *)
-//
-staload "libats/ML/SATS/hashtblref.sats"
-//
+
+staload "./../utils/emiter.sats"
+staload "./../utils/utils.sats"
+staload "./../utils/mymap.sats"
+
+staload _(*anon*) = "./../utils/mymap.dats"
 staload _(*anon*) = "libats/DATS/hashfun.dats"
 staload _(*anon*) = "libats/DATS/linmap_list.dats"
 staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
-//
 staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
-//
+
 (* ****** ****** *)
 
 staload "./utfpl.sats"
@@ -35,25 +37,31 @@ assume symbol_type = symbol
 local
 
 val count = ref<int> (0)
-val mymap = hashtbl_make_nil<string,symbol>(i2sz(1024))
+val mymap = ref<mylinmap (string, symbol)> (mylinmap_create ())
 
 in (* in of [local] *)
+
+implement the_symbol_mgr_initialize () = let
+  val () = !count := 0
+  val () = !mymap := mylinmap_create ()
+in
+end
 
 implement
 symbol_make (name) = let
 //
-val opt = hashtbl_search (mymap, name)
+val opt = mylinmap_find (!mymap, name)
 //
 in
 //
 case+ opt of
-| ~Some_vt (sym) => sym
-| ~None_vt ((*void*)) => let
+| Some (sym) => sym
+| None ((*void*)) => let
     val n = !count
     val () = !count := n + 1
     val sym = SYM (name, n)
 //
-    val () = hashtbl_insert_any (mymap, name, sym)
+    val _ = mylinmap_insert (!mymap, name, sym)
 //
   in
     sym
@@ -81,6 +89,14 @@ in
   fprint_string (out, name)
 end // end of [fprint_symbol]
 
+implement
+emit_symbol (sym) = let
+  val+ SYM (_, n) = sym
+  val id = tostring_int (n)
+in
+  emit_text (symbol_get_name (sym) + id)
+end
+
 (* ****** ****** *)
 
 implement
@@ -97,3 +113,5 @@ end // end of [compare_symbol_symbol]
 (* ****** ****** *)
 
 (* end of [utfpl_symbol.dats] *)
+
+
