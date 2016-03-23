@@ -8,6 +8,8 @@ tags:
 	find $(PWD)/parsing/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
 	find $(PWD)/postiats/ -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
 	find $(PWD)/postiats/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
+	find $(PWD)/utils/ -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
+	find $(PWD)/utils/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
 	find $(PWD) -maxdepth 1 -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
 	find $(PWD) -maxdepth 1 -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
 	java -jar $(PATSHOMERELOC)/ats-lang-tools.jar --input MYTAGS -c --output tags

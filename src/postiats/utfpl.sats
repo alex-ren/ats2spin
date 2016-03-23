@@ -63,6 +63,22 @@ fun
 compare_stamp_stamp
   : (stamp, stamp) -<fun0> int
 overload compare with compare_stamp_stamp
+
+fun
+eq_stamp_stamp : (stamp, stamp) -<fun0> bool
+fun
+neq_stamp_stamp : (stamp, stamp) -<fun0> bool
+fun
+compare_stamp_stamp : (stamp, stamp) -<fun0> int
+//
+overload = with eq_stamp_stamp
+overload != with neq_stamp_stamp
+//
+(* ****** ****** *)
+//
+fun
+hash_stamp (s: stamp):<> ulint
+
 //
 (* ****** ****** *)
 
@@ -109,6 +125,9 @@ datatype label =
 fun
 fprint_label: fprint_type (label)
 overload fprint with fprint_label
+
+fun
+emit_label: emit_type (label)
 
 (* ****** ****** *)
 //
@@ -175,6 +194,9 @@ fun
 fprint_d2cst: fprint_type (d2cst)
 overload fprint with fprint_d2cst
 
+fun
+emit_d2cst: emit_type (d2cst)
+
 (* ****** ****** *)
 
 fun d2cst_make (symbol, stamp): d2cst
@@ -208,6 +230,9 @@ fun
 fprint_d2var: fprint_type (d2var)
 overload fprint with fprint_d2var
 
+fun
+emit_d2var: emit_type (d2var)
+
 (* ****** ****** *)
 
 fun d2var_make (symbol, stamp): d2var
@@ -237,6 +262,9 @@ typedef d2sym = d2sym_type
 fun
 fprint_d2sym: fprint_type (d2sym)
 overload fprint with fprint_d2sym
+
+fun
+emit_d2sym: emit_type (d2sym)
 
 (* ****** ****** *)
 
@@ -285,12 +313,25 @@ fun fprint_p2atlst: fprint_type (p2atlst)
 //
 overload fprint with fprint_p2at
 overload fprint with fprint_p2atlst of 10
+
+fun
+emit_p2at: emit_type (p2at)
+
+fun
+emit_p2atlst: emit_type (p2atlst)
 //
 fun fprint_labp2at: fprint_type (labp2at)
 fun fprint_labp2atlst: fprint_type (labp2atlst)
 //
 overload fprint with fprint_labp2at
 overload fprint with fprint_labp2atlst of 10
+
+fun
+emit_labp2at: emit_type (labp2at)
+
+fun
+emit_labp2atlst: emit_type (labp2atlst)
+
 //
 (* ****** ****** *)
 //
@@ -429,6 +470,12 @@ fun fprint_d2expopt: fprint_type (d2expopt)
 overload fprint with fprint_d2exp
 overload fprint with fprint_d2explst of 10
 overload fprint with fprint_d2expopt of 10
+
+fun
+emit_d2exp: emit_type (d2exp)
+
+fun
+emit_d2explst: emit_type (d2explst)
 //
 (* ****** ****** *)
 //
@@ -437,6 +484,12 @@ fun fprint_d2exparglst: fprint_type (d2exparglst)
 //
 overload fprint with fprint_d2exparg
 overload fprint with fprint_d2exparglst of 10
+
+fun
+emit_d2exparg: emit_type (d2exparg)
+
+fun
+emit_d2exparglst: emit_type (d2exparglst)
 //
 (* ****** ****** *)
 //
@@ -445,6 +498,12 @@ fun fprint_d2lablst: fprint_type (d2lablst)
 //
 overload fprint with fprint_d2lab
 overload fprint with fprint_d2lablst of 10
+
+fun
+emit_d2lab: emit_type (d2lab)
+
+fun
+emit_d2lablst: emit_type (d2lablst)
 //
 (* ****** ****** *)
 //
@@ -453,6 +512,12 @@ fun fprint_d2eclist: fprint_type (d2eclist)
 //
 overload fprint with fprint_d2ecl
 overload fprint with fprint_d2eclist of 10
+
+fun 
+emit_d2ecl: emit_type (d2ecl)
+
+fun 
+emit_d2eclist: emit_type (d2eclist)
 //
 (* ****** ****** *)
 //

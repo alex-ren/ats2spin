@@ -21,27 +21,34 @@ staload "{$JSONC}/SATS/json_ML.sats"
 (* ****** ****** *)
 
 extern
-fun the_d2varmap_find (stamp): d2varopt_vt
+fun the_d2varmap_find (stamp): d2varopt
 extern
 fun the_d2varmap_insert (d2v: d2var): void
+extern
+fun the_d2varmap_get (): d2varmap
 
 (* ****** ****** *)
 
 local
+
+staload "./../utils/mymap.sats"
+
+staload _(*anon*) = "libats/DATS/hashfun.dats"
+staload _(*anon*) = "libats/DATS/linmap_list.dats"
+staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
+staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
+
+staload _(*anon*) = "./../utils/mymap.dats"
 //
-staload FM =
-"libats/SATS/funmap_avltree.sats"
-staload _(*FM*) =
-"libats/DATS/funmap_avltree.dats"
-//
-typedef map = $FM.map (stamp, d2var)
-//
-var mymap: map = $FM.funmap_nil ()
+var mymap: d2varmap = mylinmap_create ()
 val the_d2varmap =
-  ref_make_viewptr{map} (view@mymap | addr@mymap)
+  ref_make_viewptr{d2varmap} (view@mymap | addr@mymap)
 //
+
+implement mylinmap_hash_key<stamp> (x) = hash_stamp (x)
+
 implement
-$FM.compare_key_key<stamp> = compare_stamp_stamp
+mylinmap_equal_key_key<stamp> = eq_stamp_stamp
 //
 in (* in of [local] *)
 
@@ -52,7 +59,7 @@ the_d2varmap_find
 val (vbox(pf) | p) = ref_get_viewptr (the_d2varmap)
 //
 in
-  $effmask_ref ($FM.funmap_search_opt (!p, k0))
+  $effmask_ref (mylinmap_find (!p, k0))
 end // end of [the_d2varmap_find]
 
 implement
@@ -61,11 +68,17 @@ the_d2varmap_insert
 //
 val k0 = d2v0.stamp()
 val (vbox(pf) | p) = ref_get_viewptr (the_d2varmap)
-val-~None_vt ((*void*)) = $effmask_ref ($FM.funmap_insert_opt (!p, k0, d2v0))
+val- None ((*void*)) = $effmask_ref (mylinmap_insert (!p, k0, d2v0))
 //
 in
   // nothing
 end // end of [the_d2varmap_find]
+
+implement the_d2varmap_get () = let
+  val (vbox(pf) | p) = ref_get_viewptr (the_d2varmap)
+in
+  !p
+end
 
 end // end of [local]
 
@@ -85,8 +98,8 @@ val opt = the_d2varmap_find (stamp)
 in
 //
 case+ opt of
-| ~Some_vt (d2v) => d2v
-| ~None_vt ((*void*)) => d2v where
+| Some (d2v) => d2v
+| None ((*void*)) => d2v where
   {
     val-~Some_vt(jsv1) =
       jsonval_get_field (jsv0, "d2var_sym")
@@ -119,8 +132,9 @@ case+ jsvs of
 //
 val-JSONarray(jsvs) = jsv0
 //
+val () = loop (jsvs)
 in
-  loop (jsvs)
+  the_d2varmap_get ()
 end // end of [parse_d2varmap]
 
 (* ****** ****** *)

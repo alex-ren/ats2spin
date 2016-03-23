@@ -14,12 +14,6 @@ staload "./../utils/emiter.sats"
 staload "./../utils/utils.sats"
 staload "./../utils/mymap.sats"
 
-staload _(*anon*) = "./../utils/mymap.dats"
-staload _(*anon*) = "libats/DATS/hashfun.dats"
-staload _(*anon*) = "libats/DATS/linmap_list.dats"
-staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
-staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
-
 (* ****** ****** *)
 
 staload "./utfpl.sats"
@@ -35,6 +29,13 @@ assume symbol_type = symbol
 (* ****** ****** *)
 
 local
+
+staload _(*anon*) = "libats/DATS/hashfun.dats"
+staload _(*anon*) = "libats/DATS/linmap_list.dats"
+staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
+staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
+
+staload _(*anon*) = "./../utils/mymap.dats"
 
 val count = ref<int> (0)
 val mymap = ref<mylinmap (string, symbol)> (mylinmap_create ())

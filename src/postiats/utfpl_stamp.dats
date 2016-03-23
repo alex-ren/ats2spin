@@ -13,6 +13,12 @@
 staload "./utfpl.sats"
 staload "./../utils/emiter.sats"
 
+
+staload "libats/SATS/hashfun.sats"
+staload "libats/ML/SATS/hashtblref.sats"
+
+staload _ = "libats/DATS/hashfun.dats"
+
 (* ****** ****** *)
 
 assume stamp_t0ype = int
@@ -36,6 +42,18 @@ emit_stamp (stamp) = EUint (stamp)
 implement
 compare_stamp_stamp (s1, s2) = g0int_compare (s1, s2)
 
+implement
+hash_stamp (s) = 
+$UNSAFE.cast{ulint}
+  (inthash_jenkins($UNSAFE.cast{uint32}(s)))
+
+implement
+eq_stamp_stamp (s1, s2) = g0int_eq (s1, s2)
+
+implement
+neq_stamp_stamp (s1, s2) = g0int_neq (s1, s2)
+
 (* ****** ****** *)
 
 (* end of [utfpl_stamp.dats] *)
+

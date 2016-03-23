@@ -11,6 +11,7 @@ staload LM =
 
 assume myfunmap (key_t: t0p, itm_t: t0p) = $FM.map (key_t, itm_t)
 
+// Implement the stub in FM.
 implement {key_t} $FM.compare_key_key (k1, k2) = myfunmap_compare_key_key<key_t> (k1, k2)
 
 implement {} myfunmap_create () = $FM.funmap_nil ()
@@ -44,9 +45,14 @@ end
 implement {key_t,itm_t} 
   myfunmap_remove (map, key) = $FM.funmap_remove (map, key)
 
-//
+(* ************** *************** *)
 
 assume mylinmap (key_t: t0p, itm_t: t0p) = $LM.hashtbl (key_t, itm_t)
+
+// Implement the stub in LM.
+implement {key_t} $LM.hash_key (k) = mylinmap_hash_key<key_t> (k)
+implement {key_t} $LM.equal_key_key (k1, k2) = 
+  mylinmap_equal_key_key<key_t> (k1, k2)
 
 implement {} mylinmap_create {key_t, itm_t} () =
   $LM.hashtbl_make_nil<key_t, itm_t> (i2sz(2014))

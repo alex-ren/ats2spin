@@ -31,6 +31,7 @@
 (* ****** ****** *)
 
 staload "./../postiats/utfpl.sats"
+staload "./../utils/mymap.sats"
 
 (* ****** ****** *)
 
@@ -83,13 +84,19 @@ a:t@ype
 
 (* ****** ****** *)
 
+// todo
+// add function to initialize the global map for d2cst
+typedef d2cstmap = mylinmap (stamp, d2cst)
 fun parse_d2cst (jsv: jsonval): d2cst
-fun parse_d2cstmap (jsv: jsonval): void
+fun parse_d2cstmap (jsv: jsonval): d2cstmap
 
 (* ****** ****** *)
 
+// todo
+// add function to initialize the global map for d2var
+typedef d2varmap = mylinmap (stamp, d2var)
 fun parse_d2var (jsv: jsonval): d2var
-fun parse_d2varmap (jsv: jsonval): void
+fun parse_d2varmap (jsv: jsonval): d2varmap
 
 (* ****** ****** *)
 

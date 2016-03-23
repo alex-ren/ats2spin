@@ -21,28 +21,34 @@ staload "{$JSONC}/SATS/json_ML.sats"
 (* ****** ****** *)
 
 extern
-fun the_d2cstmap_find (stamp): d2cstopt_vt
+fun the_d2cstmap_find (stamp): d2cstopt
 extern
 fun the_d2cstmap_insert (d2c: d2cst): void
+extern
+fun the_d2cstmap_get (): d2cstmap
 
 (* ****** ****** *)
 
 local
+
+staload "./../utils/mymap.sats"
+
+staload _(*anon*) = "libats/DATS/hashfun.dats"
+staload _(*anon*) = "libats/DATS/linmap_list.dats"
+staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
+staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
+
+staload _(*anon*) = "./../utils/mymap.dats"
 //
-staload FM =
-"libats/SATS/funmap_avltree.sats"
-staload _(*FM*) =
-"libats/DATS/funmap_avltree.dats"
-//
-typedef map = $FM.map (stamp, d2cst)
-//
-var mymap: map = $FM.funmap_nil ()
+var mymap: d2cstmap = mylinmap_create ()
 val the_d2cstmap =
-  ref_make_viewptr{map} (view@mymap | addr@mymap)
-//
+  ref_make_viewptr{d2cstmap} (view@mymap | addr@mymap)
+
+implement mylinmap_hash_key<stamp> (x) = hash_stamp (x)
+
 implement
-$FM.compare_key_key<stamp> = compare_stamp_stamp
-//
+mylinmap_equal_key_key<stamp> (k1, k2) = eq_stamp_stamp (k1, k2)
+
 in (* in of [local] *)
 
 implement
@@ -52,7 +58,7 @@ the_d2cstmap_find
 val (vbox(pf) | p) = ref_get_viewptr (the_d2cstmap)
 //
 in
-  $effmask_ref ($FM.funmap_search_opt (!p, k0))
+  $effmask_ref (mylinmap_find (!p, k0))
 end // end of [the_d2cstmap_find]
 
 implement
@@ -61,11 +67,17 @@ the_d2cstmap_insert
 //
 val k0 = d2c0.stamp()
 val (vbox(pf) | p) = ref_get_viewptr (the_d2cstmap)
-val-~None_vt ((*void*)) = $effmask_ref ($FM.funmap_insert_opt (!p, k0, d2c0))
+val- None ((*void*)) = $effmask_ref (mylinmap_insert (!p, k0, d2c0))
 //
 in
   // nothing
-end // end of [the_d2cstmap_find]
+end // end of [the_d2cstmap_insert]
+
+implement the_d2cstmap_get () = let
+  val (vbox(pf) | p) = ref_get_viewptr (the_d2cstmap)
+in
+  !p
+end
 
 end // end of [local]
 
@@ -85,8 +97,8 @@ val opt = the_d2cstmap_find (stamp)
 in
 //
 case+ opt of
-| ~Some_vt (d2c) => d2c
-| ~None_vt ((*void*)) => d2c where
+| Some (d2c) => d2c
+| None ((*void*)) => d2c where
   {
     val-~Some_vt(jsv1) =
       jsonval_get_field (jsv0, "d2cst_sym")
@@ -119,10 +131,12 @@ case+ jsvs of
 //
 val-JSONarray(jsvs) = jsv0
 //
+val () = loop (jsvs)
 in
-  loop (jsvs)
+  the_d2cstmap_get ()
 end // end of [parse_d2cstmap]
   
 (* ****** ****** *)
 
 (* end of [parsing_d2cst.dats] *)
+

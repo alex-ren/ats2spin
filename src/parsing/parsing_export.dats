@@ -36,8 +36,8 @@ val-~Some_vt(jsv2) =
 val-~Some_vt(jsv3) =
   jsonval_get_field (jsv0, "d2eclist")
 //
-val () = parse_d2cstmap (jsv1)
-val () = parse_d2varmap (jsv2)
+val cstmap = parse_d2cstmap (jsv1)
+val varmap = parse_d2varmap (jsv2)
 //
 in
   parse_d2eclist (jsv3)

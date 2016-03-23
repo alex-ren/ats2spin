@@ -3,11 +3,12 @@
 #include "share/atspre_staload.hats"
 
 // To use myfunmap, please put the following into the dats file.
-// staload _(*anon*) = "./utils/mymap.dats"
 // staload _(*anon*) = "libats/DATS/funmap_avltree.dats"
+// staload _(*anon*) = "./utils/mymap.dats"
 
 abstype myfunmap (key_t: t@ype, itm_t: t@ype) = ptr
 
+// stub whose implementation is left to the user of the template.
 fun {key_t:t@ype} 
   myfunmap_compare_key_key (k1: key_t, k2: key_t):<> int
 
@@ -32,16 +33,21 @@ fun {key_t,itm_t:t@ype}
 (* ********* ********* *)
 
 // To use mylinmap, please put the following into the dats file.
-// staload _(*anon*) = "./utils/mymap.dats"
 // staload _(*anon*) = "libats/DATS/hashfun.dats"
 // staload _(*anon*) = "libats/DATS/linmap_list.dats"
 // staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
 // staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
+// staload _(*anon*) = "./utils/mymap.dats"
 
 abstype mylinmap (key_t: t@ype, itm_t: t@ype) = ptr
 
+// stub whose implementation is left to the user of the template.
 fun {key_t:t@ype} 
-  mylinmap_compare_key_key (k1: key_t, k2: key_t):<> int
+  mylinmap_equal_key_key (k1: key_t, k2: key_t):<> bool
+
+// stub whose implementation is left to the user of the template.
+fun {key_t:t@ype}
+  mylinmap_hash_key (k: key_t):<> ulint
 
 fun {} 
   mylinmap_create {key_t,itm_t:t@ype} (): mylinmap (key_t, itm_t)
