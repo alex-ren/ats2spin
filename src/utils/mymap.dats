@@ -49,6 +49,20 @@ implement {key_t,itm_t}
 
 assume mylinmap (key_t: t0p, itm_t: t0p) = $LM.hashtbl (key_t, itm_t)
 
+
+(* ****** ****** *)
+staload _ = "libats/ML/DATS/hashtblref.dats"
+//
+implement
+mylinmap_hash_key<int> (key) = $LM.hash_key<int> (key)
+//
+implement
+mylinmap_hash_key<uint> (key) = $LM.hash_key<uint> (key)
+//
+implement
+mylinmap_hash_key<string> (key) = $LM.hash_key<string> (key)
+(* ****** ****** *)
+
 // Implement the stub in LM.
 implement {key_t} $LM.hash_key (k) = mylinmap_hash_key<key_t> (k)
 implement {key_t} $LM.equal_key_key (k1, k2) = 

@@ -21,6 +21,8 @@ staload "{$JSONC}/SATS/json_ML.sats"
 
 staload "./parsing/parsing.sats"
 
+staload "./instr0/instr0.sats"
+
 dynload "./postiats/utfpl_dynloadall.dats"
 dynload "./parsing/dynloadall.dats"
 
@@ -79,7 +81,9 @@ implement main0 (argc, argv) = let
   //
   val jsv = postiats2jsonval (inpref)
 
-  val _(*todo*) = parse_d2eclist_export (jsv)
+  val d2ecs = parse_d2eclist_export (jsv)
+  val _ = transform_d2eclst (d2ecs)
+
 
   //
   val () = if fopen > 0 then fileref_close (inpref)

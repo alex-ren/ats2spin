@@ -665,5 +665,10 @@ overload .stamp with d2cst_get_stamp
 overload .stamp with d2var_get_stamp
 //
 (* ****** ****** *)
+(* Generated *)
+
+fun{} datcon_d2ecl_node : (d2ecl_node) -> string
+
+(* ****** ****** *)
 
 (* end of [utfpl.sats] *)

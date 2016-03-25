@@ -113,6 +113,18 @@ unittest:: ats2promela.o \
 %_sats.c: %.sats ; $(PATSOPT) $(INCLUDE_ATS) -o $@ -s $<
 %_dats.c: %.dats ; $(PATSOPT) $(INCLUDE_ATS) -o $@ -d $<
 
+# ######### ##########
+
+codegen:: postiats/postiats_codegen2.hats
+
+postiats/postiats_codegen2.hats: \
+./postiats/utfpl.sats ./postiats/codegen.dats; \
+$(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d postiats/codegen.dats
+
+build::
+	make codegen
+	make all
+
 ######
 
 -include .depend
