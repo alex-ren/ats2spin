@@ -14,7 +14,7 @@ datatype type0 =
 where
 type0lst = List0 type0
 
-abstype i0id = ptr
+abst@ype i0id = int // ptr
 abstype i0sym = ptr
 
 datatype i0ins =
@@ -37,11 +37,11 @@ i0explst = List0 i0exp
 
 abstype fundef = ptr
 
-staload "./../utils/mymap.sats"
+staload HT = "libats/ML/SATS/hashtblref.sats"
 staload "./../postiats/utfpl.sats"
 
 typedef i0gvar = (i0id, Option i0exp)
-typedef funmap = mylinmap (i0id, fundef)
+typedef funmap = $HT.hashtbl (i0id, fundef)
 
 typedef i0prog = (
   funmap  // all functions

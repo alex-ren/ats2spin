@@ -31,7 +31,7 @@
 (* ****** ****** *)
 
 staload "./../postiats/utfpl.sats"
-staload "./../utils/mymap.sats"
+staload HT = "libats/ML/SATS/hashtblref.sats"
 
 (* ****** ****** *)
 
@@ -86,7 +86,7 @@ a:t@ype
 
 // todo
 // add function to initialize the global map for d2cst
-typedef d2cstmap = mylinmap (stamp, d2cst)
+typedef d2cstmap = $HT.hashtbl (stamp, d2cst)
 fun parse_d2cst (jsv: jsonval): d2cst
 fun parse_d2cstmap (jsv: jsonval): d2cstmap
 
@@ -94,7 +94,7 @@ fun parse_d2cstmap (jsv: jsonval): d2cstmap
 
 // todo
 // add function to initialize the global map for d2var
-typedef d2varmap = mylinmap (stamp, d2var)
+typedef d2varmap = $HT.hashtbl (stamp, d2var)
 fun parse_d2var (jsv: jsonval): d2var
 fun parse_d2varmap (jsv: jsonval): d2varmap
 

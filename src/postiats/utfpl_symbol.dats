@@ -12,7 +12,6 @@
 
 staload "./../utils/emiter.sats"
 staload "./../utils/utils.sats"
-staload "./../utils/mymap.sats"
 
 (* ****** ****** *)
 
@@ -30,45 +29,44 @@ assume symbol_type = symbol
 
 local
 
+staload LM = "libats/ML/SATS/hashtblref.sats"
 
 staload _(*anon*) = "libats/DATS/hashfun.dats"
 staload _(*anon*) = "libats/DATS/linmap_list.dats"
 staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
 staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
 
-staload _(*anon*) = "./../utils/mymap.dats"
 
 staload UN = "prelude/SATS/unsafe.sats"
-implement
-mylinmap_hash_key<string> (key) = $UN.cast{ulint}(0)
 
+typedef symbol_map_t = $LM.hashtbl (string, symbol)
 
 val count = ref<int> (0)
-val mymap = ref<mylinmap (string, symbol)> (mylinmap_create ())
+val mymap = ref<symbol_map_t> ($LM.hashtbl_make_nil (i2sz(2048)))
 
 in (* in of [local] *)
 
 implement the_symbol_mgr_initialize () = let
   val () = !count := 0
-  val () = !mymap := mylinmap_create ()
+  val () = !mymap := $LM.hashtbl_make_nil (i2sz(2048))
 in
 end
 
 implement
 symbol_make (name) = let
 //
-val opt = mylinmap_find (!mymap, name)
+val opt = $LM.hashtbl_search (!mymap, name)
 //
 in
 //
 case+ opt of
-| Some (sym) => sym
-| None ((*void*)) => let
+| ~Some_vt (sym) => sym
+| ~None_vt ((*void*)) => let
     val n = !count
     val () = !count := n + 1
     val sym = SYM (name, n)
 //
-    val _ = mylinmap_insert (!mymap, name, sym)
+    val () = $LM.hashtbl_insert_any (!mymap, name, sym)
 //
   in
     sym
