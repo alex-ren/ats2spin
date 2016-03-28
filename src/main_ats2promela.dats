@@ -25,6 +25,7 @@ staload "./instr0/instr0.sats"
 
 dynload "./postiats/utfpl_dynloadall.dats"
 dynload "./parsing/dynloadall.dats"
+dynload "./instr0/instr0.dats"
 
 fun postiats2jsonval (inp: FILEref): jsonval = let
   val dp = 1024 // depth

@@ -4,3 +4,6 @@ overload + with mystring_append
 
 exception not_supported of string
 
+
+macdef exitlocmsg(m) = exit_errmsg (1, ,(m) + "\n" + $mylocation)
+

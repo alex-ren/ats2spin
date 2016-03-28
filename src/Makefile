@@ -37,7 +37,8 @@ MALLOCFLAG=-DATS_MEMALLOC_GCBDW
 ######
 
 ATS2PROMELA_sta := \
-    postiats/utfpl.sats
+    postiats/utfpl.sats \
+    utils/utils.sats
 
 ATS2PROMELA_dyn := \
     postiats/utfpl.dats \
@@ -140,13 +141,13 @@ depend:: ; $(PATSOPT) --output-a .depend --depgen -d $(ATS2PROMELA_dyn)
 # depend:: ; $(PATSOPT) --output-a .depend --depgen -d utfpleval_symenv.dats
 # depend:: ; $(PATSOPT) --output-a .depend --depgen -d utfpleval.dats
 
-# ######
-# #
-# testall:: UTFPLEVAL
-# #
+######
+#
+testall:: ATS2PROMELA
+#
 # testall:: ; $(MAKE) -C TEST
-# #
-# testall:: ; ./utfpleval TEST/test01_utfpl.json
+#
+testall:: ; ./ats2promela TEST/test01_dats.json
 # testall:: ; ./utfpleval TEST/test02_utfpl.json
 # testall:: ; ./utfpleval TEST/test03_utfpl.json
 # testall:: ; ./utfpleval TEST/test04_utfpl.json

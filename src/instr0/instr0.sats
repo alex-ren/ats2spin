@@ -14,7 +14,7 @@ datatype type0 =
 where
 type0lst = List0 type0
 
-abst@ype i0id = int // ptr
+abstype i0id = ptr
 abstype i0sym = ptr
 
 datatype i0ins =
@@ -41,6 +41,8 @@ staload HT = "libats/ML/SATS/hashtblref.sats"
 staload "./../postiats/utfpl.sats"
 
 typedef i0gvar = (i0id, Option i0exp)
+typedef i0gvarlst = List0 i0gvar
+
 typedef funmap = $HT.hashtbl (i0id, fundef)
 
 typedef i0prog = (
@@ -48,12 +50,18 @@ typedef i0prog = (
   , List0 i0gvar  // global variables
   )
 
+
 // map of functions
 
 fun transform_d2eclst (d2ecs: d2eclist): i0prog
 
 fun transform_d2ecl (d2ec: d2ecl, fmap: funmap, gvs: List0 i0gvar): void
 
+fun transform_D2Cfundecs (
+  f2undeclst: f2undeclst, fmap: funmap, gvs: i0gvarlst): void
+
+fun transform_f2undec (
+  f2undec: f2undec, fmap: funmap, gvs: i0gvarlst): void
 
 
 

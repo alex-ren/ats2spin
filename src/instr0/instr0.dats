@@ -21,9 +21,8 @@ typedef i0id_struct = '{
 , i0id_stamp = stamp
 }  // end of [i0id_struct]
 
-// assume i0id = i0id_struct
+assume i0id = i0id_struct
 
-assume i0id = int
 
 (* for typedef unmap = $HT.hashtbl (i0id, fundef) *)
  
@@ -64,8 +63,24 @@ implement transform_d2ecl (d2ec, fmap, gvs) = let
   val node = d2ec.d2ecl_node
 in
   case+ node of
-  | D2Cimpdec (knd, i2mpdec) => $raise not_supported (datcon_d2ecl_node (node))
-  | _ => $raise not_supported (datcon_d2ecl_node (node))
+  | D2Cimpdec (knd, i2mpdec) => exitlocmsg (datcon_d2ecl_node (node))
+  | D2Cfundecs (knd, f2undeclst) => 
+      transform_D2Cfundecs (f2undeclst, fmap, gvs)
+  | _ => exitlocmsg (datcon_d2ecl_node (node))
 end
+
+implement transform_D2Cfundecs (
+  f2undeclst, fmap, gvs): void = let
+    implement list_foreach$fwork<f2undec><i0gvarlst> (x, env) = ()  // todo
+  in
+    list_foreach (f2undeclst)
+  end
+//   case+ f2undeclst of
+//   | list_cons (f2undec, f2undeclst) => let
+//      val () = transform_f2undec (f2undec, fmap, gvs)
+//   in
+//     transform_D2Cfundecs (f2undeclst, fmap, gvs)
+//   end
+//   | list_nil () => ()
 
 
