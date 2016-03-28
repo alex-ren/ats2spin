@@ -55,13 +55,13 @@ typedef i0prog = (
 
 fun transform_d2eclst (d2ecs: d2eclist): i0prog
 
-fun transform_d2ecl (d2ec: d2ecl, fmap: funmap, gvs: List0 i0gvar): void
+fun transform_d2ecl (d2ec: d2ecl, fmap: funmap, gvs: &i0gvarlst): void
 
 fun transform_D2Cfundecs (
-  f2undeclst: f2undeclst, fmap: funmap, gvs: i0gvarlst): void
+  f2undeclst: f2undeclst, fmap: funmap, gvs: &i0gvarlst): void
 
 fun transform_f2undec (
-  f2undec: f2undec, fmap: funmap, gvs: i0gvarlst): void
+  f2undec: f2undec, fmap: funmap, gvs: &i0gvarlst): void
 
 
 

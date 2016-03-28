@@ -1,5 +1,6 @@
 
 #include "share/atspre_staload.hats"
+#include "share/atspre_define.hats"
 
 staload "./../postiats/utfpl.sats"
 staload "./../utils/utils.sats"
@@ -14,6 +15,9 @@ staload _(*anon*) = "libats/DATS/hashfun.dats"
 staload _(*anon*) = "libats/DATS/linmap_list.dats"
 staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
 staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
+
+staload "prelude/SATS/list.sats"
+staload _(*anon*) = "prelude/DATS/list.dats"
 
 
 typedef i0id_struct = '{
@@ -71,16 +75,10 @@ end
 
 implement transform_D2Cfundecs (
   f2undeclst, fmap, gvs): void = let
-    implement list_foreach$fwork<f2undec><i0gvarlst> (x, env) = ()  // todo
+    implement list_foreach$fwork<f2undec><i0gvarlst> (x, env) =
+      transform_f2undec (x, fmap, env)
   in
-    list_foreach (f2undeclst)
+    list_foreach_env (f2undeclst, gvs)
   end
-//   case+ f2undeclst of
-//   | list_cons (f2undec, f2undeclst) => let
-//      val () = transform_f2undec (f2undec, fmap, gvs)
-//   in
-//     transform_D2Cfundecs (f2undeclst, fmap, gvs)
-//   end
-//   | list_nil () => ()
 
 
