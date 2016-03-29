@@ -80,9 +80,11 @@ is_odd (y: int): bool =
 
 (* ******* ******** *)
 
-is_even_is_odd (x, y; ret)
-var x0 = x;
-var y0 = y;
+is_even_is_odd (choice, x, y; ret)
+d_step {
+  var x0 = x;
+  var y0 = y;
+}
 
 label is_even:
     if (x0 = 0) {
