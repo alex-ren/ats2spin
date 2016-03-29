@@ -101,6 +101,8 @@ fun {a:t0ype} promela_gvar_chan_dec (cap: int): gid_t
 fun {a:t0ype} promela_gvar_chan_create (cap: int): gid_t
 
 
+
+
 (* end of [Promela.sats] *)
 
 
