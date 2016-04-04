@@ -80,10 +80,12 @@ is_odd (y: int): bool =
 
 (* ******* ******** *)
 
-is_even_is_odd (choice, x, y; ret)
+is_even (x, y; ret)
 d_step {
   var x0 = x;
-  var y0 = y;
+  var y0;
+  var x0';
+  var y0';
 }
 
 label is_even:
@@ -91,27 +93,55 @@ label is_even:
         ret = true;
         goto is_even_is_odd_end;
     } else {
-        x0' = x0 - 1;
-        x0 = x0';
+        y0' = x0 - 1;
+        y0 = y0';
         goto label_is_odd;
     }
 
 label is_odd:
-    if (x0 == 0) {
+    if (y0 == 0) {
         ret = false;
         goto is_even_is_odd_end;
     } else {
-        x0' = x0' - 1;
+        x0' = y0 - 1;
         x0 = x0';
         goto label_is_even;
     }
 
 label is_even_is_odd_end:
 
+// ===============
+
+is_odd (x, y; ret)
+d_step {
+  var x0;
+  var y0 = y;
+  var x0';
+  var y0';
+}
+
+label is_odd:
+    if (y0 == 0) {
+        ret = false;
+        goto is_even_is_odd_end;
+    } else {
+        x0' = y0 - 1;
+        x0 = x0';
+        goto label_is_even;
+    }
 
 
-do
-:: x > 0 -> accu = accu + 1;
+label is_even:
+    if (x0 = 0) {
+        ret = true;
+        goto is_even_is_odd_end;
+    } else {
+        y0' = x0 - 1;
+        y0 = y0';
+        goto label_is_odd;
+    }
+
+label is_even_is_odd_end:
 
 
 

@@ -83,7 +83,7 @@ implement main0 (argc, argv) = let
   val jsv = postiats2jsonval (inpref)
 
   val d2ecs = parse_d2eclist_export (jsv)
-  val _ = transform_d2eclst (d2ecs)
+  val _ = i0transform_d2eclst_global (d2ecs)
 
 
   //
