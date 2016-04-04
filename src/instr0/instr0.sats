@@ -20,20 +20,20 @@ where
 type0lst = list0 type0
 
 abstype i0name = ptr
-
+fun i0name_make (s: symbol): i0name
 fun i0name_get_symbol (n: i0name): symbol
-fun i0name_get_type (n: i0name): type0
 
 datatype i0id_cat =
 | I0ID_gvar
+| I0ID_fname
 | I0ID_para
 | I0ID_other
 
 typedef i0id = '{
-  i0id_cat = i0id_cat
+//  i0id_cat = i0id_cat
 , i0id_name = i0name
 , i0id_stamp = stamp
-, i0id_type = type0
+// , i0id_type = type0
 }
 
 typedef i0idlst = list0 i0id
@@ -59,6 +59,13 @@ and
 i0explst = list0 i0exp
 
 abstype i0fundef = ptr
+fun i0fundef_create (
+  name: i0id
+  paralst: i0idlst
+  , inss: i0inslst
+  , group: i0idlst
+  ): i0fundef
+
 fun i0fundef_get_instructions (f: i0fundef): i0inslst
 
 // Desc: recursive call which is not tail call, is not allowed
@@ -71,7 +78,9 @@ fun i0fundef_is_recursive (f: i0fundef): bool
  * Note: If the function is simply tail recursive function,
  *       then the list would contain itself.
 *)
-fun i0fundef_get_group (f: i0fundef): list0 i0id
+fun i0fundef_get_group (f: i0fundef): i0idlst
+
+(* ************ ************* *)
 
 staload HT = "libats/ML/SATS/hashtblref.sats"
 staload "./../postiats/utfpl.sats"
@@ -88,19 +97,50 @@ typedef i0prog = (
   , i0gvarlst  // global variables
   )
 
+(* ************ ************* *)
 
-fun i0transform_d2eclst_global (d2ecs: d2eclist): i0prog
+abstype stamp_allocator = ptr
+fun stamp_allocator_create (): stamp_allocator
 
-fun i0transform_d2ecl_global (d2ec: d2ecl, fmap: i0funmap, gvs: &i0gvarlst): void
+fun stamp_allocate (allocator: stamp_allocator): stamp
+
+fun stamp_get_from_d2var (
+  allocator: stamp_allocator
+  , d2var: d2var
+): stamp
+
+(* ************ ************* *)
+
+fun i0transform_d2eclst_global (
+  sa: stamp_allocator
+  , d2ecs: d2eclist
+  ): i0prog
+
+fun i0transform_d2ecl_global (
+  sa: stamp_allocator
+  , d2ec: d2ecl
+  , fmap: i0funmap
+  , gvs: &i0gvarlst): void
 
 fun i0transform_D2Cfundecs (
-  f2undeclst: f2undeclst, fmap: i0funmap, gvs: &i0gvarlst): void
+  sa: stamp_allocator
+  , f2undeclst: f2undeclst
+  , fmap: i0funmap
+  , gvs: &i0gvarlst): void
 
-// todo: assume the function doesn't contains recursive call.
-fun i0transform_f2undec_nonrecurive (
-  f2undec: f2undec, fmap: i0funmap, gvs: &i0gvarlst): void
-
-fun i0transform_d2var (d2var: d2var): i0id
+(* Desc: Create fundef and put it into the fmap
+*
+*)
+fun i0transform_D2Cfundec (
+  sa: stamp_allocator
+  , group: i0idlst
+  , f2undec: f2undec
+  , fmap: i0funmap
+  , gvs: &i0gvarlst): void
+                  
+fun i0transform_d2var (
+  sa: stamp_allocator
+  , d2var: d2var): i0id
 
 
 

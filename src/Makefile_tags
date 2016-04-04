@@ -8,6 +8,8 @@ tags:
 	find $(PWD)/parsing/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
 	find $(PWD)/postiats/ -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
 	find $(PWD)/postiats/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
+	find $(PWD)/instr0/ -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
+	find $(PWD)/instr0/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
 	find $(PWD)/utils/ -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
 	find $(PWD)/utils/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
 	find $(PWD) -maxdepth 1 -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;

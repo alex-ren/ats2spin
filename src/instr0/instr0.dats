@@ -42,7 +42,7 @@ implement $HT.hash_key<i0id> (x) = hash_stamp (x.i0id_stamp)
 
 (* ************** ************* *)
 
-implement i0transform_d2eclst_global (d2ecs) = let
+implement i0transform_d2eclst_global (sa, d2ecs) = let
   fun loop (
     d2ecs: d2eclist
     , fmap: i0funmap
@@ -50,7 +50,7 @@ implement i0transform_d2eclst_global (d2ecs) = let
     ): void =
     case+ d2ecs of
     | list_cons (d2ec, d2ecs) => 
-        i0transform_d2ecl_global (d2ec, fmap, gvs)
+        i0transform_d2ecl_global (sa, d2ec, fmap, gvs)
     | list_nil () => ()
  
   val fmap = $HT.hashtbl_make_nil<i0id, i0fundef> (i2sz(2048))
@@ -63,13 +63,13 @@ in
   prog
 end
 
-implement i0transform_d2ecl_global (d2ec, fmap, gvs) = let
+implement i0transform_d2ecl_global (sa, d2ec, fmap, gvs) = let
   val node = d2ec.d2ecl_node
 in
   case+ node of
   | D2Cimpdec (knd, i2mpdec) => $UTILS.exitlocmsg (datcon_d2ecl_node (node))
   | D2Cfundecs (knd, f2undeclst) => 
-      i0transform_D2Cfundecs (f2undeclst, fmap, gvs)
+      i0transform_D2Cfundecs (sa, f2undeclst, fmap, gvs)
   | _ => $UTILS.exitlocmsg (datcon_d2ecl_node (node))
 end
 
@@ -100,7 +100,7 @@ in
 end
 
 implement 
-i0transform_D2Cfundecs (f2undeclst, fmap, gvs) = let
+i0transform_D2Cfundecs (sa, f2undeclst, fmap, gvs) = let
   val len = list_length (f2undeclst)
   val is_recursive = (if (len > 1) then true
       else if (len = 1) then let
@@ -115,18 +115,51 @@ i0transform_D2Cfundecs (f2undeclst, fmap, gvs) = let
       fun f2undeclst_collect_names (f2uns: f2undeclst): i0idlst =
         case+ f2uns of
         | list_cons (f2un, f2uns1) => let
-          val fname: i0id = i0transform_d2var (f2un.f2undec_var) 
+          val fname: i0id = i0transform_d2var (sa, f2un.f2undec_var) 
           val fnames = f2undeclst_collect_names (f2uns1)
         in
           list0_cons (fname, fnames)
         end
         | list_nil () => list0_nil ()
       }
-    else list0_nil ()   // end of [val fnames]
+    else list0_nil ()  // end of [val fnames]
 
-  val () = // transform each member of the list
+  val () = loop (sa, fnames, f2undeclst, fmap, gvs) where {
+    fun loop (
+      sa: stamp_allocator
+      , group: i0idlst
+      , f2undeclst: f2undeclst
+      , fmap: i0funmap
+      , gvs: &i0gvarlst): void =
+      case+ f2undeclst of
+      | list_cons (f2undec, f2undeclst1) => let
+        val () = i0transform_D2Cfundec (sa, fnames, f2undec, fmap, gvs)
+      in
+        loop (sa, group, f2undeclst1, fmap, gvs)
+      end
+      | list_nil () => ()
+  }
 in
 end
+
+implement i0transform_d2var (sa, d2var) = let
+  val stamp = stamp_get_from_d2var (sa, d2var)
+  val name = d2var_get_name (d2var)
+  val i0name = i0name_make (name)
+in
+  '{i0id_name = i0name
+  , i0id_stamp = stamp
+  }
+end
+
+implement i0transform_D2Cfundec (sa, group, f2undec, fmap, gvs) = let
+  val name = i0transform_d2var (f2undec.f2undec_var)
+  val- D2Elam (p2atlst, body) = f2undec.f2undec_def.d2exp_node
+  val paralst = i0transform_p2atlst2paralst (sa, p2atlst)
+  val inss = i0transform_d2exp (sa, body, fmap, gvs)
+  
+
+
 
 ////
   //
