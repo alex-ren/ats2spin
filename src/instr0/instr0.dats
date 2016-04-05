@@ -82,9 +82,12 @@ fun f2undec_is_recursive (f: f2undec): bool = let
     | D2Evar (name) => fvar = name
     | _ => false
 
+  (* Desc:
+  *    e: Body of a function.
+  *)
   fun d2exp_has_tailcall (e: d2exp, fvar: d2var): bool =
     case+ e.d2exp_node of
-    | D2Eexp (e1) => $UTILS.exitlocmsg ("D2Eexp hit")
+    | D2Eexp (e1) => d2exp_has_tailcall (e1, fvar)
     | D2Elet (_, e1) => d2exp_has_tailcall (e1, fvar)
     | D2Eapplst (fexp, _) => d2exp_is_fun (fexp, fvar)
     | D2Eifopt (_, e1, e2opt) =>
@@ -153,10 +156,43 @@ in
 end
 
 implement i0transform_D2Cfundec (sa, group, f2undec, fmap, gvs) = let
-  val name = i0transform_d2var (f2undec.f2undec_var)
+  val name = i0transform_d2var (sa, f2undec.f2undec_var)
   val- D2Elam (p2atlst, body) = f2undec.f2undec_def.d2exp_node
   val paralst = i0transform_p2atlst2paralst (sa, p2atlst)
   val inss = i0transform_d2exp (sa, body, fmap, gvs)
+
+  val fundef = i0fundef_create (name, paralst, inss, group)
+  val () = $HT.hashtbl_insert_any (fmap, name, fundef)
+in end
+
+implement i0transform_p2atlst2paralst (sa, p2atlst) = let
+  val paralst = loop (p2atlst) where {
+    fun loop (p2atlst: p2atlst): i0idlst =
+    case+ p2atlst of
+    | list_cons (p2at, p2atlst2) => let
+      val para = i0transform_p2at2para (sa, p2at)
+    in
+      list0_cons (para, loop (p2atlst2))
+    end
+    | list_nil () => list0_nil ()
+  }
+  val paralst = list0_reverse (paralst)
+in
+  paralst
+end
+
+implement i0transform_p2at2para (sa, p2at) =
+case+ p2at.p2at_node of
+| P2Tany () => $UTILS.exitlocmsg ("Shall not happen")
+| P2Tvar (d2var) => i0transform_d2var (sa, d2var)
+| P2Tempty () => $UTILS.exitlocmsg ("Shall not happen")
+| P2Tpat (p2at) => i0transform_p2at2para (sa, p2at)
+| P2Trec (labp2atlst) => $UTILS.exitlocmsg ("Shall not happen")
+| P2Tignored () => $UTILS.exitlocmsg ("Shall not happen")
+
+
+implement i0transform_d2exp (sa, body, fmap, gvs) = $UTILS.exitlocmsg ("todo")
+
   
 
 

@@ -38,9 +38,14 @@ val-~Some_vt(jsv3) =
 //
 val cstmap = parse_d2cstmap (jsv1)
 val varmap = parse_d2varmap (jsv2)
+val d2env = '{
+  d2parsingenv_d2cstmap = cstmap
+  , d2parsingenv_d2varmap = varmap
+  }
+
 //
 in
-  parse_d2eclist (jsv3)
+  parse_d2eclist (d2env, jsv3)
 end // end of [parse_d2eclist_export]
   
 (* ****** ****** *)

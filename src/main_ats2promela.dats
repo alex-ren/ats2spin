@@ -20,12 +20,13 @@ staload "{$JSONC}/SATS/json.sats"
 staload "{$JSONC}/SATS/json_ML.sats"
 
 staload "./parsing/parsing.sats"
-
+staload UTFPL = "./postiats/utfpl.sats"
 staload "./instr0/instr0.sats"
 
 dynload "./postiats/utfpl_dynloadall.dats"
 dynload "./parsing/dynloadall.dats"
-dynload "./instr0/instr0.dats"
+dynload "./instr0/dynloadall.dats"
+
 
 fun postiats2jsonval (inp: FILEref): jsonval = let
   val dp = 1024 // depth
@@ -82,8 +83,13 @@ implement main0 (argc, argv) = let
   //
   val jsv = postiats2jsonval (inpref)
 
+  // symbol_manager
+  val () = $UTFPL.the_symbol_mgr_initialize ()
+
   val d2ecs = parse_d2eclist_export (jsv)
-  val _ = i0transform_d2eclst_global (d2ecs)
+
+  val sa = stamp_allocator_create ()
+  val _ = i0transform_d2eclst_global (sa, d2ecs)
 
 
   //

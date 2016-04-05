@@ -1,4 +1,8 @@
 
+#include "share/atspre_define.hats"
+#include "share/atspre_staload.hats"
+
+
 staload "./instr0.sats"
 staload "./../postiats/utfpl.sats"
 
@@ -10,6 +14,7 @@ staload _(*anon*) = "libats/DATS/hashfun.dats"
 staload _(*anon*) = "libats/DATS/linmap_list.dats"
 staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
 staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
+
 //
 implement $HT.hash_key<stamp> (x) = hash_stamp (x)
 
@@ -24,11 +29,10 @@ assume stamp_allocator = '{
   , stamp_allocator_counter = ref int
 }
 
-
 implement stamp_allocator_create () = let
-  val d2varmap = $HT.hashtbl_make_nil<stamp,stamp> (i2sz (2048))
-  val d2cstmap = $HT.hashtbl_make_nil (i2sz (2048))
-  val counter = ref<int>(0)
+  val d2varmap = $HT.hashtbl_make_nil<stamp, stamp> (i2sz (2048))
+  val d2cstmap = $HT.hashtbl_make_nil<stamp, stamp> (i2sz (2048))
+  val counter = ref<int> (0)
 in
   '{ stamp_allocator_d2varmap = d2varmap
    , stamp_allocator_d2cstmap = d2cstmap
@@ -56,6 +60,21 @@ in
     c
   end
 end  // end of [stamp_get_from_d2var]
+
+// absvt@ype myvtype = int
+// extern fun myvtype_create (): myvtype
+// extern fun myvtype_use (ref myvtype): void
+// extern fun myvtype_delete (!myvtype >> myvtype?): void
+// 
+// fun foo (): void = let
+//   var v = myvtype_create ()
+//   val refv = ref_make_viewptr (view@v | addr@v)
+//   val () = myvtype_use (refv)
+//   // todo
+// 
+//   val () = myvtype_delete (v)
+// in
+// end
 
 
 end  // end of [local]

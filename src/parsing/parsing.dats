@@ -142,7 +142,7 @@ val-JSONarray(jsvs) = jsv0
 //
 fun auxlst
 (
-  jsvs: jsonvalist, f: jsonval -> a
+  jsvs: jsonvalist, f: jsonval -<cloref1> a
 ) : List0 (a) =
   case+ jsvs of
   | list_cons

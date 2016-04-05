@@ -38,8 +38,6 @@ typedef i0id = '{
 
 typedef i0idlst = list0 i0id
 
-fun i0name_get_stamp (n: i0name): stamp
-
 datatype i0ins =
 | INS0assign of (i0id, i0exp)
 | INS0label of (i0id)
@@ -61,7 +59,7 @@ i0explst = list0 i0exp
 abstype i0fundef = ptr
 fun i0fundef_create (
   name: i0id
-  paralst: i0idlst
+  , paralst: i0idlst
   , inss: i0inslst
   , group: i0idlst
   ): i0fundef
@@ -141,6 +139,23 @@ fun i0transform_D2Cfundec (
 fun i0transform_d2var (
   sa: stamp_allocator
   , d2var: d2var): i0id
+
+fun i0transform_p2atlst2paralst (
+  sa: stamp_allocator
+  , p2atlst: p2atlst): i0idlst
+
+fun i0transform_p2at2para (
+  sa: stamp_allocator
+  , p2at: p2at): i0id
+
+fun i0transform_d2exp (
+  sa: stamp_allocator
+  , e: d2exp
+  , fmap: i0funmap
+  , gvs: &i0gvarlst): i0inslst
+
+
+
 
 
 

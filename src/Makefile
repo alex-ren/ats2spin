@@ -55,6 +55,10 @@ ATS2PROMELA_dyn := \
     postiats/utfpleval_mylib.dats \
     postiats/utfpl_dynloadall.dats \
     instr0/instr0.dats \
+    instr0/i0name.dats \
+    instr0/i0fundef.dats \
+    instr0/stamp_allocator.dats \
+    instr0/dynloadall.dats \
     utils/emiter.dats \
     utils/utils.dats \
 

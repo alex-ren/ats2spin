@@ -21,11 +21,9 @@ staload "{$JSONC}/SATS/json_ML.sats"
 (* ****** ****** *)
 
 extern
-fun the_d2varmap_find (stamp): d2varopt_vt
+fun the_d2varmap_find (d2varmap: d2varmap, stamp): d2varopt_vt
 extern
-fun the_d2varmap_insert (d2v: d2var): void
-extern
-fun the_d2varmap_get (): d2varmap
+fun the_d2varmap_insert (d2varmap: d2varmap, d2v: d2var): void
 
 (* ****** ****** *)
 
@@ -38,11 +36,6 @@ staload _(*anon*) = "libats/DATS/linmap_list.dats"
 staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
 staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
 
-//
-var mymap: d2varmap = $HT. hashtbl_make_nil (i2sz(2048))
-val the_d2varmap =
-  ref_make_viewptr{d2varmap} (view@mymap | addr@mymap)
-//
 implement $HT.hash_key<stamp> (x) = hash_stamp (x)
 
 implement
@@ -53,31 +46,21 @@ in (* in of [local] *)
 
 implement
 the_d2varmap_find
-  (k0) = let
-//
-val (vbox(pf) | p) = ref_get_viewptr (the_d2varmap)
-//
+  (d2varmap, k0) = let
 in
-  $effmask_ref ($HT.hashtbl_search (!p, k0))
+  $HT.hashtbl_search (d2varmap, k0)
 end // end of [the_d2varmap_find]
 
 implement
 the_d2varmap_insert
-  (d2v0) = let
+  (d2varmap, d2v0) = let
 //
 val k0 = d2v0.stamp()
-val (vbox(pf) | p) = ref_get_viewptr (the_d2varmap)
-val- ~None_vt ((*void*)) = $effmask_ref ($HT.hashtbl_insert (!p, k0, d2v0))
+val- ~None_vt ((*void*)) = $HT.hashtbl_insert (d2varmap, k0, d2v0)
 //
 in
   // nothing
 end // end of [the_d2varmap_find]
-
-implement the_d2varmap_get () = let
-  val (vbox(pf) | p) = ref_get_viewptr (the_d2varmap)
-in
-  !p
-end
 
 end // end of [local]
 
@@ -85,14 +68,14 @@ end // end of [local]
 
 implement
 parse_d2var
-  (jsv0) = let
+  (d2varmap, jsv0) = let
 //
 val-~Some_vt(jsv2) =
   jsonval_get_field (jsv0, "d2var_stamp")
 //
 val stamp = parse_stamp (jsv2)
 //
-val opt = the_d2varmap_find (stamp)
+val opt = the_d2varmap_find (d2varmap, stamp)
 //
 in
 //
@@ -104,12 +87,21 @@ case+ opt of
       jsonval_get_field (jsv0, "d2var_sym")
     val sym = parse_symbol (jsv1)
     val d2v = d2var_make (sym, stamp)
-    val ((*void*)) = the_d2varmap_insert (d2v)
+    val ((*void*)) = the_d2varmap_insert (d2varmap, d2v)
   } (* end of [None_vt] *)
 //
 end // end of [parse_d2var]
 
 (* ****** ****** *)
+
+local
+
+staload _(*anon*) = "libats/DATS/hashfun.dats"
+staload _(*anon*) = "libats/DATS/linmap_list.dats"
+staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
+staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
+
+in  // in of [local]
 
 implement
 parse_d2varmap
@@ -118,24 +110,31 @@ parse_d2varmap
 fun
 loop
 (
-  jsvs: jsonvalist
+  d2varmap: d2varmap
+  , jsvs: jsonvalist
 ) : void =
 (
 case+ jsvs of
 | list_nil () => ()
 | list_cons
     (jsv, jsvs) => let
-    val d2v = parse_d2var(jsv) in loop (jsvs)
+    val d2v = parse_d2var(d2varmap, jsv) in loop (d2varmap, jsvs)
   end // end of [list_cons]
 )
 //
 val-JSONarray(jsvs) = jsv0
 //
-val () = loop (jsvs)
+val d2varmap = $HT. hashtbl_make_nil (i2sz(2048))
+
+val () = loop (d2varmap, jsvs)
 in
-  the_d2varmap_get ()
+  d2varmap
 end // end of [parse_d2varmap]
+
+end  // end of [local]
 
 (* ****** ****** *)
 
 (* end of [parsing_d2var.dats] *)
+
+
