@@ -94,10 +94,12 @@ MAKE=make
 ATS2PROMELA:: ; \
   $(MAKE) -C parsing
 
-ATS2PROMELA:: ats2promela.o \
+ATS2PROMELA:: ats2promela
+
+ats2promela: ats2promela.o \
   main_ats2promela_dats.o \
   parsing/parsing.o; \
-  $(CC) -o ats2promela $^ $(LDFLAGS)
+  $(CC) -o $@ $^ $(LDFLAGS)
 
 ######
 

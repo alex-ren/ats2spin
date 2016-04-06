@@ -127,9 +127,11 @@ fun i0transform_D2Cfundecs (
   , gvs: &i0gvarlst): void
 
 (* Desc: Create fundef and put it into the fmap
-*
+*    group: Containing the names of the mutually recursive functions.
+*           Can be list0_nil () if the function is not a recursive
+*           function.
 *)
-fun i0transform_D2Cfundec (
+fun i0transform_fundec (
   sa: stamp_allocator
   , group: i0idlst
   , f2undec: f2undec
@@ -148,11 +150,44 @@ fun i0transform_p2at2para (
   sa: stamp_allocator
   , p2at: p2at): i0id
 
-fun i0transform_d2exp (
+fun i0transform_d2exp_fbody (
   sa: stamp_allocator
   , e: d2exp
   , fmap: i0funmap
   , gvs: &i0gvarlst): i0inslst
+
+fun i0transform_d2exp_fname (
+  sa: stamp_allocator
+  , e: d2exp): i0id
+
+fun i0transform_d2exp_expvalue (
+  sa: stamp_allocator
+  , e: d2exp
+): i0exp
+
+fun i0transform_d2eclist (
+  sa: stamp_allocator
+  , d2eclist: d2eclist
+  , fmap: i0funmap
+  , gvs: &i0gvarlst): i0inslst
+
+fun i0transform_d2ecl (
+  sa: stamp_allocator
+  , d2ecl: d2ecl
+  , fmap: i0funmap
+  , gvs: &i0gvarlst): i0inslst
+
+fun i0transform_D2Cvaldecs (
+  sa: stamp_allocator
+  , v2aldeclst: v2aldeclst): i0inslst
+
+fun i0transform_v2aldec (
+  sa: stamp_allocator
+  , v2aldec: v2aldec): i0inslst
+
+fun i0transform_d2exparglst (
+  sa: stamp_allocator
+  , d2exparglst: d2exparglst): i0explst
 
 
 

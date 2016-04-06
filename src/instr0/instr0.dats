@@ -76,8 +76,13 @@ in
   | D2Cimpdec (knd, i2mpdec) => exitlocmsg (datcon_d2ecl_node (node))
   | D2Cfundecs (knd, f2undeclst) => 
       i0transform_D2Cfundecs (sa, f2undeclst, fmap, gvs)
+
+  | D2Cvaldecs (valkind, v2aldeclst) => exitlocmsg (
+          datcon_d2ecl_node (node) + " not supported")
+  | D2Clocal (d2eclist(*head*), d2eclist(*body*)) => exitlocmsg (
+          datcon_d2ecl_node (node) + " not supported")
   | D2Cignored () => ()
-  | _ => exitlocmsg (datcon_d2ecl_node (node))
+//   | _ => exitlocmsg (datcon_d2ecl_node (node) + " not supported")
 end
 
 fun f2undec_is_recursive (f: f2undec): bool = let
@@ -144,7 +149,7 @@ i0transform_D2Cfundecs (sa, f2undeclst, fmap, gvs) = let
       , gvs: &i0gvarlst): void =
       case+ f2undeclst of
       | list_cons (f2undec, f2undeclst1) => let
-        val () = i0transform_D2Cfundec (sa, fnames, f2undec, fmap, gvs)
+        val () = i0transform_fundec (sa, fnames, f2undec, fmap, gvs)
       in
         loop (sa, group, f2undeclst1, fmap, gvs)
       end
@@ -163,11 +168,14 @@ in
   }
 end
 
-implement i0transform_D2Cfundec (sa, group, f2undec, fmap, gvs) = let
+implement i0transform_fundec (sa, group, f2undec, fmap, gvs) = let
+  val () = fprint! (stdout_ref, 
+    "======== i0transform_fundec: ", f2undec.f2undec_var, "\n")
+
   val name = i0transform_d2var (sa, f2undec.f2undec_var)
   val- D2Elam (p2atlst, body) = f2undec.f2undec_def.d2exp_node
   val paralst = i0transform_p2atlst2paralst (sa, p2atlst)
-  val inss = i0transform_d2exp (sa, body, fmap, gvs)
+  val inss = i0transform_d2exp_fbody (sa, body, fmap, gvs)
 
   val fundef = i0fundef_create (name, paralst, inss, group)
   val () = $HT.hashtbl_insert_any (fmap, name, fundef)
@@ -199,7 +207,7 @@ case+ p2at.p2at_node of
 | P2Tignored () => exitlocmsg ("Shall not happen")
 
 
-implement i0transform_d2exp (sa, body, fmap, gvs) = let
+implement i0transform_d2exp_fbody (sa, body, fmap, gvs) = let
   val node = body.d2exp_node
 in
 case+ node of
@@ -220,9 +228,15 @@ case+ node of
 // //
 //   | D2Eempty of ((*void*))
 // //
-| D2Eexp (d2exp) => i0transform_d2exp (sa, d2exp, fmap, gvs)
+| D2Eexp (d2exp) => i0transform_d2exp_fbody (sa, d2exp, fmap, gvs)
 // //
-| D2Elet (d2eclist, d2exp) => 
+| D2Elet (d2eclist, d2exp) => let
+  val inss1 = i0transform_d2eclist (sa, d2eclist, fmap, gvs)
+  val inss2 = i0transform_d2exp_fbody (sa, d2exp, fmap, gvs)
+in
+  list0_append (inss1, inss2)
+end
+
 // //
 //   | D2Eapplst of (d2exp, d2exparglst)
 // //
@@ -246,6 +260,169 @@ case+ node of
 // //
 | _ => exitlocmsg (datcon_d2exp_node (node) + " todo")
 end
+
+implement i0transform_d2eclist (sa, d2eclist, fmap, gvs) =
+case+ d2eclist of
+| list_cons (d2ecl, d2eclist1) => let
+  val inss1 = i0transform_d2ecl (sa, d2ecl, fmap, gvs)
+  val inss2 = i0transform_d2eclist (sa, d2eclist1, fmap, gvs)
+  val inss = list0_append (inss1, inss2)
+in
+  inss
+end
+| list_nil () => list0_nil ()
+
+implement i0transform_d2ecl (sa, d2ecl, fmap, gvs) = let
+  val node = d2ecl.d2ecl_node
+in
+  case+ node of
+  | D2Cimpdec (knd, i2mpdec) => exitlocmsg (
+    datcon_d2ecl_node (node) + " not allowed")
+  | D2Cfundecs (funkind, f2undeclst) => let
+    val () = i0transform_D2Cfundecs (sa, f2undeclst, fmap, gvs)
+  in
+    list0_nil ()
+  end
+  | D2Cvaldecs (valkind, v2aldeclst) => let
+    val inss = i0transform_D2Cvaldecs (sa, v2aldeclst)
+  in inss end
+  | D2Clocal (d2eclist(*head*), d2eclist(*body*)) => exitlocmsg (
+          datcon_d2ecl_node (node) + " not supported")
+  | D2Cignored ((*void*)) => list0_nil ()
+end
+
+
+implement i0transform_D2Cvaldecs (sa, v2aldeclst) = let
+in
+case+ v2aldeclst of
+| list_cons (v2aldec, v2aldeclst1) => let
+  val inss1 = i0transform_v2aldec (sa, v2aldec)
+  val inss2 = i0transform_D2Cvaldecs (sa, v2aldeclst1)
+  val inss = list0_append (inss1, inss2)
+in inss end
+| list_nil () => list0_nil ()
+end
+
+implement i0transform_v2aldec (sa, v2aldec) = let
+  val p2at = v2aldec.v2aldec_pat
+  val d2exp = v2aldec.v2aldec_def
+  val i0id = i0transform_p2at2para (sa, p2at)
+  val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
+  val ins = INS0assign (i0id, i0exp)
+in
+  list0_cons (ins, list0_nil ())
+end
+
+implement i0transform_d2exp_expvalue (sa, d2exp) = let
+  val node = d2exp.d2exp_node
+in
+  case+ node of
+//   | D2Ecst of (d2cst)
+//   | D2Evar of (d2var)
+//   | D2Esym of (d2sym)
+// //
+//   | D2Eint of (int)
+//   | D2Eintrep of (string)
+//   | D2Echar of (char)
+//   | D2Efloat of (double)
+//   | D2Estring of (string)
+// //
+//   | D2Ei0nt of (string)
+//   | D2Ec0har of (char)
+//   | D2Ef0loat of (string)
+//   | D2Es0tring of (string)
+// //
+//   | D2Eempty of ((*void*))
+// //
+//   | D2Eexp of (d2exp) // dummy
+// //
+//   | D2Elet of (d2eclist, d2exp)
+// //
+  | D2Eapplst of (d2exp, d2exparglst) => let
+    val i0id = i0transform_d2exp_fname (sa, d2exp)
+    val i0explst = i0transform_d2exparglst (sa, d2exparglst)
+    val app = EXP0app (i0id, i0explst)
+  in
+    app
+  end
+// //
+//   | D2Eifopt of (
+//       d2exp(*test*), d2exp(*then*), d2expopt(*else*)
+//     ) (* end of [D2Eifopt] *)
+// //
+//   | D2Esing of (d2exp)
+//   | D2Elist of (d2explst)
+// //
+//   | D2Etup of (d2explst)
+// //
+//   | D2Eseq of (d2explst)
+// //
+//   | D2Eselab of (d2exp, d2lablst)
+// //
+//   | D2Elam of (p2atlst, d2exp)
+//   | D2Efix of (d2var, p2atlst, d2exp)
+// //
+//   | D2Eignored of ((*void*)) // HX: error-handling
+| _ => exitlocmsg (datcon_d2exp_node (node) + " not allowed")
+// //
+end  // end of [i0transform_d2exp_expvalue]
+
+
+implement i0transform_d2exp_fname (sa, d2exp) = let
+  val node = d2exp.d2exp_node
+in
+  case+ node of
+  | D2Evar (d2var) => i0transform_d2var (sa, d2var)
+  | _ => exitlocmsg (datcon_d2exp_node (node) + " not allowed")
+end  // end of [i0transform_d2exp_fname]
+
+
+implement i0transform_d2exparglst (sa, d2exparglst) = let
+in
+case+ d2exparglst of
+| list_cons (d2exparg, d2exparglst1) => 
+  
+// d2exparg =
+//   | D2EXPARGsta of ()
+//   | D2EXPARGdyn of (int, loc_t, d2explst)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   
 
