@@ -3,7 +3,7 @@
 #include "share/atspre_define.hats"
 
 staload "./../postiats/utfpl.sats"
-staload UTILS = "./../utils/utils.sats"
+staload "./../utils/utils.sats"
 staload "./instr0.sats"
 
 #include "./../postiats/postiats_codegen2.hats"
@@ -19,6 +19,9 @@ staload _(*anon*) = "libats/DATS/linmap_list.dats"
 staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
 staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
 
+staload _(*anon*) = "libats/ML/DATS/list0.dats"
+
+(* ********** ************ *)
 
 typedef fundef_struct = '{
   is_tail_recursive = bool
@@ -43,14 +46,16 @@ implement $HT.hash_key<i0id> (x) = hash_stamp (x.i0id_stamp)
 (* ************** ************* *)
 
 implement i0transform_d2eclst_global (sa, d2ecs) = let
+  val () = print ("======== i0transform_d2eclst_global\n")
   fun loop (
     d2ecs: d2eclist
     , fmap: i0funmap
     , gvs: &i0gvarlst
     ): void =
     case+ d2ecs of
-    | list_cons (d2ec, d2ecs) => 
-        i0transform_d2ecl_global (sa, d2ec, fmap, gvs)
+    | list_cons (d2ec, d2ecs) => let
+        val () = i0transform_d2ecl_global (sa, d2ec, fmap, gvs)
+    in loop (d2ecs, fmap, gvs) end
     | list_nil () => ()
  
   val fmap = $HT.hashtbl_make_nil<i0id, i0fundef> (i2sz(2048))
@@ -64,13 +69,15 @@ in
 end
 
 implement i0transform_d2ecl_global (sa, d2ec, fmap, gvs) = let
+  val () = print ("======== i0transform_d2ecl_global\n")
   val node = d2ec.d2ecl_node
 in
   case+ node of
-  | D2Cimpdec (knd, i2mpdec) => $UTILS.exitlocmsg (datcon_d2ecl_node (node))
+  | D2Cimpdec (knd, i2mpdec) => exitlocmsg (datcon_d2ecl_node (node))
   | D2Cfundecs (knd, f2undeclst) => 
       i0transform_D2Cfundecs (sa, f2undeclst, fmap, gvs)
-  | _ => $UTILS.exitlocmsg (datcon_d2ecl_node (node))
+  | D2Cignored () => ()
+  | _ => exitlocmsg (datcon_d2ecl_node (node))
 end
 
 fun f2undec_is_recursive (f: f2undec): bool = let
@@ -96,7 +103,7 @@ fun f2undec_is_recursive (f: f2undec): bool = let
              | Some (e2) => d2exp_has_tailcall (e2, fvar)
              | None () => false
              )
-    | D2Esing (e1) => $UTILS.exitlocmsg ("D2Esing hit")
+    | D2Esing (e1) => exitlocmsg ("D2Esing hit")
     | _ => false
 in
   d2exp_has_tailcall (fbody, fvar)
@@ -104,13 +111,14 @@ end
 
 implement 
 i0transform_D2Cfundecs (sa, f2undeclst, fmap, gvs) = let
+  val () = print ("======== i0transform_D2Cfundecs\n")
   val len = list_length (f2undeclst)
   val is_recursive = (if (len > 1) then true
       else if (len = 1) then let
         val f = f2undeclst.head ()
       in
         f2undec_is_recursive (f)
-      end else $UTILS.exitlocmsg ("This is impossible.")
+      end else exitlocmsg ("This is impossible.")
   ): bool
 
   val fnames = if is_recursive then
@@ -176,22 +184,68 @@ implement i0transform_p2atlst2paralst (sa, p2atlst) = let
     end
     | list_nil () => list0_nil ()
   }
-  val paralst = list0_reverse (paralst)
+  val paralst = list0_reverse<i0id> (paralst)
 in
   paralst
 end
 
 implement i0transform_p2at2para (sa, p2at) =
 case+ p2at.p2at_node of
-| P2Tany () => $UTILS.exitlocmsg ("Shall not happen")
+| P2Tany () => exitlocmsg ("Shall not happen")
 | P2Tvar (d2var) => i0transform_d2var (sa, d2var)
-| P2Tempty () => $UTILS.exitlocmsg ("Shall not happen")
+| P2Tempty () => exitlocmsg ("Shall not happen")
 | P2Tpat (p2at) => i0transform_p2at2para (sa, p2at)
-| P2Trec (labp2atlst) => $UTILS.exitlocmsg ("Shall not happen")
-| P2Tignored () => $UTILS.exitlocmsg ("Shall not happen")
+| P2Trec (labp2atlst) => exitlocmsg ("Shall not happen")
+| P2Tignored () => exitlocmsg ("Shall not happen")
 
 
-implement i0transform_d2exp (sa, body, fmap, gvs) = $UTILS.exitlocmsg ("todo")
+implement i0transform_d2exp (sa, body, fmap, gvs) = let
+  val node = body.d2exp_node
+in
+case+ node of
+// | D2Ecst (d2cst) =>
+//   | D2Evar of (d2var)
+//   | D2Esym of (d2sym)
+// //
+//   | D2Eint of (int)
+//   | D2Eintrep of (string)
+//   | D2Echar of (char)
+//   | D2Efloat of (double)
+//   | D2Estring of (string)
+// //
+//   | D2Ei0nt of (string)
+//   | D2Ec0har of (char)
+//   | D2Ef0loat of (string)
+//   | D2Es0tring of (string)
+// //
+//   | D2Eempty of ((*void*))
+// //
+| D2Eexp (d2exp) => i0transform_d2exp (sa, d2exp, fmap, gvs)
+// //
+| D2Elet (d2eclist, d2exp) => 
+// //
+//   | D2Eapplst of (d2exp, d2exparglst)
+// //
+//   | D2Eifopt of (
+//       d2exp(*test*), d2exp(*then*), d2expopt(*else*)
+//     ) (* end of [D2Eifopt] *)
+// //
+//   | D2Esing of (d2exp)
+//   | D2Elist of (d2explst)
+// //
+//   | D2Etup of (d2explst)
+// //
+//   | D2Eseq of (d2explst)
+// //
+//   | D2Eselab of (d2exp, d2lablst)
+// //
+//   | D2Elam of (p2atlst, d2exp)
+//   | D2Efix of (d2var, p2atlst, d2exp)
+// //
+//   | D2Eignored of ((*void*)) // HX: error-handling
+// //
+| _ => exitlocmsg (datcon_d2exp_node (node) + " todo")
+end
 
   
 

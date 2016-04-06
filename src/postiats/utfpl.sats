@@ -668,6 +668,7 @@ overload .stamp with d2var_get_stamp
 (* Generated *)
 
 fun{} datcon_d2ecl_node : (d2ecl_node) -> string
+fun{} datcon_d2exp_node : (d2exp_node) -> string
 
 (* ****** ****** *)
 
