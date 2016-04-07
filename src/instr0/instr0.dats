@@ -284,9 +284,18 @@ end
     list0_sing (INS0return (Some0 app))
   end
 // //
-//   | D2Eifopt of (
-//       d2exp(*test*), d2exp(*then*), d2expopt(*else*)
-//     ) (* end of [D2Eifopt] *)
+   | D2Eifopt (
+       d2exp(*test*), d2exp(*then*), d2expopt(*else*)
+     ) => let
+       val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
+       val inss1 = i0transform_d2exp_fbody (sa, d2exp, fmap,gvs)
+       val inss2 = (case+ d2expopt of
+                    | Some (d2exp) => 
+                        i0transform_d2exp_fbody (sa, d2exp, fmap, gvs)
+                    | None () => list0_sing (INS0return (None0))
+       )
+    in
+      d
 // //
 //   | D2Esing of (d2exp)
 //   | D2Elist of (d2explst)
@@ -350,11 +359,15 @@ end
 implement i0transform_v2aldec (sa, v2aldec) = let
   val p2at = v2aldec.v2aldec_pat
   val d2exp = v2aldec.v2aldec_def
-  val i0idopt = i0transform_p2at2holder (sa, p2at)  // todo
-  val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
-  val ins = INS0assign (i0idopt, i0exp)
+  val i0idopt = i0transform_p2at2holder (sa, p2at)
+  // todo: not expvalue but instruction list
+  val inss = i0transform_d2exp_fbody (sa, d2exp)
+  val inss1 = case+ i0idopt of
+            | Some0 (i0id) => list0_cons (INS0decl (i0id), inss)
+            | None0 () => inss
+  val inss2 = i0transform_sub_return_assign (i0idopt, inss1)
 in
-  list0_cons (ins, list0_nil ())
+  inss2
 end
 
 implement i0transform_d2exp_expvalue (sa, d2exp) = let
@@ -394,9 +407,10 @@ in
     app
   end
 // //
-//   | D2Eifopt of (
-//       d2exp(*test*), d2exp(*then*), d2expopt(*else*)
-//     ) (* end of [D2Eifopt] *)
+  | D2Eifopt of (
+      d2exp(*test*), d2exp(*then*), d2expopt(*else*)
+    ) => exitlocmsg (
+         datcon_d2exp_node (node) + " not allowed in simple expression")
 // //
   | D2Esing (d2exp) => i0transform_d2exp_expvalue (sa, d2exp)
 //   | D2Elist of (d2explst)

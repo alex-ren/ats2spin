@@ -39,6 +39,7 @@ typedef i0id = '{
 typedef i0idlst = list0 i0id
 
 datatype i0ins =
+| INS0decl of (i0id)
 | INS0assign of (option0 i0id, i0exp)
 | INS0label of (i0id)
 | INS0return of (option0 i0exp)
@@ -173,6 +174,10 @@ fun i0transform_p2at2holder (
   sa: stamp_allocator
   , p2at: p2at): option0 i0id
 
+(*
+* Desc: Turn an expression into the instruction list computing
+* the expression. The innermost instruction should be INS0return.
+*)
 fun i0transform_d2exp_fbody (
   sa: stamp_allocator
   , e: d2exp
@@ -191,6 +196,14 @@ fun i0transform_d2exp_expvalue (
   sa: stamp_allocator
   , e: d2exp
 ): i0exp
+
+fun i0transform_d2exparglst (
+  sa: stamp_allocator
+  , d2exparglst: d2exparglst): i0explst
+
+fun i0transform_d2explst_expvalue (
+  sa: stamp_allocator
+  , d2explst: d2explst): i0explst
 
 fun i0transform_d2eclist (
   sa: stamp_allocator
@@ -211,14 +224,6 @@ fun i0transform_D2Cvaldecs (
 fun i0transform_v2aldec (
   sa: stamp_allocator
   , v2aldec: v2aldec): i0inslst
-
-fun i0transform_d2exparglst (
-  sa: stamp_allocator
-  , d2exparglst: d2exparglst): i0explst
-
-fun i0transform_d2explst_expvalue (
-  sa: stamp_allocator
-  , d2explst: d2explst): i0explst
 
 
 

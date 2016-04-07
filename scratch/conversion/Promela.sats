@@ -11,31 +11,26 @@
 //
 (* ****** ****** *)
 //
-abstype
-pid_type(i:int)
 //
 typedef
-pid(i:int) = pid_type(i)
+pid(i:int) = int i
 //
 typedef pid = [i:nat] pid(i)
 //
 (* ****** ****** *)
 //
-fun
-pid2int{i:nat}(pid(i)): int(i)
-
-fun
-int2pid{i:nat}(int(i)): pid(i)
-
-fun 
-pid_eq{i1,i2:nat}(pid(i1), pid(i2)): bool(i1 == i2)
-
-overload = with pid_eq
 //
 (* ****** ****** *)
 //
+
+// todo: In reality curpid is not a constant function.
+// How to incorporate it into the type system?
+// One thing good about curpid is that it is not dependent
+// on time.
+stacst curpid: () -> int
+
 fun
-Promela$mypid(): pid
+Promela$mypid(): pid (curpid ())
 //
 fun
 Promela$assert{b:bool}(bool(b)): [b==true] void
@@ -54,13 +49,14 @@ Promela$atomic {a:viewt@ype} (() -> a): a
 
 fun
 Promela$run (() -> void): void
-abstype process_end
-fun Promela$run2 (process_end): void
 
-fun Promela$process_end (): process_end
+// abstype process_end
+// fun Promela$run2 (process_end): void
 
-prfun
-Promela$set_tag (tag: string): void
+// fun Promela$process_end (): process_end
+
+// prfun
+// Promela$set_tag (tag: string): void
 
 (* ****** ****** *)
 
@@ -69,7 +65,7 @@ Promela$set_tag (tag: string): void
 // 
 // prfun Promela$begin_atomic (): (atomic_view | void)
 // prfun Promela$end_atomic(atomic_view): void
-  
+
 // abstype garray (a:t@ype, g: gname, n: int)
 // 
 // fun array_create {a:t@ype}{g:gname}{n:nat} (n: int n, init: a):
