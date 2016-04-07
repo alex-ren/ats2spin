@@ -102,6 +102,14 @@ fun symbol_make (string): symbol
 
 (* ****** ****** *)
 
+fun
+eq_symbol_symbol : (symbol, symbol) -<fun0> bool
+
+fun
+hash_symbol (s: symbol):<> ulint
+
+(* ****** ****** *)
+
 fun symbol_get_name (symbol): string
 
 fun symbol_to_string_unique (symbol): string

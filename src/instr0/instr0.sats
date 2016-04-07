@@ -39,14 +39,15 @@ typedef i0id = '{
 typedef i0idlst = list0 i0id
 
 datatype i0ins =
-| INS0assign of (i0id, i0exp)
+| INS0assign of (option0 i0id, i0exp)
 | INS0label of (i0id)
-| INS0return of (i0exp)
+| INS0return of (option0 i0exp)
 | INSifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))
 | INSgoto of (i0id)
 
 and i0exp =
 | EXP0int of (int)
+| EXP0i0nt of (string)
 | EXP0var of (i0id)
 | EXP0app of (i0id, i0explst)
 // | EXP0appsym of (i0sym, i0explst)
@@ -107,6 +108,16 @@ fun stamp_get_from_d2var (
   , d2var: d2var
 ): stamp
 
+fun stamp_get_from_d2cst (
+  allocator: stamp_allocator
+  , d2cst: d2cst
+): stamp
+
+fun stamp_get_from_d2sym (
+  allocator: stamp_allocator
+  , d2sym: d2sym
+): stamp
+
 (* ************ ************* *)
 
 fun i0transform_d2eclst_global (
@@ -142,6 +153,14 @@ fun i0transform_d2var (
   sa: stamp_allocator
   , d2var: d2var): i0id
 
+fun i0transform_d2cst (
+  sa: stamp_allocator
+  , d2cst: d2cst): i0id
+
+fun i0transform_d2sym (
+  sa: stamp_allocator
+  , d2sym: d2sym): i0id
+
 fun i0transform_p2atlst2paralst (
   sa: stamp_allocator
   , p2atlst: p2atlst): i0idlst
@@ -149,6 +168,10 @@ fun i0transform_p2atlst2paralst (
 fun i0transform_p2at2para (
   sa: stamp_allocator
   , p2at: p2at): i0id
+
+fun i0transform_p2at2holder (
+  sa: stamp_allocator
+  , p2at: p2at): option0 i0id
 
 fun i0transform_d2exp_fbody (
   sa: stamp_allocator
@@ -160,6 +183,10 @@ fun i0transform_d2exp_fname (
   sa: stamp_allocator
   , e: d2exp): i0id
 
+(*
+* The whole expression is translated into one expression.
+* todo: Write effect shall not be allowed inside.
+*)
 fun i0transform_d2exp_expvalue (
   sa: stamp_allocator
   , e: d2exp
@@ -188,6 +215,10 @@ fun i0transform_v2aldec (
 fun i0transform_d2exparglst (
   sa: stamp_allocator
   , d2exparglst: d2exparglst): i0explst
+
+fun i0transform_d2explst_expvalue (
+  sa: stamp_allocator
+  , d2explst: d2explst): i0explst
 
 
 

@@ -14,7 +14,7 @@ staload "./utfpl.sats"
 staload "./../utils/emiter.sats"
 
 
-staload "libats/SATS/hashfun.sats"
+staload HF = "libats/SATS/hashfun.sats"
 staload "libats/ML/SATS/hashtblref.sats"
 
 staload _ = "libats/DATS/hashfun.dats"
@@ -45,7 +45,7 @@ compare_stamp_stamp (s1, s2) = g0int_compare (s1, s2)
 implement
 hash_stamp (s) = 
 $UNSAFE.cast{ulint}
-  (inthash_jenkins($UNSAFE.cast{uint32}(s)))
+  ($HF.inthash_jenkins($UNSAFE.cast{uint32}(s)))
 
 implement
 eq_stamp_stamp (s1, s2) = g0int_eq (s1, s2)

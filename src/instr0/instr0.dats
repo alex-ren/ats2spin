@@ -168,6 +168,27 @@ in
   }
 end
 
+implement i0transform_d2cst (sa, d2cst) = let
+  val stamp = stamp_get_from_d2cst (sa, d2cst)
+  val name = d2cst_get_name (d2cst)
+  val i0name = i0name_make (name)
+in
+  '{i0id_name = i0name
+  , i0id_stamp = stamp
+  }
+end
+
+implement i0transform_d2sym (sa, d2sym) = let
+  val stamp = stamp_get_from_d2sym (sa, d2sym)
+  val name = d2sym_get_name (d2sym)
+  val i0name = i0name_make (name)
+in
+  '{i0id_name = i0name
+  , i0id_stamp = stamp
+  }
+end
+
+
 implement i0transform_fundec (sa, group, f2undec, fmap, gvs) = let
   val () = fprint! (stdout_ref, 
     "======== i0transform_fundec: ", f2undec.f2undec_var, "\n")
@@ -197,7 +218,10 @@ in
   paralst
 end
 
-implement i0transform_p2at2para (sa, p2at) =
+implement i0transform_p2at2para (sa, p2at) = let
+  val () = fprint! (stdout_ref, 
+    "======== i0transform_p2at2para: ", p2at.p2at_loc, "\n")
+in
 case+ p2at.p2at_node of
 | P2Tany () => exitlocmsg ("Shall not happen")
 | P2Tvar (d2var) => i0transform_d2var (sa, d2var)
@@ -205,10 +229,26 @@ case+ p2at.p2at_node of
 | P2Tpat (p2at) => i0transform_p2at2para (sa, p2at)
 | P2Trec (labp2atlst) => exitlocmsg ("Shall not happen")
 | P2Tignored () => exitlocmsg ("Shall not happen")
+end
+
+implement i0transform_p2at2holder (sa, p2at) = let
+  val () = fprint! (stdout_ref, 
+    "======== i0transform_p2at2holder: ", p2at.p2at_loc, "\n")
+in
+case+ p2at.p2at_node of
+| P2Tany () => None0 ()
+| P2Tvar (d2var) => Some0 (i0transform_d2var (sa, d2var))
+| P2Tempty () => None0 ()
+| P2Tpat (p2at) => i0transform_p2at2holder (sa, p2at)
+| P2Trec (labp2atlst) => exitlocmsg ("Shall not happen")
+| P2Tignored () => exitlocmsg ("Shall not happen")
+end
 
 
 implement i0transform_d2exp_fbody (sa, body, fmap, gvs) = let
   val node = body.d2exp_node
+  val () = fprint! (stdout_ref, 
+    "======== i0transform_d2exp_fbody: ", body.d2exp_loc, "\n")
 in
 case+ node of
 // | D2Ecst (d2cst) =>
@@ -226,7 +266,7 @@ case+ node of
 //   | D2Ef0loat of (string)
 //   | D2Es0tring of (string)
 // //
-//   | D2Eempty of ((*void*))
+| D2Eempty ((*void*)) => list0_cons (INS0return (None0 ()), list0_nil ())
 // //
 | D2Eexp (d2exp) => i0transform_d2exp_fbody (sa, d2exp, fmap, gvs)
 // //
@@ -236,9 +276,13 @@ case+ node of
 in
   list0_append (inss1, inss2)
 end
-
-// //
-//   | D2Eapplst of (d2exp, d2exparglst)
+| D2Eapplst (d2exp, d2exparglst) => let
+    val i0id = i0transform_d2exp_fname (sa, d2exp)
+    val i0explst = i0transform_d2exparglst (sa, d2exparglst)
+    val app = EXP0app (i0id, i0explst)
+  in
+    list0_sing (INS0return (Some0 app))
+  end
 // //
 //   | D2Eifopt of (
 //       d2exp(*test*), d2exp(*then*), d2expopt(*else*)
@@ -306,9 +350,9 @@ end
 implement i0transform_v2aldec (sa, v2aldec) = let
   val p2at = v2aldec.v2aldec_pat
   val d2exp = v2aldec.v2aldec_def
-  val i0id = i0transform_p2at2para (sa, p2at)
+  val i0idopt = i0transform_p2at2holder (sa, p2at)  // todo
   val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
-  val ins = INS0assign (i0id, i0exp)
+  val ins = INS0assign (i0idopt, i0exp)
 in
   list0_cons (ins, list0_nil ())
 end
@@ -318,7 +362,11 @@ implement i0transform_d2exp_expvalue (sa, d2exp) = let
 in
   case+ node of
 //   | D2Ecst of (d2cst)
-//   | D2Evar of (d2var)
+  | D2Evar (d2var) => let
+    val i0id = i0transform_d2var (sa, d2var)
+  in
+    EXP0var (i0id)
+  end
 //   | D2Esym of (d2sym)
 // //
 //   | D2Eint of (int)
@@ -327,7 +375,7 @@ in
 //   | D2Efloat of (double)
 //   | D2Estring of (string)
 // //
-//   | D2Ei0nt of (string)
+  | D2Ei0nt (str) => EXP0i0nt (str)
 //   | D2Ec0har of (char)
 //   | D2Ef0loat of (string)
 //   | D2Es0tring of (string)
@@ -338,7 +386,7 @@ in
 // //
 //   | D2Elet of (d2eclist, d2exp)
 // //
-  | D2Eapplst of (d2exp, d2exparglst) => let
+  | D2Eapplst (d2exp, d2exparglst) => let
     val i0id = i0transform_d2exp_fname (sa, d2exp)
     val i0explst = i0transform_d2exparglst (sa, d2exparglst)
     val app = EXP0app (i0id, i0explst)
@@ -350,7 +398,7 @@ in
 //       d2exp(*test*), d2exp(*then*), d2expopt(*else*)
 //     ) (* end of [D2Eifopt] *)
 // //
-//   | D2Esing of (d2exp)
+  | D2Esing (d2exp) => i0transform_d2exp_expvalue (sa, d2exp)
 //   | D2Elist of (d2explst)
 // //
 //   | D2Etup of (d2explst)
@@ -370,9 +418,13 @@ end  // end of [i0transform_d2exp_expvalue]
 
 implement i0transform_d2exp_fname (sa, d2exp) = let
   val node = d2exp.d2exp_node
+  val () = fprint! (stdout_ref, 
+    "======== i0transform_d2exp_fname: ", d2exp.d2exp_loc, "\n")
 in
   case+ node of
   | D2Evar (d2var) => i0transform_d2var (sa, d2var)
+  | D2Ecst (d2cst) => i0transform_d2cst (sa, d2cst)
+  | D2Esym (d2sym) => i0transform_d2sym (sa, d2sym)
   | _ => exitlocmsg (datcon_d2exp_node (node) + " not allowed")
 end  // end of [i0transform_d2exp_fname]
 
@@ -380,13 +432,32 @@ end  // end of [i0transform_d2exp_fname]
 implement i0transform_d2exparglst (sa, d2exparglst) = let
 in
 case+ d2exparglst of
-| list_cons (d2exparg, d2exparglst1) => 
+| list_cons (d2exparg, d2exparglst1) =>
+  (
+  case+ d2exparg of
+  | D2EXPARGsta () => i0transform_d2exparglst (sa, d2exparglst1)
+  | D2EXPARGdyn (n, loc, d2explst) =>
+    (
+    case+ d2exparglst1 of
+    | list_cons (_, _) => 
+      exitlocmsg ("f (x, y) (a, b) not allowed")
+    | list_nil () => i0transform_d2explst_expvalue (sa, d2explst)
+    )
+  )
+| list_nil () => exitlocmsg ("no args, check this")
+end  // end of [i0transform_d2exparglst]
+
+implement i0transform_d2explst_expvalue (sa, d2explst) =
+case+ d2explst of
+| list_cons (d2exp, d2explst1) => let
+  val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
+  val i0explst = i0transform_d2explst_expvalue (sa, d2explst1)
+in
+  list0_cons (i0exp, i0explst)
+end
+| list_nil () => list0_nil ()
+
   
-// d2exparg =
-//   | D2EXPARGsta of ()
-//   | D2EXPARGdyn of (int, loc_t, d2explst)
-
-
 
 
 

@@ -31,6 +31,9 @@ local
 
 staload LM = "libats/ML/SATS/hashtblref.sats"
 
+staload HF = "libats/SATS/hashfun.sats"
+
+staload _ = "libats/DATS/hashfun.dats"
 staload _(*anon*) = "libats/DATS/hashfun.dats"
 staload _(*anon*) = "libats/DATS/linmap_list.dats"
 staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
@@ -114,6 +117,26 @@ val+SYM (_, n2) = sym2
 in
   compare (n1, n2)
 end // end of [compare_symbol_symbol]
+
+implement
+eq_symbol_symbol (sym1, sym2) =
+  compare_symbol_symbol (sym1, sym2) = 0
+
+local 
+staload HF = "libats/SATS/hashfun.sats"
+staload "libats/ML/SATS/hashtblref.sats"
+
+staload _ = "libats/DATS/hashfun.dats"
+
+in
+implement
+hash_symbol (s) = let
+  val+SYM (_, n) = s
+in
+$UNSAFE.cast{ulint}
+  ($HF.inthash_jenkins($UNSAFE.cast{uint32}(n)))
+end
+end  // end of [local]
 
 (* ****** ****** *)
 
