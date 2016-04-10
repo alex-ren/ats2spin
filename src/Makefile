@@ -55,7 +55,9 @@ ATS2PROMELA_dyn := \
     postiats/utfpleval_mylib.dats \
     postiats/utfpl_dynloadall.dats \
     instr0/instr0.dats \
+    instr0/i0exp.dats \
     instr0/i0name.dats \
+    instr0/i0ins.dats \
     instr0/i0fundef.dats \
     instr0/stamp_allocator.dats \
     instr0/dynloadall.dats \
@@ -123,7 +125,13 @@ unittest:: ats2promela.o \
 
 # ######### ##########
 
-codegen:: postiats/postiats_codegen2.hats
+codegen:: postiats/postiats_codegen2.hats \
+    instr0/instr0_codegen2.hats;
+
+instr0/instr0_codegen2.hats: \
+./instr0/instr0.sats ./instr0/codegen.dats; \
+$(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d instr0/codegen.dats
+
 
 postiats/postiats_codegen2.hats: \
 ./postiats/utfpl.sats ./postiats/codegen.dats; \

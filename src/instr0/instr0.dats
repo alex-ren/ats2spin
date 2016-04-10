@@ -13,27 +13,41 @@ staload "libats/ML/SATS/list0.sats"
 
 staload HT = "libats/ML/SATS/hashtblref.sats"
 
-(* For template *)
+(* For hash table *)
 staload _(*anon*) = "libats/DATS/hashfun.dats"
 staload _(*anon*) = "libats/DATS/linmap_list.dats"
 staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
 staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
 
+(* for qstruct_insert *)
+staload _(*anon*) = "libats/DATS/qlist.dats"
 staload _(*anon*) = "libats/ML/DATS/list0.dats"
 
 (* ********** ************ *)
+implement fprint_i0name (out, i0name) = let
+  val () = fprint (out, i0name_get_symbol (i0name))
+in
+end
 
-typedef fundef_struct = '{
-  is_tail_recursive = bool
-  // Names for the functions in the same group,
-  // including self. This is nil if the function
-  // is not (mutually) tail recursive.
-, func_group = list0 i0id
-  // body of the function
-, func_body = i0inslst
-, func_paras = list0 i0id
 
-}
+implement fprint_i0id (out, i0id) = let
+  val () = fprint (out, i0id.i0id_name)
+in
+end
+
+implement fprint_i0prog (out, i0prog) = let
+  val () = fprint (out, "======== functions ========\n")
+  
+  val funcs = 
+    $HT.hashtbl_listize1<i0id, i0fundef> (
+                        i0prog.i0prog_i0funmap)
+  implement 
+  fprint_val<@(i0id, i0fundef)> (out, tup) = fprint (out, tup.1)
+
+  val () = fprint_list0_sep<@(i0id, i0fundef)> (out, funcs, "\n\n")
+  val () = fprint (out, "\n\n")
+in
+end
 
 // typedef i0funmap = $HT.hashtbl (i0id, i0fundef)
 implement $HT.hash_key<i0id> (x) = hash_stamp (x.i0id_stamp)
@@ -63,7 +77,9 @@ implement i0transform_d2eclst_global (sa, d2ecs) = let
 
   val () = loop (d2ecs, fmap, gvs)
 
-  val prog = (fmap, gvs)
+  val prog = '{i0prog_i0funmap = fmap
+              , i0prog_i0gvarlst = gvs
+              }
 in
   prog
 end
@@ -252,7 +268,13 @@ implement i0transform_d2exp_fbody (sa, body, fmap, gvs) = let
 in
 case+ node of
 // | D2Ecst (d2cst) =>
-//   | D2Evar of (d2var)
+| D2Evar (d2var) => let
+  val i0id = i0transform_d2var (sa,d2var)
+  val i0exp = EXP0var (i0id)
+  val inss = list0_sing (INS0return (Some0 i0exp))
+in
+  inss
+end
 //   | D2Esym of (d2sym)
 // //
 //   | D2Eint of (int)
@@ -295,7 +317,8 @@ end
                     | None () => list0_sing (INS0return (None0))
        )
     in
-      d
+      list0_sing (INS0ifbranch (i0exp, inss1, inss2))
+    end
 // //
 //   | D2Esing of (d2exp)
 //   | D2Elist of (d2explst)
@@ -349,10 +372,10 @@ implement i0transform_D2Cvaldecs (sa, v2aldeclst) = let
 in
 case+ v2aldeclst of
 | list_cons (v2aldec, v2aldeclst1) => let
-  val inss1 = i0transform_v2aldec (sa, v2aldec)
-  val inss2 = i0transform_D2Cvaldecs (sa, v2aldeclst1)
-  val inss = list0_append (inss1, inss2)
-in inss end
+  val ins = i0transform_v2aldec (sa, v2aldec)
+  val inss1 = i0transform_D2Cvaldecs (sa, v2aldeclst1)
+  val ret = list0_cons (ins, inss1)
+in ret end
 | list_nil () => list0_nil ()
 end
 
@@ -360,15 +383,16 @@ implement i0transform_v2aldec (sa, v2aldec) = let
   val p2at = v2aldec.v2aldec_pat
   val d2exp = v2aldec.v2aldec_def
   val i0idopt = i0transform_p2at2holder (sa, p2at)
-  // todo: not expvalue but instruction list
-  val inss = i0transform_d2exp_fbody (sa, d2exp)
-  val inss1 = case+ i0idopt of
-            | Some0 (i0id) => list0_cons (INS0decl (i0id), inss)
-            | None0 () => inss
-  val inss2 = i0transform_sub_return_assign (i0idopt, inss1)
+  val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
+  val ins = INS0assign (i0idopt, i0exp)
+
 in
-  inss2
+  ins
 end
+
+ 
+
+
 
 implement i0transform_d2exp_expvalue (sa, d2exp) = let
   val node = d2exp.d2exp_node
@@ -407,7 +431,7 @@ in
     app
   end
 // //
-  | D2Eifopt of (
+  | D2Eifopt (
       d2exp(*test*), d2exp(*then*), d2expopt(*else*)
     ) => exitlocmsg (
          datcon_d2exp_node (node) + " not allowed in simple expression")
@@ -476,6 +500,9 @@ end
 
 
 
+(* ************* ************** *)
+
+implement fprint_val<i0id> = fprint_i0id
 
 
 

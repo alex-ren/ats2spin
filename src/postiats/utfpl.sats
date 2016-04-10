@@ -87,6 +87,7 @@ typedef symbol = symbol_type
 
 (* ****** ****** *)
 
+// postiats/utfpl_symbol.dats
 fun the_symbol_mgr_initialize (): void
 
 fun

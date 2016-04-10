@@ -22,6 +22,8 @@ type0lst = list0 type0
 abstype i0name = ptr
 fun i0name_make (s: symbol): i0name
 fun i0name_get_symbol (n: i0name): symbol
+fun fprint_i0name: (FILEref, i0name) -> void
+overload fprint with fprint_i0name
 
 datatype i0id_cat =
 | I0ID_gvar
@@ -38,13 +40,16 @@ typedef i0id = '{
 
 typedef i0idlst = list0 i0id
 
+fun fprint_i0id: (FILEref, i0id) -> void
+overload fprint with fprint_i0id
+
 datatype i0ins =
 | INS0decl of (i0id)
 | INS0assign of (option0 i0id, i0exp)
 | INS0label of (i0id)
 | INS0return of (option0 i0exp)
-| INSifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))
-| INSgoto of (i0id)
+| INS0ifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))
+| INS0goto of (i0id)
 
 and i0exp =
 | EXP0int of (int)
@@ -58,6 +63,18 @@ i0inslst = list0 i0ins
 and
 i0explst = list0 i0exp
 
+fun{} fprint_i0exp : (FILEref, i0exp) -> void // a function template
+fun{} fprint_i0ins : (FILEref, i0ins) -> void // a function template
+
+fun myfprint_i0exp: (FILEref, i0exp) -> void
+overload fprint with myfprint_i0exp
+fun myfprint_i0ins: (FILEref, i0ins) -> void
+overload fprint with myfprint_i0ins
+
+fun{} datcon_i0exp (i0exp): string
+fun{} datcon_i0ins (i0exp): string
+
+
 abstype i0fundef = ptr
 fun i0fundef_create (
   name: i0id
@@ -65,6 +82,10 @@ fun i0fundef_create (
   , inss: i0inslst
   , group: i0idlst
   ): i0fundef
+
+fun fprint_i0fundef : (FILEref, i0fundef) -> void
+overload fprint with fprint_i0fundef
+
 
 fun i0fundef_get_instructions (f: i0fundef): i0inslst
 
@@ -92,10 +113,13 @@ typedef i0gvarlst = list0 i0gvar
 // mapping id to function body
 typedef i0funmap = $HT.hashtbl (i0id, i0fundef)
 
-typedef i0prog = (
-  i0funmap  // all functions
-  , i0gvarlst  // global variables
-  )
+typedef i0prog = '{
+  i0prog_i0funmap = i0funmap  // all functions
+  , i0prog_i0gvarlst = i0gvarlst  // global variables
+  }
+
+fun fprint_i0prog: (FILEref, i0prog) -> void
+overload fprint with fprint_i0prog
 
 (* ************ ************* *)
 
@@ -223,7 +247,7 @@ fun i0transform_D2Cvaldecs (
 
 fun i0transform_v2aldec (
   sa: stamp_allocator
-  , v2aldec: v2aldec): i0inslst
+  , v2aldec: v2aldec): i0ins (* INS0assign *)
 
 
 

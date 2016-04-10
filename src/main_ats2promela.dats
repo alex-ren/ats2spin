@@ -89,7 +89,8 @@ implement main0 (argc, argv) = let
   val d2ecs = parse_d2eclist_export (jsv)
 
   val sa = stamp_allocator_create ()
-  val _ = i0transform_d2eclst_global (sa, d2ecs)
+  val i0prog = i0transform_d2eclst_global (sa, d2ecs)
+  val () = fprint (stdout_ref, i0prog)
 
 
   //
