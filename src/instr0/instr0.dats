@@ -31,7 +31,7 @@ in
 end
 
 implement fprint_i0id (out, i0id) = let
-  val () = fprint (out, i0id.i0id_name)
+  val () = fprint! (out, i0id.i0id_name, "_", i0id.i0id_stamp)
 in
 end
 

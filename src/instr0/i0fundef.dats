@@ -28,6 +28,9 @@ implement i0fundef_get_id (f) = f.i0fundef_name
 implement i0fundef_get_group (f) = f.i0fundef_group
 implement i0fundef_get_instructions (f) = f.i0fundef_inss
 implement i0fundef_get_paralst (f) = f.i0fundef_paralst
+implement i0fundef_is_recursive (f) = 
+  ~list0_is_empty (i0fundef_get_group (f))
+
 
 implement i0fundef_create (
   name

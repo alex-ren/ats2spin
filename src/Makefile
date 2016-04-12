@@ -61,6 +61,7 @@ ATS2PROMELA_dyn := \
     instr0/i0fundef.dats \
     instr0/optimize.dats \
     instr0/i0funmap.dats \
+    instr0/i0idmap.dats \
     instr0/stamp_allocator.dats \
     instr0/dynloadall.dats \
     utils/emiter.dats \

@@ -11,6 +11,7 @@ dynload "./i0exp.dats"
 dynload "./i0ins.dats"
 dynload "./optimize.dats"
 dynload "./i0funmap.dats"
+dynload "./i0idmap.dats"
 dynload "./stamp_allocator.dats"
 
 //

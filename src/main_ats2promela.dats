@@ -92,6 +92,8 @@ implement main0 (argc, argv) = let
   val i0prog = i0transform_d2eclst_global (sa, d2ecs)
   val () = fprint (stdout_ref, i0prog)
 
+  val i0prog = i0optimize_tailcall (sa, i0prog)
+  val () = fprint (stdout_ref, i0prog)
 
   //
   val () = if fopen > 0 then fileref_close (inpref)
