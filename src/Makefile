@@ -59,6 +59,8 @@ ATS2PROMELA_dyn := \
     instr0/i0name.dats \
     instr0/i0ins.dats \
     instr0/i0fundef.dats \
+    instr0/optimize.dats \
+    instr0/i0funmap.dats \
     instr0/stamp_allocator.dats \
     instr0/dynloadall.dats \
     utils/emiter.dats \
@@ -77,7 +79,9 @@ ATS2PROMELAOBJ := $(patsubst %.dats, %_dats.o, $(ATS2PROMELAOBJ))
 
 ######
 
-all:: ATS2PROMELA
+all:: 
+	make codegen
+	make ATS2PROMELA
 
 ######
 #
@@ -115,13 +119,27 @@ unittest:: ats2promela.o \
 # %_sats.o: %.sats ; $(PATSCC2) -c $< -o $@
 # %_dats.o: %.dats ; $(PATSCC2) -c $< -o $@
 
-%_sats.o: %_sats.c ; $(CC) $(INCLUDE) $(CFLAGS) -c $< -o $@
-%_dats.o: %_dats.c ; $(CC) $(INCLUDE) $(CFLAGS) $(MALLOCFLAG) -c $< -o $@
 
-.PRECIOUS: %_sats.c %_dats.c
+# ######### ##########
+# Two steps. Not good with .depend
+# %_sats.o: %_sats.c ; $(CC) $(INCLUDE) $(CFLAGS) -c $< -o $@
+# %_dats.o: %_dats.c ; $(CC) $(INCLUDE) $(CFLAGS) $(MALLOCFLAG) -c $< -o $@
+# 
+# .PRECIOUS: %_sats.c %_dats.c
+# 
+# %_sats.c: %.sats ; $(PATSOPT) $(INCLUDE_ATS) -o $@ -s $<
+# %_dats.c: %.dats ; $(PATSOPT) $(INCLUDE_ATS) -o $@ -d $<
 
-%_sats.c: %.sats ; $(PATSOPT) $(INCLUDE_ATS) -o $@ -s $<
-%_dats.c: %.dats ; $(PATSOPT) $(INCLUDE_ATS) -o $@ -d $<
+
+%_sats.o: %.sats
+	$(PATSOPT) $(INCLUDE_ATS) -o $(patsubst %.sats, %_sats.c, $<) -s $< #aaa
+	$(CC) $(INCLUDE) $(CFLAGS) -c $(patsubst %.sats, %_sats.c, $<) -o $@ #bbb
+
+ATS2PROMELAOBJ := $(patsubst %.sats, %_sats.o, $(ATS2PROMELAOBJ))
+
+%_dats.o: %.dats
+	$(PATSOPT) $(INCLUDE_ATS) -o $(patsubst %.dats, %_dats.c, $<) -d $< #ccc
+	$(CC) $(INCLUDE) $(CFLAGS) $(MALLOCFLAG) -c $(patsubst %.dats, %_dats.c, $<) -o $@ #ddd
 
 # ######### ##########
 
@@ -137,9 +155,11 @@ postiats/postiats_codegen2.hats: \
 ./postiats/utfpl.sats ./postiats/codegen.dats; \
 $(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d postiats/codegen.dats
 
-build::
-	make codegen
-	make all
+# ######### ##########
+
+
+# ######### ##########
+
 
 ######
 
@@ -157,9 +177,9 @@ depend:: ; $(PATSOPT) --output-a .depend --depgen -d $(ATS2PROMELA_dyn)
 
 ######
 #
-testall:: ATS2PROMELA
+testall:: all
 #
-# testall:: ; $(MAKE) -C TEST
+testall:: ; $(MAKE) -C TEST
 #
 testall:: ; ./ats2promela TEST/test01_dats.json
 # testall:: ; ./utfpleval TEST/test02_utfpl.json
@@ -175,12 +195,14 @@ testall:: ; ./ats2promela TEST/test01_dats.json
 
 cleanats:: ; $(RMF) postiats/*_?ats.c
 cleanats:: ; $(RMF) utils/*_?ats.c
+cleanats:: ; $(RMF) instr0/*_?ats.c
 cleanats:: ; $(RMF) *_?ats.c
 
 ######
 
 cleanall:: ; $(RMF) postiats/*_?ats.o
 cleanall:: ; $(RMF) utils/*_?ats.o
+cleanall:: ; $(RMF) instr0/*_?ats.o
 cleanall:: ; $(RMF) ats2promela.o
 
 ######
@@ -188,7 +210,7 @@ cleanall:: ; $(RMF) ats2promela.o
 cleanall:: ; $(RMF) ats2promela
 cleanall:: ; $(RMF) test_ats2promela
 
-cleanall:: ; make -C parsing cleanall
+# cleanall:: ; make -C parsing cleanall
 
 # cleanall:: ; make -C TEST cleanall
 

@@ -11,24 +11,24 @@ staload "./instr0.sats"
 staload "libats/ML/SATS/basis.sats"
 staload "libats/ML/SATS/list0.sats"
 
-staload HT = "libats/ML/SATS/hashtblref.sats"
-
-(* For hash table *)
-staload _(*anon*) = "libats/DATS/hashfun.dats"
-staload _(*anon*) = "libats/DATS/linmap_list.dats"
-staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
-staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
-
 (* for qstruct_insert *)
 staload _(*anon*) = "libats/DATS/qlist.dats"
 staload _(*anon*) = "libats/ML/DATS/list0.dats"
 
-(* ********** ************ *)
+(* ************** ************* *)
 implement fprint_i0name (out, i0name) = let
   val () = fprint (out, i0name_get_symbol (i0name))
 in
 end
 
+implement i0id_copy (i0id, sa) = let
+  val name = i0id.i0id_name
+  val stamp = stamp_allocate (sa)
+in
+  '{i0id_name = name
+   ,i0id_stamp = stamp
+  }
+end
 
 implement fprint_i0id (out, i0id) = let
   val () = fprint (out, i0id.i0id_name)
@@ -38,9 +38,7 @@ end
 implement fprint_i0prog (out, i0prog) = let
   val () = fprint (out, "======== functions ========\n")
   
-  val funcs = 
-    $HT.hashtbl_listize1<i0id, i0fundef> (
-                        i0prog.i0prog_i0funmap)
+  val funcs = i0funmap_listize1 (i0prog.i0prog_i0funmap)
   implement 
   fprint_val<@(i0id, i0fundef)> (out, tup) = fprint (out, tup.1)
 
@@ -49,15 +47,7 @@ implement fprint_i0prog (out, i0prog) = let
 in
 end
 
-// typedef i0funmap = $HT.hashtbl (i0id, i0fundef)
-implement $HT.hash_key<i0id> (x) = hash_stamp (x.i0id_stamp)
- 
-implement
-$HT.equal_key_key<i0id> (k1, k2) = eq_stamp_stamp (k1.i0id_stamp, k2.i0id_stamp)
-
-implement $HT.hash_key<i0id> (x) = hash_stamp (x.i0id_stamp)
-
-(* ************** ************* *)
+(* ********** ************ *)
 
 implement i0transform_d2eclst_global (sa, d2ecs) = let
   val () = print ("======== i0transform_d2eclst_global\n")
@@ -72,7 +62,7 @@ implement i0transform_d2eclst_global (sa, d2ecs) = let
     in loop (d2ecs, fmap, gvs) end
     | list_nil () => ()
  
-  val fmap = $HT.hashtbl_make_nil<i0id, i0fundef> (i2sz(2048))
+  val fmap = i0funmap_create (i2sz(2048))
   var gvs = list0_nil ()
 
   val () = loop (d2ecs, fmap, gvs)
@@ -215,7 +205,7 @@ implement i0transform_fundec (sa, group, f2undec, fmap, gvs) = let
   val inss = i0transform_d2exp_fbody (sa, body, fmap, gvs)
 
   val fundef = i0fundef_create (name, paralst, inss, group)
-  val () = $HT.hashtbl_insert_any (fmap, name, fundef)
+  val () = i0funmap_insert_any (fmap, name, fundef)
 in end
 
 implement i0transform_p2atlst2paralst (sa, p2atlst) = let
@@ -229,7 +219,6 @@ implement i0transform_p2atlst2paralst (sa, p2atlst) = let
     end
     | list_nil () => list0_nil ()
   }
-  val paralst = list0_reverse<i0id> (paralst)
 in
   paralst
 end
@@ -267,9 +256,15 @@ implement i0transform_d2exp_fbody (sa, body, fmap, gvs) = let
     "======== i0transform_d2exp_fbody: ", body.d2exp_loc, "\n")
 in
 case+ node of
-// | D2Ecst (d2cst) =>
+| D2Ecst (d2cst) => let
+  val i0id = i0transform_d2cst (sa, d2cst)
+  val i0exp = EXP0var (i0id)
+  val inss = list0_sing (INS0return (Some0 i0exp))
+in
+  inss
+end
 | D2Evar (d2var) => let
-  val i0id = i0transform_d2var (sa,d2var)
+  val i0id = i0transform_d2var (sa, d2var)
   val i0exp = EXP0var (i0id)
   val inss = list0_sing (INS0return (Some0 i0exp))
 in
@@ -307,10 +302,10 @@ end
   end
 // //
    | D2Eifopt (
-       d2exp(*test*), d2exp(*then*), d2expopt(*else*)
+       d2exp1(*test*), d2exp2(*then*), d2expopt(*else*)
      ) => let
-       val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
-       val inss1 = i0transform_d2exp_fbody (sa, d2exp, fmap,gvs)
+       val i0exp = i0transform_d2exp_expvalue (sa, d2exp1)
+       val inss1 = i0transform_d2exp_fbody (sa, d2exp2, fmap,gvs)
        val inss2 = (case+ d2expopt of
                     | Some (d2exp) => 
                         i0transform_d2exp_fbody (sa, d2exp, fmap, gvs)
@@ -389,10 +384,6 @@ implement i0transform_v2aldec (sa, v2aldec) = let
 in
   ins
 end
-
- 
-
-
 
 implement i0transform_d2exp_expvalue (sa, d2exp) = let
   val node = d2exp.d2exp_node
@@ -534,28 +525,6 @@ implement fprint_val<i0id> = fprint_i0id
 
 
 
-
-
-  
-
-
-
-////
-  //
-case+ f2undeclst of
-| list_cons (f2undec, f2undeclst) => let
-  val fundef = transform_f2undec_nonrecurive (f2undec, fmap, gvs)
-  // todo add fundef into fmap
-in transform_D2Cfundecs (f2undeclst, fmap, gvs) end
-| list_nil () => ()
-
-implement 
-transform_f2undec_nonrecurive (f2undec, fmap, gvs) = let
-  val funname = // todo get function name
-  val f2unbody: d2exp = f2undec.f2undec_def
-  val f2unbody_node = f2unbody.d2exp_node
-  val- D2Elam (p2atlst, d2exp) = f2unbody_node
-  
 
 
 

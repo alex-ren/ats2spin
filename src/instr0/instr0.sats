@@ -31,6 +31,12 @@ datatype i0id_cat =
 | I0ID_para
 | I0ID_other
 
+
+abstype stamp_allocator = ptr
+fun stamp_allocator_create (): stamp_allocator
+
+fun stamp_allocate (allocator: stamp_allocator): stamp
+
 typedef i0id = '{
 //  i0id_cat = i0id_cat
 , i0id_name = i0name
@@ -43,6 +49,8 @@ typedef i0idlst = list0 i0id
 fun fprint_i0id: (FILEref, i0id) -> void
 overload fprint with fprint_i0id
 
+fun i0id_copy (i0id: i0id, sa: stamp_allocator): i0id
+
 datatype i0ins =
 | INS0decl of (i0id)
 | INS0assign of (option0 i0id, i0exp)
@@ -50,13 +58,15 @@ datatype i0ins =
 | INS0return of (option0 i0exp)
 | INS0ifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))
 | INS0goto of (i0id)
+| INS0init_loop of (i0idlst (*all variables*)
+                  , list0 (@(i0id, i0id)) (*variabe and initial value from para*))
+| INS0tail_jump of (i0inslst (*calc arg*), i0id (*jump tag*))
 
 and i0exp =
 | EXP0int of (int)
 | EXP0i0nt of (string)
 | EXP0var of (i0id)
 | EXP0app of (i0id, i0explst)
-// | EXP0appsym of (i0sym, i0explst)
 
 where
 i0inslst = list0 i0ins
@@ -74,6 +84,7 @@ overload fprint with myfprint_i0ins
 fun{} datcon_i0exp (i0exp): string
 fun{} datcon_i0ins (i0exp): string
 
+(* ************ ************* *)
 
 abstype i0fundef = ptr
 fun i0fundef_create (
@@ -86,6 +97,7 @@ fun i0fundef_create (
 fun fprint_i0fundef : (FILEref, i0fundef) -> void
 overload fprint with fprint_i0fundef
 
+fun i0fundef_get_id (f: i0fundef): i0id
 
 fun i0fundef_get_instructions (f: i0fundef): i0inslst
 
@@ -101,6 +113,8 @@ fun i0fundef_is_recursive (f: i0fundef): bool
 *)
 fun i0fundef_get_group (f: i0fundef): i0idlst
 
+fun i0fundef_get_paralst (f: i0fundef): i0idlst
+
 (* ************ ************* *)
 
 staload HT = "libats/ML/SATS/hashtblref.sats"
@@ -113,6 +127,22 @@ typedef i0gvarlst = list0 i0gvar
 // mapping id to function body
 typedef i0funmap = $HT.hashtbl (i0id, i0fundef)
 
+fun i0funmap_create (sz: sizeGte(1)): i0funmap
+fun i0funmap_insert_any (i0funmap, i0id, i0fundef): void
+fun i0funmap_listize1 (i0funmap): list0 @(i0id, i0fundef)
+// must exist in the map
+fun i0funmap_search0 (i0funmap, i0id: i0id): i0fundef
+
+(******** ********** *********)
+
+typedef i0idmap = $HT.hashtbl (i0id, i0id)
+fun i0idmap_create (sz: sizeGte(1)): i0idmap
+fun i0idmap_insert_any (i0idmap, i0id, i0id): void
+fun i0idmap_listize1 (i0idmap): list0 @(i0id, i0id)
+fun i0idmap_search (i0idmap, i0id): Option_vt i0id
+
+(******** ********** *********)
+
 typedef i0prog = '{
   i0prog_i0funmap = i0funmap  // all functions
   , i0prog_i0gvarlst = i0gvarlst  // global variables
@@ -122,11 +152,6 @@ fun fprint_i0prog: (FILEref, i0prog) -> void
 overload fprint with fprint_i0prog
 
 (* ************ ************* *)
-
-abstype stamp_allocator = ptr
-fun stamp_allocator_create (): stamp_allocator
-
-fun stamp_allocate (allocator: stamp_allocator): stamp
 
 fun stamp_get_from_d2var (
   allocator: stamp_allocator
@@ -249,6 +274,10 @@ fun i0transform_v2aldec (
   sa: stamp_allocator
   , v2aldec: v2aldec): i0ins (* INS0assign *)
 
+fun i0optimize_tailcall (
+  sa: stamp_allocator
+  , i0prog: i0prog
+): i0prog
 
 
 

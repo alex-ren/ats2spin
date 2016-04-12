@@ -220,6 +220,12 @@ fprint_i0ins$INS0ifbranch: $d2ctype(fprint_i0ins<>)
 extern
 fun{}
 fprint_i0ins$INS0goto: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0init_loop: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0tail_jump: $d2ctype(fprint_i0ins<>)
 //
 (* ****** ****** *)
 //
@@ -234,6 +240,8 @@ case+ arg0 of
 | INS0return _ => fprint_i0ins$INS0return<>(out, arg0)
 | INS0ifbranch _ => fprint_i0ins$INS0ifbranch<>(out, arg0)
 | INS0goto _ => fprint_i0ins$INS0goto<>(out, arg0)
+| INS0init_loop _ => fprint_i0ins$INS0init_loop<>(out, arg0)
+| INS0tail_jump _ => fprint_i0ins$INS0tail_jump<>(out, arg0)
 )
 //
 (* ****** ****** *)
@@ -500,6 +508,98 @@ fprint_i0ins$INS0goto$rpar(out, _) = fprint_i0ins$rpar(out)
 implement{}
 fprint_i0ins$INS0goto$arg1(out, arg0) =
   let val-INS0goto(arg1) = arg0 in fprint_i0ins$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_i0ins$INS0init_loop$con: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0init_loop$lpar: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0init_loop$rpar: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0init_loop$sep1: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0init_loop$arg1: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0init_loop$arg2: $d2ctype(fprint_i0ins<>)
+//
+implement{}
+fprint_i0ins$INS0init_loop(out, arg0) = 
+{
+//
+val () = fprint_i0ins$INS0init_loop$con<>(out, arg0)
+val () = fprint_i0ins$INS0init_loop$lpar<>(out, arg0)
+val () = fprint_i0ins$INS0init_loop$arg1<>(out, arg0)
+val () = fprint_i0ins$INS0init_loop$sep1<>(out, arg0)
+val () = fprint_i0ins$INS0init_loop$arg2<>(out, arg0)
+val () = fprint_i0ins$INS0init_loop$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_i0ins$INS0init_loop$con(out, _) = fprint(out, "INS0init_loop")
+implement{}
+fprint_i0ins$INS0init_loop$lpar(out, _) = fprint_i0ins$lpar(out)
+implement{}
+fprint_i0ins$INS0init_loop$rpar(out, _) = fprint_i0ins$rpar(out)
+implement{}
+fprint_i0ins$INS0init_loop$sep1(out, _) = fprint_i0ins$sep<>(out)
+implement{}
+fprint_i0ins$INS0init_loop$arg1(out, arg0) =
+  let val-INS0init_loop(arg1, _) = arg0 in fprint_i0ins$carg(out, arg1) end
+implement{}
+fprint_i0ins$INS0init_loop$arg2(out, arg0) =
+  let val-INS0init_loop(_, arg2) = arg0 in fprint_i0ins$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_i0ins$INS0tail_jump$con: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0tail_jump$lpar: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0tail_jump$rpar: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0tail_jump$sep1: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0tail_jump$arg1: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0tail_jump$arg2: $d2ctype(fprint_i0ins<>)
+//
+implement{}
+fprint_i0ins$INS0tail_jump(out, arg0) = 
+{
+//
+val () = fprint_i0ins$INS0tail_jump$con<>(out, arg0)
+val () = fprint_i0ins$INS0tail_jump$lpar<>(out, arg0)
+val () = fprint_i0ins$INS0tail_jump$arg1<>(out, arg0)
+val () = fprint_i0ins$INS0tail_jump$sep1<>(out, arg0)
+val () = fprint_i0ins$INS0tail_jump$arg2<>(out, arg0)
+val () = fprint_i0ins$INS0tail_jump$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_i0ins$INS0tail_jump$con(out, _) = fprint(out, "INS0tail_jump")
+implement{}
+fprint_i0ins$INS0tail_jump$lpar(out, _) = fprint_i0ins$lpar(out)
+implement{}
+fprint_i0ins$INS0tail_jump$rpar(out, _) = fprint_i0ins$rpar(out)
+implement{}
+fprint_i0ins$INS0tail_jump$sep1(out, _) = fprint_i0ins$sep<>(out)
+implement{}
+fprint_i0ins$INS0tail_jump$arg1(out, arg0) =
+  let val-INS0tail_jump(arg1, _) = arg0 in fprint_i0ins$carg(out, arg1) end
+implement{}
+fprint_i0ins$INS0tail_jump$arg2(out, arg0) =
+  let val-INS0tail_jump(_, arg2) = arg0 in fprint_i0ins$carg(out, arg2) end
 //
 (* ****** ****** *)
 (* ****** ****** *)

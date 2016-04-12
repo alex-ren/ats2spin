@@ -34,6 +34,16 @@ fun proctype_p (): void = let
 in
 end
 
+
+// assume x >= 0
+fun is_even (x: int): bool =
+  if x = 0 then true
+  else is_odd (x - 1)
+and
+is_odd (y: int): bool =
+  if y = 0 then false
+  else is_even (y - 1)
+
 (* ******* ******** *)
 
 ////
