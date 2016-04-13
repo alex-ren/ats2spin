@@ -51,6 +51,10 @@ overload fprint with fprint_i0id
 
 fun i0id_copy (i0id: i0id, sa: stamp_allocator): i0id
 
+fun eq_i0id_i0id (x: i0id, y: i0id):<fun0> bool
+overload = with eq_i0id_i0id
+
+
 datatype i0ins =
 | INS0decl of (i0id)
 | INS0assign of (option0 i0id, i0exp)

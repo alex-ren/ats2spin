@@ -38,7 +38,9 @@ MALLOCFLAG=-DATS_MEMALLOC_GCBDW
 
 ATS2PROMELA_sta := \
     postiats/utfpl.sats \
-    utils/utils.sats
+    utils/utils.sats \
+    instr0/instr0.sats \
+    promela/promela.sats
 
 ATS2PROMELA_dyn := \
     postiats/utfpl.dats \
@@ -64,6 +66,8 @@ ATS2PROMELA_dyn := \
     instr0/i0idmap.dats \
     instr0/stamp_allocator.dats \
     instr0/dynloadall.dats \
+    promela/promela.dats \
+    promela/dynloadall.dats \
     utils/emiter.dats \
     utils/utils.dats \
 
@@ -197,6 +201,7 @@ testall:: ; ./ats2promela TEST/test01_dats.json
 cleanats:: ; $(RMF) postiats/*_?ats.c
 cleanats:: ; $(RMF) utils/*_?ats.c
 cleanats:: ; $(RMF) instr0/*_?ats.c
+cleanats:: ; $(RMF) promela/*_?ats.c
 cleanats:: ; $(RMF) *_?ats.c
 
 ######
@@ -204,6 +209,7 @@ cleanats:: ; $(RMF) *_?ats.c
 cleanall:: ; $(RMF) postiats/*_?ats.o
 cleanall:: ; $(RMF) utils/*_?ats.o
 cleanall:: ; $(RMF) instr0/*_?ats.o
+cleanats:: ; $(RMF) promela/*_?ats.o
 cleanall:: ; $(RMF) ats2promela.o
 
 ######

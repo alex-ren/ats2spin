@@ -11,8 +11,10 @@
 
 staload "./emiter.sats"
 
+staload "libats/ML/SATS/basis.sats"
 
-#define :: cons
+#define :: list0_cons
+#define nil list0_nil
 
 implement emit_text (text) = EUstring text
 implement emit_int (n) = EUint n

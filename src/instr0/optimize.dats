@@ -105,10 +105,6 @@ else let
   in end
   }
 
-  // build an extra instruction for the beginning label
-  val- ~Some_vt(cur_tag) = i0idmap_search (map_fname_tag, fname)
-  val ins_label = INS0label (cur_tag)
-
   // transform current function
   val cur_inss = i0fundef_get_instructions (i0fundef)
   
@@ -207,12 +203,36 @@ else let
 
   (* ****************** ************** *)
 
-  val new_inss = optimize_tailcall_return2jump (
+  // We process the current function first.
+
+  // build an extra instruction for the beginning label
+  val- ~Some_vt(cur_tag) = i0idmap_search (map_fname_tag, fname)
+  val ins_label = INS0label (cur_tag)
+
+  val cur_inss = optimize_tailcall_return2jump (
     cur_inss, map_fname_tag, i0funmap)
+  // val cur_inss = ins_init :: ins_label :: new_inss
 
-  // todo: process other functions in the group
+  val group_inss = list0_foldright<i0id><i0inslst> (
+    fnames, fopr, nil) where {
+  fun fopr (cur_name: i0id, res_inss: i0inslst):<cloref1> i0inslst = 
+    // Skip since the current one has been processed previously.
+    if cur_name = fname then res_inss  
+    else let
+    val i0fundef = i0funmap_search0 (i0funmap, cur_name)
+    val cur_inss = i0fundef_get_instructions (i0fundef)
+    val cur_inss = optimize_tailcall_return2jump (
+      cur_inss, map_fname_tag, i0funmap)
 
-  val new_inss = ins_init :: ins_label :: new_inss
+    val- ~Some_vt(tag) = i0idmap_search (map_fname_tag, cur_name)
+    val ins_label = INS0label (tag)
+    val res_inss = list0_append (ins_label :: cur_inss, res_inss)
+  in
+    res_inss
+  end
+  }
+  val new_inss = list0_append (ins_init :: ins_label :: cur_inss, group_inss)
+
   val new_fundef = i0fundef_create (
     fname
     , new_paralst

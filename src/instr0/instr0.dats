@@ -11,8 +11,6 @@ staload "./instr0.sats"
 staload "libats/ML/SATS/basis.sats"
 staload "libats/ML/SATS/list0.sats"
 
-(* for qstruct_insert *)
-staload _(*anon*) = "libats/DATS/qlist.dats"
 staload _(*anon*) = "libats/ML/DATS/list0.dats"
 
 (* ************** ************* *)
@@ -36,7 +34,7 @@ in
 end
 
 implement fprint_i0prog (out, i0prog) = let
-  val () = fprint (out, "======== functions ========\n")
+  val () = fprint (out, "===================== functions =====================\n")
   
   val funcs = i0funmap_listize1 (i0prog.i0prog_i0funmap)
   implement 
@@ -46,6 +44,8 @@ implement fprint_i0prog (out, i0prog) = let
   val () = fprint (out, "\n\n")
 in
 end
+
+implement eq_i0id_i0id (x, y) = x.i0id_stamp = y.i0id_stamp
 
 (* ********** ************ *)
 

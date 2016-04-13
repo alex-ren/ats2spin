@@ -5,6 +5,8 @@
 // aren@bu.edu
 (* ****** ******* *)
 
+staload "libats/ML/SATS/basis.sats"
+
 
 (* ****** ****** *)
 
@@ -21,7 +23,7 @@ emit_unit =
 where
 eu = emit_unit
 and
-eulist = List0 (emit_unit)
+eulist = list0 (emit_unit)
 
 (* ****** ****** *)
 
