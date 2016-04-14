@@ -4,6 +4,7 @@
 
 staload "./../postiats/utfpl.sats"
 staload "./../utils/utils.sats"
+staload "./../utils/emiter.sats"
 staload "./instr0.sats"
 
 #include "./../postiats/postiats_codegen2.hats"
@@ -13,11 +14,10 @@ staload "libats/ML/SATS/list0.sats"
 
 staload _(*anon*) = "libats/ML/DATS/list0.dats"
 
+#define :: list0_cons
+#define nil list0_nil
+
 (* ************** ************* *)
-implement fprint_i0name (out, i0name) = let
-  val () = fprint (out, i0name_get_symbol (i0name))
-in
-end
 
 implement i0id_copy (i0id, sa) = let
   val name = i0id.i0id_name
@@ -46,6 +46,12 @@ in
 end
 
 implement eq_i0id_i0id (x, y) = x.i0id_stamp = y.i0id_stamp
+
+implement emit_i0id (id) = let
+  val eus = emit_i0name (id.i0id_name) :: emit_stamp (id.i0id_stamp) :: nil
+in EUlist (eus) end
+
+implement tostring_i0id (id) = tostring_i0name (id.i0id_name)
 
 (* ********** ************ *)
 

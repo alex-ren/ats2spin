@@ -22,6 +22,8 @@ staload "{$JSONC}/SATS/json_ML.sats"
 staload "./parsing/parsing.sats"
 staload UTFPL = "./postiats/utfpl.sats"
 staload "./instr0/instr0.sats"
+staload "./promela/promela.sats"
+staload "./utils/emiter.sats"
 
 dynload "./postiats/utfpl_dynloadall.dats"
 dynload "./parsing/dynloadall.dats"
@@ -96,6 +98,9 @@ implement main0 (argc, argv) = let
   val i0prog = i0optimize_tailcall (sa, i0prog)
   val () = fprint (stdout_ref, i0prog)
 
+  val () = fprint (stdout_ref, "==============================\n")
+  val eu = pml_emit_i0prog (i0prog)
+  val () = fprint_emit_unit (stdout_ref, eu)
   //
   val () = if fopen > 0 then fileref_close (inpref)
   //

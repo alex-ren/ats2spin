@@ -56,6 +56,13 @@ in
 end
 
 implement
+emit_symbol (symbol) = let
+  val+ SYM (str, v) = symbol
+in
+  EUstring (str)
+end
+
+implement
 symbol_make (name) = let
 //
 val opt = $LM.hashtbl_search (!mymap, name)
@@ -96,14 +103,6 @@ val+SYM (name, _) = sym
 in
   fprint_string (out, name)
 end // end of [fprint_symbol]
-
-implement
-emit_symbol (sym) = let
-  val+ SYM (_, n) = sym
-  val id = tostring_int (n)
-in
-  emit_text (symbol_get_name (sym) + id)
-end
 
 (* ****** ****** *)
 

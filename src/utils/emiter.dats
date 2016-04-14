@@ -33,6 +33,9 @@ in
   fprint_indent (out, level - 1)
 end
 
+implement fprint_emit_unit (out, eu) = 
+  fprint_emit_unit_list (out, eu :: nil)
+
 implement fprint_emit_unit_list (out, eus) = let
 fun aux_level (out: FILEref, eus: eulist, level: int): void =
 case+ eus of

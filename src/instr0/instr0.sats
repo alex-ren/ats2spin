@@ -11,6 +11,8 @@ staload "libats/ML/SATS/basis.sats"
 
 staload "./../postiats/utfpl.sats"
 
+staload "./../utils/emiter.sats"
+
 
 datatype type0 =
 | TYPE0_int
@@ -24,6 +26,11 @@ fun i0name_make (s: symbol): i0name
 fun i0name_get_symbol (n: i0name): symbol
 fun fprint_i0name: (FILEref, i0name) -> void
 overload fprint with fprint_i0name
+
+fun emit_i0name (i0name): emit_unit
+fun tostring_i0name(i0name): string
+
+(* ************ ************** *)
 
 datatype i0id_cat =
 | I0ID_gvar
@@ -53,6 +60,11 @@ fun i0id_copy (i0id: i0id, sa: stamp_allocator): i0id
 
 fun eq_i0id_i0id (x: i0id, y: i0id):<fun0> bool
 overload = with eq_i0id_i0id
+
+fun emit_i0id (i0id): eu
+fun tostring_i0id (i0id): string
+
+(* ************* *************** *)
 
 
 datatype i0ins =
