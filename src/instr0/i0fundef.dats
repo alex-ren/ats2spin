@@ -1,18 +1,16 @@
 
-#include "share/atspre_staload.hats"
 #include "share/atspre_define.hats"
+#include "share/atspre_staload.hats"
+#include "share/HATS/atspre_staload_libats_ML.hats"
 
-staload "libats/ML/SATS/list0.sats"
 
 staload "./instr0.sats"
 
-staload "./../utils/utils.sats"
+staload _ = "./../utils/utils.dats"
 
 // staload _ = "./../utils/print_infrastructure.dats"
 staload _(*anon*) = "./instr0.dats"
 staload _(*anon*) = "./i0ins.dats"
-
-staload _(*anon*) = "libats/ML/DATS/list0.dats"
 
 assume i0fundef = '{
   i0fundef_name = i0id

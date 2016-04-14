@@ -27,7 +27,7 @@ fun loop (x: int, accu: int): int =
     loop (x - 1, p)
   end
 
-fun proctype_p (): void = let
+fun proctype$p (): void = let
   val r1 = loop (1, 1)
   val r2 = loop (r1, 1)
   val x = r1 + r2

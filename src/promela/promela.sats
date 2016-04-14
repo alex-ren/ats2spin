@@ -9,7 +9,8 @@ staload "./../utils/emiter.sats"
 
 fun pml_emit_i0prog (i0prog: i0prog): emit_unit
 
-
+#define PROCTYPE "proctype$"
+#define INLINE "inline$"
 
 
 

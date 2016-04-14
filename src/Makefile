@@ -28,6 +28,7 @@ LDFLAGS += -lm
 LDFLAGS += -lgc
 LDFLAGS += -L$(PATSHOMEQ)/ccomp/atslib/lib
 LDFLAGS += -latslib
+LDFLAGS += -lpcre
 LDFLAGS +=  $(shell pkg-config --libs json-c)
 
 ######
@@ -38,7 +39,6 @@ MALLOCFLAG=-DATS_MEMALLOC_GCBDW
 
 ATS2PROMELA_sta := \
     postiats/utfpl.sats \
-    utils/utils.sats \
     instr0/instr0.sats \
     promela/promela.sats
 
@@ -69,7 +69,6 @@ ATS2PROMELA_dyn := \
     promela/promela.dats \
     promela/dynloadall.dats \
     utils/emiter.dats \
-    utils/utils.dats \
 
 
 ATS2PROMELASRC := \
