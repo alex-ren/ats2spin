@@ -13,7 +13,8 @@ implement i0name_make (s) = s
 
 implement i0name_get_symbol (name) = name
 
-implement tostring_i0name (name) = $UTFPL.symbol_get_name (name)
+implement tostring_i0name_name (name) = $UTFPL.symbol_get_name (name)
+implement tostring_i0name (name) = $UTFPL.to_string_symbol (name)
 
 implement emit_i0name (name) = $UTFPL.emit_symbol (name)
 

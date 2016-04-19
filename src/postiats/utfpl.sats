@@ -113,7 +113,7 @@ hash_symbol (s: symbol):<> ulint
 
 fun symbol_get_name (symbol): string
 
-fun symbol_to_string_unique (symbol): string
+fun to_string_symbol (symbol): string
 
 (* ****** ****** *)
 // The symbols to be compared needs to be created 

@@ -29,6 +29,7 @@ overload fprint with fprint_i0name
 
 fun emit_i0name (i0name): emit_unit
 fun tostring_i0name(i0name): string
+fun tostring_i0name_name(i0name): string
 
 (* ************ ************** *)
 
@@ -63,6 +64,7 @@ overload = with eq_i0id_i0id
 
 fun emit_i0id (i0id): eu
 fun tostring_i0id (i0id): string
+fun tostring_i0id_name (i0id): string
 
 (* ************* *************** *)
 

@@ -50,6 +50,7 @@ implement emit_i0id (id) = let
 in EUlist (eus) end
 
 implement tostring_i0id (id) = tostring_i0name (id.i0id_name)
+implement tostring_i0id_name (id) = tostring_i0name_name (id.i0id_name)
 
 (* ********** ************ *)
 

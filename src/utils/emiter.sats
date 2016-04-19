@@ -48,6 +48,17 @@ fun emit_unindent (): eu
 fun emit_lwrapper (): eu
 fun emit_rwrapper (): eu
 
+//
+(*
+* Desc: Add left, right wrapper and seperator into
+* the list.
+*)
+fun emit_unit_list_process (
+  eus: eulist
+  , sep: eu
+  , lwrapper: eu
+  , rwrapper: eu): eulist
+
 fun fprint_emit_unit (out: FILEref, eu: eu): void
 fun fprint_emit_unit_list (out: FILEref, eus: eulist): void
 
