@@ -58,13 +58,6 @@ in
 end
 
 implement
-emit_symbol (symbol) = let
-  val+ SYM (str, v) = symbol
-in
-  EUstring (str)
-end
-
-implement
 symbol_make (name) = let
 //
 val opt = $LM.hashtbl_search (!mymap, name)
@@ -91,16 +84,8 @@ end // end of [local]
 (* ****** ****** *)
 //
 implement
-symbol_get_name (sym) =
+tostring_symbol (sym) =
   let val+SYM (name, _) = sym in name end
-
-// fun symbol_to_string_unique (symbol): string
-implement
-to_string_symbol (sym) = let 
-  val+SYM (name, id) = sym 
-  val id_str = tostring_int(id)
-
-in name + "_" + id_str end
 
 //
 (* ****** ****** *)

@@ -17,24 +17,26 @@ staload "./../instr0/instr0.sats"
 
 
 #define :: list0_cons
-#define nil list0_nil
 
 #define EUs EUstring
 
 extern fun pml_emit_i0fundef (i0fundef): eu
 extern fun pml_emit_para (i0id): eu
+extern fun pml_emit_ins (i0ins): eu
+
+implement pml_emit_ins (i0ins) = EUstring ("instruction ...;")
 
 implement pml_emit_para (i0id) = let
   val eu_type = EUs ("int ")
-  // val eu_name = i0id_e
+  val eu_name = emit_i0id (i0id)
 in
-  eu_type
+  EUlist (eu_type :: eu_name :: nil0)
 end
 
 implement pml_emit_i0prog (i0prog) = let
   val func_pairs = i0funmap_listize1 (i0prog.i0prog_i0funmap)
   val eus = list0_foldright<@(i0id, i0fundef)><eulist> (
-    func_pairs, fopr, nil) where {
+    func_pairs, fopr, nil0) where {
   fun fopr (pair: @(i0id, i0fundef), res: eulist):<cloref1> eulist = let
     val eu = pml_emit_i0fundef (pair.1)
     val res = eu :: EUnewline () :: EUnewline () :: res
@@ -52,7 +54,6 @@ in
   | Some (proc_name) => let
     // proctype name
     val fname = EUstring (proc_name)
-    val eus = EUlist (EUs ("proctype") :: EUs " " :: fname :: nil0)
 
     // parameters
     val paras = i0fundef_get_paralst (i0fundef)
@@ -65,10 +66,36 @@ in
     end
     }
 
+    val eus = EUs ("proctype") :: EUs " " :: fname :: EUlist (paras_eus) :: nil0
   in
-    eus
+    EUlist (eus)
   end
-  | None () => emit_i0id (fname)
+  | None () => let
+    // inline function name
+    val fname = emit_i0id (fname)
+
+    // parameters
+    val paras = i0fundef_get_paralst (i0fundef)
+    val paras_eus = emit_list (paras
+                             , EUstring "; "
+                             , EUstring "("
+                             , EUstring ")"
+                             , lam x => pml_emit_para x)
+
+    val inss = i0fundef_get_instructions (i0fundef)
+    val inss_eus = emit_list (inss
+                            , EUnewline
+                            , EUlist (EUnewline :: EUstring "{" :: EUindent :: EUnewline :: nil0)
+                            , EUlist (EUunindent :: EUnewline :: EUstring "}" :: nil0)
+                            , lam x => pml_emit_ins x)
+
+    val eus = EUs ("inline") :: EUs " " :: fname :: EUlist (paras_eus) ::
+              EUlist (inss_eus) :: nil0
+  in
+    EUlist (eus)
+  end
+
+
 end
 
 

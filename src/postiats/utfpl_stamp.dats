@@ -37,6 +37,9 @@ fprint_stamp
 implement
 emit_stamp (stamp) = EUint (stamp)
 
+implement
+tostring_stamp (stamp) = tostring_int (stamp)
+
 (* ****** ****** *)
 
 implement

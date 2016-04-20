@@ -29,7 +29,6 @@ overload fprint with fprint_i0name
 
 fun emit_i0name (i0name): emit_unit
 fun tostring_i0name(i0name): string
-fun tostring_i0name_name(i0name): string
 
 (* ************ ************** *)
 
@@ -63,7 +62,11 @@ fun eq_i0id_i0id (x: i0id, y: i0id):<fun0> bool
 overload = with eq_i0id_i0id
 
 fun emit_i0id (i0id): eu
+
+// Stamp is part of the output
 fun tostring_i0id (i0id): string
+
+// Just the name, no stamp
 fun tostring_i0id_name (i0id): string
 
 (* ************* *************** *)

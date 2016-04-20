@@ -46,11 +46,19 @@ end
 implement eq_i0id_i0id (x, y) = x.i0id_stamp = y.i0id_stamp
 
 implement emit_i0id (id) = let
-  val eus = emit_i0name (id.i0id_name) :: emit_stamp (id.i0id_stamp) :: nil
-in EUlist (eus) end
+  val unique_name = tostring_i0id (id)
+in
+  EUstring (unique_name)
+end
 
-implement tostring_i0id (id) = tostring_i0name (id.i0id_name)
-implement tostring_i0id_name (id) = tostring_i0name_name (id.i0id_name)
+implement tostring_i0id (id) = let
+  val name = tostring_i0name (id.i0id_name)
+  val stamp = tostring_stamp (id.i0id_stamp)
+in
+  name + "_" + stamp
+end
+
+implement tostring_i0id_name (id) = tostring_i0name (id.i0id_name)
 
 (* ********** ************ *)
 

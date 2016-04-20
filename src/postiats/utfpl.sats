@@ -79,6 +79,10 @@ overload != with neq_stamp_stamp
 fun
 hash_stamp (s: stamp):<> ulint
 
+(* ****** ****** *)
+fun
+tostring_stamp (s: stamp):<> string
+
 //
 (* ****** ****** *)
 
@@ -94,9 +98,6 @@ fun
 fprint_symbol: fprint_type(symbol)
 overload fprint with fprint_symbol
 
-fun
-emit_symbol: emit_type (symbol)
-
 (* ****** ****** *)
 
 fun symbol_make (string): symbol
@@ -111,9 +112,7 @@ hash_symbol (s: symbol):<> ulint
 
 (* ****** ****** *)
 
-fun symbol_get_name (symbol): string
-
-fun to_string_symbol (symbol): string
+fun tostring_symbol (symbol): string
 
 (* ****** ****** *)
 // The symbols to be compared needs to be created 
@@ -661,8 +660,6 @@ fun d2ecl_ignored (loc_t): d2ecl // error-handling
 (* ****** ****** *)
 //
 symintr .name
-//
-overload .name with symbol_get_name
 //
 overload .name with d2cst_get_name
 overload .name with d2var_get_name

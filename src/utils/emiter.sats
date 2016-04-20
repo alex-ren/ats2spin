@@ -55,9 +55,17 @@ fun emit_rwrapper (): eu
 *)
 fun emit_unit_list_process (
   eus: eulist
+  , sep: string
+  , lwrapper: string
+  , rwrapper: string): eulist
+
+fun emit_list {a:type} (
+  xs: list0 a
   , sep: eu
   , lwrapper: eu
-  , rwrapper: eu): eulist
+  , rwrapper: eu
+  , fopr: a -<cloref1> eu): eulist
+  
 
 fun fprint_emit_unit (out: FILEref, eu: eu): void
 fun fprint_emit_unit_list (out: FILEref, eus: eulist): void
