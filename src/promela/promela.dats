@@ -15,6 +15,7 @@ staload "./promela.sats"
 staload "./../utils/emiter.sats"
 staload "./../instr0/instr0.sats"
 
+#include "./../instr0/instr0_codegen2.hats"
 
 #define :: list0_cons
 
@@ -24,7 +25,15 @@ extern fun pml_emit_i0fundef (i0fundef): eu
 extern fun pml_emit_para (i0id): eu
 extern fun pml_emit_ins (i0ins): eu
 
-implement pml_emit_ins (i0ins) = EUstring ("instruction ...;")
+implement pml_emit_ins (i0ins) = let
+  val datcon = datcon_i0ins i0ins
+in
+case+ i0ins of
+| INS0decl (i0id) => exitlocmsg (datcon + " not suppported")
+| _ => exitlocmsg (datcon + " not suppported")
+end
+
+
 
 implement pml_emit_para (i0id) = let
   val eu_type = EUs ("int ")

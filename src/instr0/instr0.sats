@@ -79,8 +79,10 @@ datatype i0ins =
 | INS0return of (option0 i0exp)
 | INS0ifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))
 | INS0goto of (i0id)
+// Added for recursive functions
 | INS0init_loop of (i0idlst (*all variables*)
                   , list0 (@(i0id, i0id)) (*variabe and initial value from para*))
+// Added for recursive functions
 | INS0tail_jump of (i0inslst (*calc arg*), i0id (*jump tag*))
 
 and i0exp =
@@ -103,7 +105,7 @@ fun myfprint_i0ins: (FILEref, i0ins) -> void
 overload fprint with myfprint_i0ins
 
 fun{} datcon_i0exp (i0exp): string
-fun{} datcon_i0ins (i0exp): string
+fun{} datcon_i0ins (i0ins): string
 
 (* ************ ************* *)
 

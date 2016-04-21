@@ -1,19 +1,27 @@
 
 // This file is for experimenting the POR in SPIN model checker.
 
+int g = 0;
+
+inline foo (ret) {
+  int xfoo = g;
+d_step {
+  xfoo = xfoo + 1;
+  ret = xfoo;
+}
+}
 
 active proctype procA() {
-    int x = 0;
-    x = 1;
-    x = 2;
-    x = 3;
+    int x = g;
+    g = 3;
+    foo (x);
 }
 
 active proctype procB() {
-    int y = 0;
-    y = 1;
-    y = 2;
-    y = 3;
+    int y = g;
+    g = 4;
+    g = 5;
+    g = 5;
 }
 
 

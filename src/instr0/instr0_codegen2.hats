@@ -617,3 +617,22 @@ case+ arg0 of
 )
 //
 (* ****** ****** *)
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+datcon_i0ins
+  (arg0) =
+(
+case+ arg0 of
+| INS0decl _ => "INS0decl"
+| INS0assign _ => "INS0assign"
+| INS0label _ => "INS0label"
+| INS0return _ => "INS0return"
+| INS0ifbranch _ => "INS0ifbranch"
+| INS0goto _ => "INS0goto"
+| INS0init_loop _ => "INS0init_loop"
+| INS0tail_jump _ => "INS0tail_jump"
+)
+//
+(* ****** ****** *)
