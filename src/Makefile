@@ -43,6 +43,7 @@ ATS2PROMELA_sta := \
     promela/promela.sats
 
 ATS2PROMELA_dyn := \
+    utils/emiter.dats \
     postiats/utfpl.dats \
     postiats/utfpl_stamp.dats \
     postiats/utfpl_symbol.dats \
@@ -68,7 +69,6 @@ ATS2PROMELA_dyn := \
     instr0/dynloadall.dats \
     promela/promela.dats \
     promela/dynloadall.dats \
-    utils/emiter.dats \
 
 
 ATS2PROMELASRC := \
