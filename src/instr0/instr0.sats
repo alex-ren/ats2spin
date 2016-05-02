@@ -32,17 +32,20 @@ fun tostring_i0name(i0name): string
 
 (* ************ ************** *)
 
+abstype stamp_allocator = ptr
+fun stamp_allocator_create (): stamp_allocator
+
+fun stamp_allocate (allocator: stamp_allocator): stamp
+
+(* ************ ************** *)
+
 datatype i0id_cat =
 | I0ID_gvar
 | I0ID_fname
 | I0ID_para
 | I0ID_other
 
-
-abstype stamp_allocator = ptr
-fun stamp_allocator_create (): stamp_allocator
-
-fun stamp_allocate (allocator: stamp_allocator): stamp
+(* ************ ************** *)
 
 typedef i0id = '{
 //  i0id_cat = i0id_cat
@@ -70,7 +73,6 @@ fun tostring_i0id (i0id): string
 fun tostring_i0id_name (i0id): string
 
 (* ************* *************** *)
-
 
 datatype i0ins =
 | INS0decl of (i0id)
@@ -146,6 +148,8 @@ staload "./../postiats/utfpl.sats"
 // Desc: Not used yet.
 typedef i0gvar = (i0id, Option i0exp)
 typedef i0gvarlst = list0 i0gvar
+
+(* ************* *************** *)
 
 // mapping id to function body
 typedef i0funmap = $HT.hashtbl (i0id, i0fundef)

@@ -21,6 +21,11 @@ staload "./../instr0/instr0.sats"
 
 #define EUs EUstring
 
+implement pmltransform_i0prog (i0prog) = let
+  val funmap = i0prog.i0prog_i0funmap
+  val funcs = i0funmap_listize1 (funmap): list0 @(i0id, i0fundef)
+
+
 extern fun pml_emit_i0fundef (i0fundef): eu
 extern fun pml_emit_para (i0id): eu
 extern fun pml_emit_ins (i0ins): eu

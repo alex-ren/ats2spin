@@ -17,9 +17,12 @@ fun pml_emit_i0prog (i0prog: i0prog): emit_unit
 datatype pml_module =
 /* user defined types */
 | PMLMODULE_utype of (pml_name, pml_declst)
+/* mtype declaration */
 | PMLMODULE_mtype
+/* global vars, chans */
 | PMLMODULE_declst of pml_declst
 | PMLMODULE_proctype of pml_proctype
+| PMLMODULE_inline of pml_inline
 | PMLMODULE_init
 | PMLMODULE_never
 | PMLMODULE_c_code
@@ -146,9 +149,16 @@ pml_chan_init = '{
 
 and
 pml_proctype = '{
-  PMLPROCTYPE_name = pml_name
-  , PMLPROCTYPE_declst = pml_declst
-  , PMLPROCTYPE_seq = pml_sequence
+  pml_proctype_name = pml_name
+  , pml_proctype_declst = pml_declst
+  , pml_proctype_seq = pml_sequence
+}
+
+and
+pml_inline = '{
+  pml_inline_name = pml_name
+  , pml_inline_paras = list0 pml_name
+  , pml_inline_seq = pml_sequence
 }
 
 and
