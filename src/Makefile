@@ -68,6 +68,9 @@ ATS2PROMELA_dyn := \
     instr0/stamp_allocator.dats \
     instr0/dynloadall.dats \
     promela/promela.dats \
+    promela/pml_name.dats \
+    promela/pml_decl.dats \
+    promela/pml_proctype.dats \
     promela/dynloadall.dats \
 
 
@@ -185,7 +188,8 @@ testall:: all
 #
 testall:: ; $(MAKE) -C TEST
 #
-testall:: ; ./ats2promela TEST/test01_dats.json
+testall:: ; ./ats2promela TEST/test_pml_01_dats.json
+# testall:: ; ./ats2promela TEST/test01_dats.json
 # testall:: ; ./utfpleval TEST/test02_utfpl.json
 # testall:: ; ./utfpleval TEST/test03_utfpl.json
 # testall:: ; ./utfpleval TEST/test04_utfpl.json

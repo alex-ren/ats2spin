@@ -14,6 +14,8 @@ fun pml_emit_i0prog (i0prog: i0prog): emit_unit
 #define PROCTYPE "proctype$"
 #define INLINE "inline$"
 
+abstype pml_name = ptr
+
 datatype pml_module =
 /* user defined types */
 | PMLMODULE_utype of (pml_name, pml_declst)
@@ -38,9 +40,9 @@ and
 pml_stmnt =
 | PMLSTMNT_if of pml_options
 | PMLSTMNT_do of pml_options
-| PMLSTMNT_atomic of pml_sequence
-| PMLSTMNT_dstep of pml_sequence
-| PMLSTMNT_block of pml_sequence  (* { xxx } *)
+| PMLSTMNT_atomic of pml_steplst
+| PMLSTMNT_dstep of pml_steplst
+| PMLSTMNT_block of pml_steplst  (* { xxx } *)
 // | PMLSTMNT_send   // todo
 // | PMLSTMNT_receive
 | PMLSTMNT_assign
@@ -58,22 +60,23 @@ and
 pml_ivar = 
 | PMLIVAR_exp of (pml_name, bool (*is constant*), pml_exp)
 | PMLIVAR_chan of (pml_name, bool (*is constant*), pml_chan_init)
+| PMLIVAR_name of (pml_name)
 
 and
-pml_typename = 
-| PMLTYPENAME_bit
-| PMLTYPENAME_bool
-| PMLTYPENAME_byte
-| PMLTYPENAME_pid
-| PMLTYPENAME_short
-| PMLTYPENAME_int
-| PMLTYPENAME_mtype
-| PMLTYPENAME_chan
-| PMLTYPENAME_uname of pml_uname (* user defined typenames *)
+pml_type = 
+| PMLTYPE_bit
+| PMLTYPE_bool
+| PMLTYPE_byte
+| PMLTYPE_pid
+| PMLTYPE_short
+| PMLTYPE_int
+| PMLTYPE_mtype
+| PMLTYPE_chan
+| PMLTYPE_uname of pml_uname (* user defined types *)
+| PMLTYPE_todo
 
 and pml_exp =
 | PMLEXP_anyexp of (pml_anyexp)
-| PMLEXP_andor of (pml_andor, pml_exp, pml_exp)
 | PMLEXP_chanop of (pml_varref)
 
 and pml_anyexp =
@@ -95,18 +98,14 @@ and
 pml_binarop =
 | PMLBINAROP_plus
 | PMLBINAROP_minus
-| PMLBINAROP_andor of pml_andor
+| PMLBINAROP_and
+| PMLBINAROP_or
 
 and
 pml_unarop =
 | PMLUNAROP_neg   (* ~ *)
 | PMLUNAROP_minus (* - *)
 | PMLUNAROP_ban   (* ! *)
-
-and 
-pml_andor =
-| PMLANDOR_and
-| PMLANDOR_or
 
 and (* x[y].z[2] *)
 pml_varref = 
@@ -116,19 +115,16 @@ where
 pml_ivarlst = list0 pml_ivar
 
 and
-pml_name = symbol
-
-and
 pml_uname = symbol
 
 and
-pml_typenamelst = list0 pml_typename
+pml_typelst = list0 pml_type
 
 and
 pml_decl = '{
   pml_decl_visible = bool
-  , pml_decl_typename = pml_typename
-  , pml_decl_ivar = pml_ivarlst
+  , pml_decl_type = pml_type
+  , pml_decl_ivarlst = pml_ivarlst
 }
 
 
@@ -136,37 +132,71 @@ and
 pml_declst = list0 pml_decl
 
 and 
-pml_sequence = list0 pml_step
+pml_steplst = list0 pml_step
 
 and
-pml_options = list0 pml_sequence
+pml_options = list0 pml_steplst
 
 and
 pml_chan_init = '{
   PMLCHANINIT_cap = int
-  , PMLCHANINIT_typelst = pml_typenamelst
+  , PMLCHANINIT_typelst = pml_typelst
 }
 
 and
 pml_proctype = '{
   pml_proctype_name = pml_name
-  , pml_proctype_declst = pml_declst
-  , pml_proctype_seq = pml_sequence
+  , pml_proctype_paralst = pml_declst
+  , pml_proctype_seq = pml_steplst
 }
 
 and
 pml_inline = '{
   pml_inline_name = pml_name
-  , pml_inline_paras = list0 pml_name
-  , pml_inline_seq = pml_sequence
+  , pml_inline_paralst = list0 pml_name
+  , pml_inline_seq = pml_steplst
 }
 
 and
-pml_spec = list0 pml_module
+pml_modulelst = list0 pml_module
 
 (* ******** ********* *)
 
-fun pmltransform_i0prog (i0prog: i0prog): pml_spec
+fun pml_decl_make (visible: bool
+   , type: pml_type
+   , ivarlst: pml_ivarlst
+): pml_decl
+
+fun pml_proctype_make (
+  name: pml_name
+  , paralst: pml_declst
+  , seq: pml_steplst
+): pml_proctype
+
+(* ******** ********* *)
+
+fun pml_name_get_name (pml_name): string
+
+fun pml_name_get_type (pml_name): pml_type
+
+fun pml_name_make (string, stamp, pml_type): pml_name
+
+(* ******** ********* *)
+
+fun pmltransform_i0prog (i0prog: i0prog): pml_modulelst
+fun pmltransform_i0fundef (i0fundef: i0fundef): pml_module
+
+(*
+* name: The string without prefix.
+*)
+fun pmltransform_inline (pml_name: pml_name, i0fundef: i0fundef): pml_module
+fun pmltransform_proctype (pml_name: pml_name, i0fundef: i0fundef): pml_module
+
+fun pmltransform_i0id (i0id: i0id): pml_name
+fun pmltransform_i0inslst (i0inslst: i0inslst): pml_steplst
+
+fun pmltransform_i0type (): pml_type
+fun pmltransform_i0exp (i0exp): pml_exp
 
 
 

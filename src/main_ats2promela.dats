@@ -93,17 +93,29 @@ implement main0 (argc, argv) = let
 
   val sa = stamp_allocator_create ()
   val i0prog = i0transform_d2eclst_global (sa, d2ecs)
+  val () = fprint (stdout_ref, 
+    "======== level instr0 ==============================\n")
   val () = fprint (stdout_ref, i0prog)
+
+  (* ************** ************** *)
 
   val i0prog = i0optimize_tailcall (sa, i0prog)
+
+  val () = fprint (stdout_ref, 
+    "======== level instr0 after optimization ==============================\n")
   val () = fprint (stdout_ref, i0prog)
 
-  val () = fprint (stdout_ref, "==============================\n")
-  val eu = pml_emit_i0prog (i0prog)
-  val () = fprint_emit_unit (stdout_ref, eu)
+  (* ************** ************** *)
+
+  // val eu = pml_emit_i0prog (i0prog)
+  // val () = fprint (stdout_ref, 
+  //   "======== level promela ==============================\n")
+  // val () = fprint_emit_unit (stdout_ref, eu)
   //
   val () = if fopen > 0 then fileref_close (inpref)
   //
+  (* ************** ************** *)
+
 in
   // nothing
 end (* end of [main0] *)

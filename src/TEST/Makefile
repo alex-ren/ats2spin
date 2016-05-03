@@ -29,6 +29,7 @@ all::
 
 all:: test01_dats.json
 all:: test02_dats.json
+all:: test_pml_01_dats.json
 
 ######
 #
@@ -46,5 +47,6 @@ clean:: ; $(RMF) *~
 cleanall:: clean
 cleanall:: ; $(RMF) test01_dats.json
 cleanall:: ; $(RMF) test02_dats.json
+cleanall:: ; $(RMF) test_pml_01_dats.json
 
 ###### end of [Makefile] ######
