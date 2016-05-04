@@ -23,8 +23,18 @@ staload "./../instr0/instr0.sats"
 
 (* ************ ************* *)
 
+implement fprint_pml_program (out, pml_modulelst) = let
+  implement
+  fprint_val<pml_module> (out, module) = fprint (out, "module todo")
+
+  val () = fprint_list0_sep (out, pml_modulelst, "\n\n")
+  val () = fprint (out, "\n\n")
+in end
+
+(* ************ ************* *)
+
 fun pml_name_make_startwith_prefix (i0id: i0id, pre: string): 
-  Option (pml_name) = let
+  option0 (pml_name) = let
   val fullname_str = tostring_i0id (i0id)
   val opt = fullname_str.removePrefix (pre)
   val stamp = i0id.i0id_stamp
@@ -33,16 +43,31 @@ in
   | Some (name_str) => let
     val pml_name = pml_name_make (name_str, stamp, PMLTYPE_todo)
   in
-    Some (pml_name)
+    Some0 (pml_name)
   end
-  | None () => None ()
+  | None () => None0 ()
 end
 
-fun pml_name_make_inline (i0id: i0id): Option (pml_name) = 
+fun pml_name_make_inline (i0id: i0id): option0 (pml_name) = 
   pml_name_make_startwith_prefix (i0id, INLINE)
 
-fun pml_name_make_proctype (i0id: i0id): Option (pml_name) =
+fun pml_name_make_proctype (i0id: i0id): option0 (pml_name) =
   pml_name_make_startwith_prefix (i0id, PROCTYPE)
+
+(* ************ ************* *)
+implement i0exp_is_inline_call (i0exp) =
+case+ i0exp of
+| EXP0app (i0id, _) => let
+  val name_opt = pml_name_make_inline (i0id)
+in
+  case+ name_opt of
+  | Some0 _ => true
+  | None0 () => false
+end
+| _ => false
+
+implement pml_varref_make (pml_name) =
+  PMLVARREF (pml_name, None0, None0)
 
 (* ************ ************* *)
 
@@ -65,13 +90,13 @@ implement pmltransform_i0fundef (i0fundef) = let
   val pml_name_opt = pml_name_make_proctype (i0id)
 in
   case+ pml_name_opt of
-  | Some (pml_name) => pmltransform_proctype (pml_name, i0fundef)
-  | None () => let
+  | Some0 (pml_name) => pmltransform_proctype (pml_name, i0fundef)
+  | None0 () => let
   val pml_name_opt = pml_name_make_inline (i0id)
 in
   case+ pml_name_opt of
-  | Some (pml_name) => pmltransform_inline (pml_name, i0fundef)
-  | None () => exitlocmsg ("Not supported.")
+  | Some0 (pml_name) => pmltransform_inline (pml_name, i0fundef)
+  | None0 () => exitlocmsg ("Not supported.")
 end
 end
 
@@ -119,12 +144,14 @@ case+ i0inslst of
   case+ i0ins of
   | INS0decl (i0id) => exitlocmsg ("todo: " + datcon_i0ins i0ins)
   | INS0assign (i0id_opt, i0exp) => (
-    if i0exp_is_inline_call (i0exp) then exitlocmsg ("todo")
+    if i0exp_is_inline_call (i0exp) then 
+      exitlocmsg ("todo: invoke inline functions")
     else case+ i0id_opt of
     | Some0 (i0id) => let
       val pml_name = pmltransform_i0id (i0id)
       val pml_type = pml_name_get_type (pml_name)
-      val pml_exp = pmltransform_i0exp (i0exp)
+      val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
+      val pml_exp = PMLEXP_anyexp (pml_anyexp)
       val pml_ivar = PMLIVAR_exp (pml_name, false, pml_exp)
       val pml_ivarlst = pml_ivar :: nil0
       val pml_decl = pml_decl_make (false (*visible*), pml_type, pml_ivarlst)
@@ -134,24 +161,78 @@ case+ i0inslst of
       loop (i0inslst, pml_step :: res)
     end
     | None0 () => let 
-      val pml_exp = pmltransform_i0exp (i0exp)
+      val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
+      val pml_exp = PMLEXP_anyexp (pml_anyexp)
       val pml_stmnt = PMLSTMNT_exp (pml_exp)
       val pml_step = PMLSTEP_stmnt (pml_stmnt)
     in
       loop (i0inslst, pml_step :: res)
     end
     )  // end of [if i0exp_is_inline_call]
+  | INS0return i0expopt => 
+    (
+    case+ i0expopt of
+    | Some0 (i0exp) => exitlocmsg ("function return value not supported")
+    | None0 () => loop (i0inslst, res)
+    )
   | _ => exitlocmsg ("todo: " + datcon_i0ins i0ins)
 )  // end of [i0ins :: i0inslst]
 | nil0 () => res
 
+val pml_inss = loop (i0inslst, nil0)
+val ret = list0_reverse (pml_inss)
 in
-  loop (i0inslst, nil0)
+  ret
+end
+
+implement pmltransform_i0type () = PMLTYPE_todo
+
+implement pmltransform_i0exp2pml_anyexp (i0exp) =
+case+ i0exp of
+| EXP0int (i) => PMLANYEXP_const (PMLATOM_INT (i))
+| EXP0i0nt (i_str) => exitlocmsg ("not supported")
+| EXP0var (i0id) => 
+      PMLANYEXP_varref (pml_varref_make (pmltransform_i0id (i0id)))
+| EXP0app (i0id, i0explst) => let
+  val opr_opt = pmltransform_i0id2operator (i0id)
+in
+  case+ opr_opt of
+  | Some0 (opr) => 
+    (
+    case+ i0explst of
+    | arg1 :: i0explst1 => let
+      val pml_arg1 = pmltransform_i0exp2pml_anyexp (arg1)
+    in
+      (
+      case+ i0explst1 of
+      | arg2 :: _ => let
+        val pml_arg2 = pmltransform_i0exp2pml_anyexp (arg2)
+        val pml_anyexp = PMLANYEXP_binarop (opr, pml_arg1, pml_arg2)
+      in
+        pml_anyexp
+      end
+      | nil0 () => let
+        val pml_anyexp = PMLANYEXP_unarop (opr, pml_arg1)
+      in
+        pml_anyexp
+      end
+      )
+    end
+    | nil0 () => exitlocmsg ("Nullary operator is not supported.")
+    )
+  | None0 () => exitlocmsg ("function call not supported")
+end
+
+implement pmltransform_i0id2operator (i0id) = let
+  val opr_str = tostring_i0id_name (i0id)
+in
+  case+ opr_str of
+  | "+" => Some0 PMLOPR_plus
+  | "-" => Some0 PMLOPR_minus
+  | _ => exitlocmsg ("operator " + opr_str + " is not supported")
 end
 
 
-
-implement pmltransform_i0type () = PMLTYPE_todo
 
 (* ******************  ****************** *)
 

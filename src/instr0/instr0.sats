@@ -106,8 +106,6 @@ overload fprint with myfprint_i0exp
 fun myfprint_i0ins: (FILEref, i0ins) -> void
 overload fprint with myfprint_i0ins
 
-fun i0exp_is_inline_call (i0exp): bool
-
 fun{} datcon_i0exp (i0exp): string
 fun{} datcon_i0ins (i0ins): string
 
