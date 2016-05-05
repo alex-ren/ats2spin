@@ -25,16 +25,69 @@ staload _ = "./pml_name.dats"
 
 (* ************ ************* *)
 
+implement fprint_val<pml_decl> (out, pml_decl) = 
+  fprint_pml_decl (out, pml_decl)
+
+implement fprint_val<pml_modulelst> (out, program) = 
+  fprint_pml_program (out, program)
+
+implement
+  fprint_val<pml_module> (out, module) = myfprint_pml_module (out, module)
+
+implement fprint_val<pml_proctype> (out, proctype) = 
+  fprint_pml_proctype (out, proctype)
+
+implement fprint_val<pml_inline> (out, inline) = 
+  fprint_pml_inline (out, inline)
+
+implement fprint_val<pml_uname> (out, uname) = 
+  fprint_pml_uname (out, uname)
+
+implement fprint_val<pml_ivar> (out, ivar) = 
+  myfprint_pml_ivar (out, ivar)
+
+implement fprint_val<pml_exp> (out, exp) =
+  myfprint_pml_exp (out, exp)
+  
+(* ************ ************* *)
+
 implement myfprint_pml_module (out, module) =
   fprint_pml_module (out, module)
 
 implement fprint_pml_program (out, pml_modulelst) = let
-  implement
-  fprint_val<pml_module> (out, module) = fprint (out, module)
-
   val () = fprint_list0_sep (out, pml_modulelst, "\n\n")
-  val () = fprint (out, "\n\n")
 in end
+
+implement fprint_pml_decl (out, pml_decl) = let
+  val () = fprint_pml_type (out, pml_decl.pml_decl_type)
+  val () = fprint (out, " ")
+  val () = fprint_list0_sep (out, pml_decl.pml_decl_ivarlst, ", ")
+in end
+
+implement fprint_pml_proctype (out, proctype) = let
+  val () = fprint (out, "proctype ")
+  val () = fprint_pml_name (out, proctype.pml_proctype_name)
+  val () = fprint_pml_declst (out, proctype.pml_proctype_paralst)
+  val () = fprint (out, "\n")
+  val () = fprint (out, "todo: fprint_pml_proctype")
+in end
+
+implement fprint_pml_inline (out, inline) = let
+  val () = fprint (out, "inline ")
+  val () = fprint_pml_name (out, inline.pml_inline_name)
+  val () = fprint (out, "(")
+  val () = fprint (out, inline.pml_inline_paralst)
+  val () = fprint (out, ")")
+  val () = fprint (out, "\n")
+  val () = fprint (out, "todo: fprint_pml_inline")
+in end
+
+implement myfprint_pml_ivar (out, pml_ivar) = 
+  fprint_pml_ivar (out, pml_ivar)
+
+implement fprint_pml_chan_init (out, pml_chan_init) = let
+
+
 
 (* ************ ************* *)
 

@@ -20,8 +20,10 @@ abstype pml_name = ptr
 fun fprint_pml_name : (FILEref, pml_name) -> void
 overload fprint with fprint_pml_name
 
-typedef
-pml_uname = symbol
+abstype pml_uname = ptr
+fun fprint_pml_uname : (FILEref, pml_uname) -> void
+overload fprint with fprint_pml_uname
+
 
 datatype pml_type = 
 | PMLTYPE_bit
@@ -49,8 +51,8 @@ overload fprint with fprint_pml_typelst
 
 typedef
 pml_chan_init = '{
-  PMLCHANINIT_cap = int
-  , PMLCHANINIT_typelst = pml_typelst
+  pml_chan_init_cap = int
+  , pml_chan_init_typelst = pml_typelst
 }
 
 fun fprint_pml_chan_init : (FILEref, pml_chan_init) -> void
@@ -144,7 +146,6 @@ overload fprint with myfprint_pml_ivar
 typedef pml_ivarlst = list0 pml_ivar
 
 fun fprint_pml_ivarlst : (FILEref, pml_ivarlst) -> void
-overload fprint with fprint_pml_ivarlst
 
 (* ********** ************ *)
 
@@ -161,7 +162,6 @@ typedef
 pml_declst = list0 pml_decl
 
 fun fprint_pml_declst : (FILEref, pml_declst) -> void
-overload fprint with fprint_pml_declst
 
 (* ********** ************ *)
 
