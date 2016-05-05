@@ -17,10 +17,11 @@ fun pml_emit_i0prog (i0prog: i0prog): emit_unit
 (* ********** ************ *)
 
 abstype pml_name = ptr
+fun fprint_pml_name : (FILEref, pml_name) -> void
+overload fprint with fprint_pml_name
 
 typedef
 pml_uname = symbol
-
 
 datatype pml_type = 
 | PMLTYPE_bit
@@ -34,8 +35,15 @@ datatype pml_type =
 | PMLTYPE_uname of pml_uname (* user defined types *)
 | PMLTYPE_todo
 
+fun{} datcon_pml_type (pml_type): string
+fun{} fprint_pml_type : (FILEref, pml_type) -> void // a function template
+fun myfprint_pml_type : (FILEref, pml_type) -> void // a function template
+overload fprint with myfprint_pml_type
+
 typedef
 pml_typelst = list0 pml_type
+fun fprint_pml_typelst : (FILEref, pml_typelst) -> void
+overload fprint with fprint_pml_typelst
 
 (* ********** ************ *)
 
@@ -45,6 +53,9 @@ pml_chan_init = '{
   , PMLCHANINIT_typelst = pml_typelst
 }
 
+fun fprint_pml_chan_init : (FILEref, pml_chan_init) -> void
+overload fprint with fprint_pml_chan_init
+
 (* ********** ************ *)
 
 datatype pml_atom =
@@ -52,6 +63,10 @@ datatype pml_atom =
 | PMLATOM_BOOL of (bool)   
 | PMLATOM_CHAR of (char)   
 
+fun{} datcon_pml_atom (pml_atom): string
+fun{} fprint_pml_atom : (FILEref, pml_atom) -> void
+fun myfprint_pml_atom : (FILEref, pml_atom) -> void
+overload fprint with myfprint_pml_atom
 
 datatype
 pml_opr =
@@ -60,8 +75,12 @@ pml_opr =
 | PMLOPR_and
 | PMLOPR_or
 | PMLOPR_neg   (* ~ *)
-| PMLOPR_minus (* - *)
 | PMLOPR_ban   (* ! *)
+
+fun{} datcon_pml_opr (pml_opr): string
+fun{} fprint_pml_opr : (FILEref, pml_opr) -> void
+fun myfprint_pml_opr : (FILEref, pml_opr) -> void
+overload fprint with myfprint_pml_opr
 
 (* ********** ************ *)
 
@@ -86,6 +105,16 @@ and
 pml_varref = 
 | PMLVARREF of (pml_name, option0 pml_anyexp, option0 pml_varref)
 
+fun{} datcon_pml_anyexp (pml_anyexp): string
+fun{} fprint_pml_anyexp : (FILEref, pml_anyexp) -> void
+fun myfprint_pml_anyexp : (FILEref, pml_anyexp) -> void
+overload fprint with myfprint_pml_anyexp
+
+fun{} datcon_pml_varref (pml_varref): string
+fun{} fprint_pml_varref : (FILEref, pml_varref) -> void
+fun myfprint_pml_varref : (FILEref, pml_varref) -> void
+overload fprint with myfprint_pml_varref
+
 (* ********** ************ *)
 
 datatype pml_exp =
@@ -93,6 +122,11 @@ datatype pml_exp =
 | PMLEXP_anyexp of (pml_anyexp)
 // Channel operation
 | PMLEXP_chanop of (pml_varref)
+
+fun{} datcon_pml_exp (pml_exp): string
+fun{} fprint_pml_exp : (FILEref, pml_exp) -> void
+fun myfprint_pml_exp : (FILEref, pml_exp) -> void
+overload fprint with myfprint_pml_exp
 
 (* ********** ************ *)
 
@@ -102,7 +136,17 @@ pml_ivar =
 | PMLIVAR_chan of (pml_name, bool (*is constant*), pml_chan_init)
 | PMLIVAR_name of (pml_name)
 
+fun{} datcon_pml_ivar (pml_ivar): string
+fun{} fprint_pml_ivar : (FILEref, pml_ivar) -> void
+fun myfprint_pml_ivar : (FILEref, pml_ivar) -> void
+overload fprint with myfprint_pml_ivar
+
 typedef pml_ivarlst = list0 pml_ivar
+
+fun fprint_pml_ivarlst : (FILEref, pml_ivarlst) -> void
+overload fprint with fprint_pml_ivarlst
+
+(* ********** ************ *)
 
 typedef pml_decl = '{
   pml_decl_visible = bool
@@ -110,8 +154,14 @@ typedef pml_decl = '{
   , pml_decl_ivarlst = pml_ivarlst
 }
 
+fun fprint_pml_decl : (FILEref, pml_decl) -> void
+overload fprint with fprint_pml_decl
+
 typedef
 pml_declst = list0 pml_decl
+
+fun fprint_pml_declst : (FILEref, pml_declst) -> void
+overload fprint with fprint_pml_declst
 
 (* ********** ************ *)
 
@@ -151,8 +201,23 @@ and
 pml_options = list0 pml_steplst
 // end of [where]
 
-(* ********** ************ *)
+fun{} datcon_pml_step (pml_step): string
+fun{} fprint_pml_step : (FILEref, pml_step) -> void
+fun myfprint_pml_step : (FILEref, pml_step) -> void
+overload fprint with myfprint_pml_step
 
+fun{} datcon_pml_stmnt (pml_stmnt): string
+fun{} fprint_pml_stmnt : (FILEref, pml_stmnt) -> void
+fun myfprint_pml_stmnt : (FILEref, pml_stmnt) -> void
+overload fprint with myfprint_pml_stmnt
+
+fun fprint_pml_steplst : (FILEref, pml_steplst) -> void
+overload fprint with fprint_pml_steplst
+
+fun fprint_pml_options : (FILEref, pml_options) -> void
+overload fprint with fprint_pml_options
+
+(* ********** ************ *)
 
 typedef
 pml_proctype = '{
@@ -161,6 +226,9 @@ pml_proctype = '{
   , pml_proctype_seq = pml_steplst
 }
 
+fun fprint_pml_proctype : (FILEref, pml_proctype) -> void
+overload fprint with fprint_pml_proctype
+
 typedef
 pml_inline = '{
   pml_inline_name = pml_name
@@ -168,6 +236,8 @@ pml_inline = '{
   , pml_inline_seq = pml_steplst
 }
 
+fun fprint_pml_inline : (FILEref, pml_inline) -> void
+overload fprint with fprint_pml_inline
 
 datatype pml_module =
 /* user defined types */
@@ -182,6 +252,12 @@ datatype pml_module =
 | PMLMODULE_never
 | PMLMODULE_c_code
 
+fun{} datcon_pml_module (pml_module): string
+fun{} fprint_pml_module : (FILEref, pml_module) -> void
+fun myfprint_pml_module : (FILEref, pml_module) -> void
+overload fprint with myfprint_pml_module
+
+(* ******** ********* *)
 
 typedef pml_modulelst = list0 pml_module
 

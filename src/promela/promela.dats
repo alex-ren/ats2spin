@@ -6,7 +6,6 @@
 #include "share/HATS/atspre_staload_libats_ML.hats"
 
 
-
 staload "./../utils/utils.dats"
 
 (* ************ ************* *)
@@ -16,6 +15,9 @@ staload "./../utils/emiter.sats"
 staload "./../instr0/instr0.sats"
 
 #include "./../instr0/instr0_codegen2.hats"
+#include "./promela_codegen2.hats"
+
+staload _ = "./pml_name.dats"
 
 #define :: list0_cons
 
@@ -23,9 +25,12 @@ staload "./../instr0/instr0.sats"
 
 (* ************ ************* *)
 
+implement myfprint_pml_module (out, module) =
+  fprint_pml_module (out, module)
+
 implement fprint_pml_program (out, pml_modulelst) = let
   implement
-  fprint_val<pml_module> (out, module) = fprint (out, "module todo")
+  fprint_val<pml_module> (out, module) = fprint (out, module)
 
   val () = fprint_list0_sep (out, pml_modulelst, "\n\n")
   val () = fprint (out, "\n\n")

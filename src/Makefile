@@ -151,7 +151,8 @@ ATS2PROMELAOBJ := $(patsubst %.sats, %_sats.o, $(ATS2PROMELAOBJ))
 # ######### ##########
 
 codegen:: postiats/postiats_codegen2.hats \
-    instr0/instr0_codegen2.hats;
+    instr0/instr0_codegen2.hats \
+    promela/promela_codegen2.hats;
 
 instr0/instr0_codegen2.hats: \
 ./instr0/instr0.sats ./instr0/codegen.dats; \
@@ -161,6 +162,10 @@ $(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d instr0/codegen.dats
 postiats/postiats_codegen2.hats: \
 ./postiats/utfpl.sats ./postiats/codegen.dats; \
 $(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d postiats/codegen.dats
+
+promela/promela_codegen2.hats: \
+./promela/promela.sats ./promela/codegen.dats; \
+$(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d promela/codegen.dats
 
 # ######### ##########
 
