@@ -26,7 +26,7 @@ implement pml_name_get_type (pml_name) = pml_name.pml_name_type
 
 implement fprint_pml_name (out, pml_name) = let
   val stamp_str = tostring_stamp (pml_name.pml_name_stamp)
-  val name = pml_name.pml_name_name + "_" + stamp_str
+  val name = pml_name.pml_name_name  //  + "_" + stamp_str
 in
   fprint (out, name)
 end

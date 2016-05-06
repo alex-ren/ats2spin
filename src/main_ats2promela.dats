@@ -110,7 +110,7 @@ implement main0 (argc, argv) = let
   val pml_prog = pmltransform_i0prog (i0prog)
 
   val () = fprint (stdout_ref, 
-    "## ======== level promela ==============================\n\n")
+    "## ======== level promela AST ==============================\n\n")
   val () = fprint (stdout_ref, pml_prog)
 
 
@@ -122,6 +122,7 @@ implement main0 (argc, argv) = let
   // val () = fprint_emit_unit (stdout_ref, eu)
   //
   val () = if fopen > 0 then fileref_close (inpref)
+  val () = fprint (stdout_ref, "\n\n")
   //
   (* ************** ************** *)
 

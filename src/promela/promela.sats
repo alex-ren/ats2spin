@@ -9,7 +9,7 @@ staload "./../utils/emiter.sats"
 
 staload "./../postiats/utfpl.sats"
 
-fun pml_emit_i0prog (i0prog: i0prog): emit_unit
+(* ********** ************ *)
 
 #define PROCTYPE "proctype$"
 #define INLINE "inline$"
@@ -61,14 +61,13 @@ overload fprint with fprint_pml_chan_init
 (* ********** ************ *)
 
 datatype pml_atom =
-| PMLATOM_INT of (int)   
-| PMLATOM_BOOL of (bool)   
-| PMLATOM_CHAR of (char)   
+| PMLATOM_int of (int)   
+| PMLATOM_bool of (bool)   
+| PMLATOM_char of (char)   
 
 fun{} datcon_pml_atom (pml_atom): string
-fun{} fprint_pml_atom : (FILEref, pml_atom) -> void
-fun myfprint_pml_atom : (FILEref, pml_atom) -> void
-overload fprint with myfprint_pml_atom
+fun fprint_pml_atom : (FILEref, pml_atom) -> void
+overload fprint with fprint_pml_atom
 
 datatype
 pml_opr =
@@ -80,9 +79,8 @@ pml_opr =
 | PMLOPR_ban   (* ! *)
 
 fun{} datcon_pml_opr (pml_opr): string
-fun{} fprint_pml_opr : (FILEref, pml_opr) -> void
-fun myfprint_pml_opr : (FILEref, pml_opr) -> void
-overload fprint with myfprint_pml_opr
+fun fprint_pml_opr : (FILEref, pml_opr) -> void
+overload fprint with fprint_pml_opr
 
 (* ********** ************ *)
 
@@ -134,8 +132,8 @@ overload fprint with myfprint_pml_exp
 
 datatype
 pml_ivar = 
-| PMLIVAR_exp of (pml_name, bool (*is constant*), pml_exp)
-| PMLIVAR_chan of (pml_name, bool (*is constant*), pml_chan_init)
+| PMLIVAR_exp of (pml_name (* bool (is constant)*), pml_exp)
+| PMLIVAR_chan of (pml_name (* bool (is constant)*), pml_chan_init)
 | PMLIVAR_name of (pml_name)
 
 fun{} datcon_pml_ivar (pml_ivar): string
@@ -315,6 +313,10 @@ fun pmltransform_i0exp2pml_anyexp (i0exp): pml_anyexp
 
 fun pmltransform_i0id2operator (i0id): option0 pml_opr
 
+(* ******** ********* *)
+
+fun emit_pml_program (pml_modulelst): emit_unit
+overload emit with emit_pml_program
 
 
 

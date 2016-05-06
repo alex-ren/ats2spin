@@ -11,83 +11,13 @@ staload "./../utils/utils.dats"
 (* ************ ************* *)
 
 staload "./promela.sats"
-staload "./../utils/emiter.sats"
 staload "./../instr0/instr0.sats"
 
 #include "./../instr0/instr0_codegen2.hats"
-#include "./promela_codegen2.hats"
-
-staload _ = "./pml_name.dats"
 
 #define :: list0_cons
 
 #define EUs EUstring
-
-(* ************ ************* *)
-
-implement fprint_val<pml_decl> (out, pml_decl) = 
-  fprint_pml_decl (out, pml_decl)
-
-implement fprint_val<pml_modulelst> (out, program) = 
-  fprint_pml_program (out, program)
-
-implement
-  fprint_val<pml_module> (out, module) = myfprint_pml_module (out, module)
-
-implement fprint_val<pml_proctype> (out, proctype) = 
-  fprint_pml_proctype (out, proctype)
-
-implement fprint_val<pml_inline> (out, inline) = 
-  fprint_pml_inline (out, inline)
-
-implement fprint_val<pml_uname> (out, uname) = 
-  fprint_pml_uname (out, uname)
-
-implement fprint_val<pml_ivar> (out, ivar) = 
-  myfprint_pml_ivar (out, ivar)
-
-implement fprint_val<pml_exp> (out, exp) =
-  myfprint_pml_exp (out, exp)
-  
-(* ************ ************* *)
-
-implement myfprint_pml_module (out, module) =
-  fprint_pml_module (out, module)
-
-implement fprint_pml_program (out, pml_modulelst) = let
-  val () = fprint_list0_sep (out, pml_modulelst, "\n\n")
-in end
-
-implement fprint_pml_decl (out, pml_decl) = let
-  val () = fprint_pml_type (out, pml_decl.pml_decl_type)
-  val () = fprint (out, " ")
-  val () = fprint_list0_sep (out, pml_decl.pml_decl_ivarlst, ", ")
-in end
-
-implement fprint_pml_proctype (out, proctype) = let
-  val () = fprint (out, "proctype ")
-  val () = fprint_pml_name (out, proctype.pml_proctype_name)
-  val () = fprint_pml_declst (out, proctype.pml_proctype_paralst)
-  val () = fprint (out, "\n")
-  val () = fprint (out, "todo: fprint_pml_proctype")
-in end
-
-implement fprint_pml_inline (out, inline) = let
-  val () = fprint (out, "inline ")
-  val () = fprint_pml_name (out, inline.pml_inline_name)
-  val () = fprint (out, "(")
-  val () = fprint (out, inline.pml_inline_paralst)
-  val () = fprint (out, ")")
-  val () = fprint (out, "\n")
-  val () = fprint (out, "todo: fprint_pml_inline")
-in end
-
-implement myfprint_pml_ivar (out, pml_ivar) = 
-  fprint_pml_ivar (out, pml_ivar)
-
-implement fprint_pml_chan_init (out, pml_chan_init) = let
-
-
 
 (* ************ ************* *)
 
@@ -210,7 +140,7 @@ case+ i0inslst of
       val pml_type = pml_name_get_type (pml_name)
       val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
       val pml_exp = PMLEXP_anyexp (pml_anyexp)
-      val pml_ivar = PMLIVAR_exp (pml_name, false, pml_exp)
+      val pml_ivar = PMLIVAR_exp (pml_name, pml_exp)
       val pml_ivarlst = pml_ivar :: nil0
       val pml_decl = pml_decl_make (false (*visible*), pml_type, pml_ivarlst)
       val pml_declst = pml_decl :: nil0
@@ -247,7 +177,7 @@ implement pmltransform_i0type () = PMLTYPE_todo
 
 implement pmltransform_i0exp2pml_anyexp (i0exp) =
 case+ i0exp of
-| EXP0int (i) => PMLANYEXP_const (PMLATOM_INT (i))
+| EXP0int (i) => PMLANYEXP_const (PMLATOM_int (i))
 | EXP0i0nt (i_str) => exitlocmsg ("not supported")
 | EXP0var (i0id) => 
       PMLANYEXP_varref (pml_varref_make (pmltransform_i0id (i0id)))
@@ -294,91 +224,91 @@ end
 
 (* ******************  ****************** *)
 
-extern fun pml_emit_i0fundef (i0fundef): eu
-extern fun pml_emit_para (i0id): eu
-extern fun pml_emit_ins (i0ins): eu
-
-implement pml_emit_ins (i0ins) = let
-  val datcon = datcon_i0ins i0ins
-in
-case+ i0ins of
-| INS0decl (i0id) => exitlocmsg (datcon + " not suppported")
-| _ => exitlocmsg (datcon + " not suppported")
-end
-
-
-
-implement pml_emit_para (i0id) = let
-  val eu_type = EUs ("int ")
-  val eu_name = emit_i0id (i0id)
-in
-  EUlist (eu_type :: eu_name :: nil0)
-end
-
-implement pml_emit_i0prog (i0prog) = let
-  val func_pairs = i0funmap_listize1 (i0prog.i0prog_i0funmap)
-  val eus = list0_foldright<@(i0id, i0fundef)><eulist> (
-    func_pairs, fopr, nil0) where {
-  fun fopr (pair: @(i0id, i0fundef), res: eulist):<cloref1> eulist = let
-    val eu = pml_emit_i0fundef (pair.1)
-    val res = eu :: EUnewline () :: EUnewline () :: res
-  in res end
-  }
-in
-  EUlist (eus)
-end
-
-implement pml_emit_i0fundef (i0fundef) = let
-  val fname = i0fundef_get_id (i0fundef)
-  val fname_str = tostring_i0id (fname)
-in
-  case+ fname_str.removePrefix (PROCTYPE) of
-  | Some (proc_name) => let
-    // proctype name
-    val fname = EUstring (proc_name)
-
-    // parameters
-    val paras = i0fundef_get_paralst (i0fundef)
-    val paras_eus = list0_foldright<i0id><eulist> (paras, fopr, nil0) where {
-    fun fopr (para: i0id, res: eulist):<cloref1> eulist = let
-      val eu = pml_emit_para (para)
-      val ret = eu :: res
-    in
-      res
-    end
-    }
-
-    val eus = EUs ("proctype") :: EUs " " :: fname :: EUlist (paras_eus) :: nil0
-  in
-    EUlist (eus)
-  end
-  | None () => let
-    // inline function name
-    val fname = emit_i0id (fname)
-
-    // parameters
-    val paras = i0fundef_get_paralst (i0fundef)
-    val paras_eus = emit_list (paras
-                             , EUstring "; "
-                             , EUstring "("
-                             , EUstring ")"
-                             , lam x => pml_emit_para x)
-
-    val inss = i0fundef_get_instructions (i0fundef)
-    val inss_eus = emit_list (inss
-                            , EUnewline
-                            , EUlist (EUnewline :: EUstring "{" :: EUindent :: EUnewline :: nil0)
-                            , EUlist (EUunindent :: EUnewline :: EUstring "}" :: nil0)
-                            , lam x => pml_emit_ins x)
-
-    val eus = EUs ("inline") :: EUs " " :: fname :: EUlist (paras_eus) ::
-              EUlist (inss_eus) :: nil0
-  in
-    EUlist (eus)
-  end
-
-
-end
+// extern fun pml_emit_i0fundef (i0fundef): eu
+// extern fun pml_emit_para (i0id): eu
+// extern fun pml_emit_ins (i0ins): eu
+// 
+// implement pml_emit_ins (i0ins) = let
+//   val datcon = datcon_i0ins i0ins
+// in
+// case+ i0ins of
+// | INS0decl (i0id) => exitlocmsg (datcon + " not suppported")
+// | _ => exitlocmsg (datcon + " not suppported")
+// end
+// 
+// 
+// 
+// implement pml_emit_para (i0id) = let
+//   val eu_type = EUs ("int ")
+//   val eu_name = emit_i0id (i0id)
+// in
+//   EUlist (eu_type :: eu_name :: nil0)
+// end
+// 
+// implement pml_emit_i0prog (i0prog) = let
+//   val func_pairs = i0funmap_listize1 (i0prog.i0prog_i0funmap)
+//   val eus = list0_foldright<@(i0id, i0fundef)><eulist> (
+//     func_pairs, fopr, nil0) where {
+//   fun fopr (pair: @(i0id, i0fundef), res: eulist):<cloref1> eulist = let
+//     val eu = pml_emit_i0fundef (pair.1)
+//     val res = eu :: EUnewline () :: EUnewline () :: res
+//   in res end
+//   }
+// in
+//   EUlist (eus)
+// end
+// 
+// implement pml_emit_i0fundef (i0fundef) = let
+//   val fname = i0fundef_get_id (i0fundef)
+//   val fname_str = tostring_i0id (fname)
+// in
+//   case+ fname_str.removePrefix (PROCTYPE) of
+//   | Some (proc_name) => let
+//     // proctype name
+//     val fname = EUstring (proc_name)
+// 
+//     // parameters
+//     val paras = i0fundef_get_paralst (i0fundef)
+//     val paras_eus = list0_foldright<i0id><eulist> (paras, fopr, nil0) where {
+//     fun fopr (para: i0id, res: eulist):<cloref1> eulist = let
+//       val eu = pml_emit_para (para)
+//       val ret = eu :: res
+//     in
+//       res
+//     end
+//     }
+// 
+//     val eus = EUs ("proctype") :: EUs " " :: fname :: EUlist (paras_eus) :: nil0
+//   in
+//     EUlist (eus)
+//   end
+//   | None () => let
+//     // inline function name
+//     val fname = emit_i0id (fname)
+// 
+//     // parameters
+//     val paras = i0fundef_get_paralst (i0fundef)
+//     val paras_eus = emit_list (paras
+//                              , EUstring "; "
+//                              , EUstring "("
+//                              , EUstring ")"
+//                              , lam x => pml_emit_para x)
+// 
+//     val inss = i0fundef_get_instructions (i0fundef)
+//     val inss_eus = emit_list (inss
+//                             , EUnewline
+//                             , EUlist (EUnewline :: EUstring "{" :: EUindent :: EUnewline :: nil0)
+//                             , EUlist (EUunindent :: EUnewline :: EUstring "}" :: nil0)
+//                             , lam x => pml_emit_ins x)
+// 
+//     val eus = EUs ("inline") :: EUs " " :: fname :: EUlist (paras_eus) ::
+//               EUlist (inss_eus) :: nil0
+//   in
+//     EUlist (eus)
+//   end
+// 
+// 
+// end
 
 
 

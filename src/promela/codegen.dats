@@ -3,8 +3,6 @@
 staload "./promela.sats"
 
 #codegen2("fprint", pml_type, fprint_pml_type)
-#codegen2("fprint", pml_atom, fprint_pml_atom)
-#codegen2("fprint", pml_opr, fprint_pml_opr)
 #codegen2("fprint", pml_anyexp, fprint_pml_anyexp)
 #codegen2("fprint", pml_varref, fprint_pml_varref)
 #codegen2("fprint", pml_exp, fprint_pml_exp)

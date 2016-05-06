@@ -350,379 +350,6 @@ fprint_pml_type$PMLTYPE_todo$rpar(out, _) = fprint_pml_type$rpar(out)
 //
 extern
 fun{}
-fprint_pml_atom$PMLATOM_INT: $d2ctype(fprint_pml_atom<>)
-extern
-fun{}
-fprint_pml_atom$PMLATOM_BOOL: $d2ctype(fprint_pml_atom<>)
-extern
-fun{}
-fprint_pml_atom$PMLATOM_CHAR: $d2ctype(fprint_pml_atom<>)
-//
-(* ****** ****** *)
-//
-implement{}
-fprint_pml_atom
-  (out, arg0) =
-(
-case+ arg0 of
-| PMLATOM_INT _ => fprint_pml_atom$PMLATOM_INT<>(out, arg0)
-| PMLATOM_BOOL _ => fprint_pml_atom$PMLATOM_BOOL<>(out, arg0)
-| PMLATOM_CHAR _ => fprint_pml_atom$PMLATOM_CHAR<>(out, arg0)
-)
-//
-(* ****** ****** *)
-//
-extern
-fun{}
-fprint_pml_atom$sep: (FILEref) -> void
-implement{}
-fprint_pml_atom$sep(out) = fprint(out, ",")
-//
-extern
-fun{}
-fprint_pml_atom$lpar: (FILEref) -> void
-implement{}
-fprint_pml_atom$lpar(out) = fprint(out, "(")
-//
-extern
-fun{}
-fprint_pml_atom$rpar: (FILEref) -> void
-implement{}
-fprint_pml_atom$rpar(out) = fprint(out, ")")
-//
-extern
-fun{a:t0p}
-fprint_pml_atom$carg: (FILEref, INV(a)) -> void
-implement{a}
-fprint_pml_atom$carg(out, arg) = fprint_val<a>(out, arg)
-//
-(* ****** ****** *)
-//
-extern
-fun{}
-fprint_pml_atom$PMLATOM_INT$con: $d2ctype(fprint_pml_atom<>)
-extern
-fun{}
-fprint_pml_atom$PMLATOM_INT$lpar: $d2ctype(fprint_pml_atom<>)
-extern
-fun{}
-fprint_pml_atom$PMLATOM_INT$rpar: $d2ctype(fprint_pml_atom<>)
-extern
-fun{}
-fprint_pml_atom$PMLATOM_INT$arg1: $d2ctype(fprint_pml_atom<>)
-//
-implement{}
-fprint_pml_atom$PMLATOM_INT(out, arg0) = 
-{
-//
-val () = fprint_pml_atom$PMLATOM_INT$con<>(out, arg0)
-val () = fprint_pml_atom$PMLATOM_INT$lpar<>(out, arg0)
-val () = fprint_pml_atom$PMLATOM_INT$arg1<>(out, arg0)
-val () = fprint_pml_atom$PMLATOM_INT$rpar<>(out, arg0)
-//
-}
-implement{}
-fprint_pml_atom$PMLATOM_INT$con(out, _) = fprint(out, "PMLATOM_INT")
-implement{}
-fprint_pml_atom$PMLATOM_INT$lpar(out, _) = fprint_pml_atom$lpar(out)
-implement{}
-fprint_pml_atom$PMLATOM_INT$rpar(out, _) = fprint_pml_atom$rpar(out)
-implement{}
-fprint_pml_atom$PMLATOM_INT$arg1(out, arg0) =
-  let val-PMLATOM_INT(arg1) = arg0 in fprint_pml_atom$carg(out, arg1) end
-//
-extern
-fun{}
-fprint_pml_atom$PMLATOM_BOOL$con: $d2ctype(fprint_pml_atom<>)
-extern
-fun{}
-fprint_pml_atom$PMLATOM_BOOL$lpar: $d2ctype(fprint_pml_atom<>)
-extern
-fun{}
-fprint_pml_atom$PMLATOM_BOOL$rpar: $d2ctype(fprint_pml_atom<>)
-extern
-fun{}
-fprint_pml_atom$PMLATOM_BOOL$arg1: $d2ctype(fprint_pml_atom<>)
-//
-implement{}
-fprint_pml_atom$PMLATOM_BOOL(out, arg0) = 
-{
-//
-val () = fprint_pml_atom$PMLATOM_BOOL$con<>(out, arg0)
-val () = fprint_pml_atom$PMLATOM_BOOL$lpar<>(out, arg0)
-val () = fprint_pml_atom$PMLATOM_BOOL$arg1<>(out, arg0)
-val () = fprint_pml_atom$PMLATOM_BOOL$rpar<>(out, arg0)
-//
-}
-implement{}
-fprint_pml_atom$PMLATOM_BOOL$con(out, _) = fprint(out, "PMLATOM_BOOL")
-implement{}
-fprint_pml_atom$PMLATOM_BOOL$lpar(out, _) = fprint_pml_atom$lpar(out)
-implement{}
-fprint_pml_atom$PMLATOM_BOOL$rpar(out, _) = fprint_pml_atom$rpar(out)
-implement{}
-fprint_pml_atom$PMLATOM_BOOL$arg1(out, arg0) =
-  let val-PMLATOM_BOOL(arg1) = arg0 in fprint_pml_atom$carg(out, arg1) end
-//
-extern
-fun{}
-fprint_pml_atom$PMLATOM_CHAR$con: $d2ctype(fprint_pml_atom<>)
-extern
-fun{}
-fprint_pml_atom$PMLATOM_CHAR$lpar: $d2ctype(fprint_pml_atom<>)
-extern
-fun{}
-fprint_pml_atom$PMLATOM_CHAR$rpar: $d2ctype(fprint_pml_atom<>)
-extern
-fun{}
-fprint_pml_atom$PMLATOM_CHAR$arg1: $d2ctype(fprint_pml_atom<>)
-//
-implement{}
-fprint_pml_atom$PMLATOM_CHAR(out, arg0) = 
-{
-//
-val () = fprint_pml_atom$PMLATOM_CHAR$con<>(out, arg0)
-val () = fprint_pml_atom$PMLATOM_CHAR$lpar<>(out, arg0)
-val () = fprint_pml_atom$PMLATOM_CHAR$arg1<>(out, arg0)
-val () = fprint_pml_atom$PMLATOM_CHAR$rpar<>(out, arg0)
-//
-}
-implement{}
-fprint_pml_atom$PMLATOM_CHAR$con(out, _) = fprint(out, "PMLATOM_CHAR")
-implement{}
-fprint_pml_atom$PMLATOM_CHAR$lpar(out, _) = fprint_pml_atom$lpar(out)
-implement{}
-fprint_pml_atom$PMLATOM_CHAR$rpar(out, _) = fprint_pml_atom$rpar(out)
-implement{}
-fprint_pml_atom$PMLATOM_CHAR$arg1(out, arg0) =
-  let val-PMLATOM_CHAR(arg1) = arg0 in fprint_pml_atom$carg(out, arg1) end
-//
-(* ****** ****** *)
-(* ****** ****** *)
-//
-extern
-fun{}
-fprint_pml_opr$PMLOPR_plus: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_minus: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_and: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_or: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_neg: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_ban: $d2ctype(fprint_pml_opr<>)
-//
-(* ****** ****** *)
-//
-implement{}
-fprint_pml_opr
-  (out, arg0) =
-(
-case+ arg0 of
-| PMLOPR_plus _ => fprint_pml_opr$PMLOPR_plus<>(out, arg0)
-| PMLOPR_minus _ => fprint_pml_opr$PMLOPR_minus<>(out, arg0)
-| PMLOPR_and _ => fprint_pml_opr$PMLOPR_and<>(out, arg0)
-| PMLOPR_or _ => fprint_pml_opr$PMLOPR_or<>(out, arg0)
-| PMLOPR_neg _ => fprint_pml_opr$PMLOPR_neg<>(out, arg0)
-| PMLOPR_ban _ => fprint_pml_opr$PMLOPR_ban<>(out, arg0)
-)
-//
-(* ****** ****** *)
-//
-extern
-fun{}
-fprint_pml_opr$sep: (FILEref) -> void
-implement{}
-fprint_pml_opr$sep(out) = fprint(out, ",")
-//
-extern
-fun{}
-fprint_pml_opr$lpar: (FILEref) -> void
-implement{}
-fprint_pml_opr$lpar(out) = fprint(out, "(")
-//
-extern
-fun{}
-fprint_pml_opr$rpar: (FILEref) -> void
-implement{}
-fprint_pml_opr$rpar(out) = fprint(out, ")")
-//
-extern
-fun{a:t0p}
-fprint_pml_opr$carg: (FILEref, INV(a)) -> void
-implement{a}
-fprint_pml_opr$carg(out, arg) = fprint_val<a>(out, arg)
-//
-(* ****** ****** *)
-//
-extern
-fun{}
-fprint_pml_opr$PMLOPR_plus$con: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_plus$lpar: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_plus$rpar: $d2ctype(fprint_pml_opr<>)
-//
-implement{}
-fprint_pml_opr$PMLOPR_plus(out, arg0) = 
-{
-//
-val () = fprint_pml_opr$PMLOPR_plus$con<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_plus$lpar<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_plus$rpar<>(out, arg0)
-//
-}
-implement{}
-fprint_pml_opr$PMLOPR_plus$con(out, _) = fprint(out, "PMLOPR_plus")
-implement{}
-fprint_pml_opr$PMLOPR_plus$lpar(out, _) = fprint_pml_opr$lpar(out)
-implement{}
-fprint_pml_opr$PMLOPR_plus$rpar(out, _) = fprint_pml_opr$rpar(out)
-//
-extern
-fun{}
-fprint_pml_opr$PMLOPR_minus$con: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_minus$lpar: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_minus$rpar: $d2ctype(fprint_pml_opr<>)
-//
-implement{}
-fprint_pml_opr$PMLOPR_minus(out, arg0) = 
-{
-//
-val () = fprint_pml_opr$PMLOPR_minus$con<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_minus$lpar<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_minus$rpar<>(out, arg0)
-//
-}
-implement{}
-fprint_pml_opr$PMLOPR_minus$con(out, _) = fprint(out, "PMLOPR_minus")
-implement{}
-fprint_pml_opr$PMLOPR_minus$lpar(out, _) = fprint_pml_opr$lpar(out)
-implement{}
-fprint_pml_opr$PMLOPR_minus$rpar(out, _) = fprint_pml_opr$rpar(out)
-//
-extern
-fun{}
-fprint_pml_opr$PMLOPR_and$con: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_and$lpar: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_and$rpar: $d2ctype(fprint_pml_opr<>)
-//
-implement{}
-fprint_pml_opr$PMLOPR_and(out, arg0) = 
-{
-//
-val () = fprint_pml_opr$PMLOPR_and$con<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_and$lpar<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_and$rpar<>(out, arg0)
-//
-}
-implement{}
-fprint_pml_opr$PMLOPR_and$con(out, _) = fprint(out, "PMLOPR_and")
-implement{}
-fprint_pml_opr$PMLOPR_and$lpar(out, _) = fprint_pml_opr$lpar(out)
-implement{}
-fprint_pml_opr$PMLOPR_and$rpar(out, _) = fprint_pml_opr$rpar(out)
-//
-extern
-fun{}
-fprint_pml_opr$PMLOPR_or$con: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_or$lpar: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_or$rpar: $d2ctype(fprint_pml_opr<>)
-//
-implement{}
-fprint_pml_opr$PMLOPR_or(out, arg0) = 
-{
-//
-val () = fprint_pml_opr$PMLOPR_or$con<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_or$lpar<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_or$rpar<>(out, arg0)
-//
-}
-implement{}
-fprint_pml_opr$PMLOPR_or$con(out, _) = fprint(out, "PMLOPR_or")
-implement{}
-fprint_pml_opr$PMLOPR_or$lpar(out, _) = fprint_pml_opr$lpar(out)
-implement{}
-fprint_pml_opr$PMLOPR_or$rpar(out, _) = fprint_pml_opr$rpar(out)
-//
-extern
-fun{}
-fprint_pml_opr$PMLOPR_neg$con: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_neg$lpar: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_neg$rpar: $d2ctype(fprint_pml_opr<>)
-//
-implement{}
-fprint_pml_opr$PMLOPR_neg(out, arg0) = 
-{
-//
-val () = fprint_pml_opr$PMLOPR_neg$con<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_neg$lpar<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_neg$rpar<>(out, arg0)
-//
-}
-implement{}
-fprint_pml_opr$PMLOPR_neg$con(out, _) = fprint(out, "PMLOPR_neg")
-implement{}
-fprint_pml_opr$PMLOPR_neg$lpar(out, _) = fprint_pml_opr$lpar(out)
-implement{}
-fprint_pml_opr$PMLOPR_neg$rpar(out, _) = fprint_pml_opr$rpar(out)
-//
-extern
-fun{}
-fprint_pml_opr$PMLOPR_ban$con: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_ban$lpar: $d2ctype(fprint_pml_opr<>)
-extern
-fun{}
-fprint_pml_opr$PMLOPR_ban$rpar: $d2ctype(fprint_pml_opr<>)
-//
-implement{}
-fprint_pml_opr$PMLOPR_ban(out, arg0) = 
-{
-//
-val () = fprint_pml_opr$PMLOPR_ban$con<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_ban$lpar<>(out, arg0)
-val () = fprint_pml_opr$PMLOPR_ban$rpar<>(out, arg0)
-//
-}
-implement{}
-fprint_pml_opr$PMLOPR_ban$con(out, _) = fprint(out, "PMLOPR_ban")
-implement{}
-fprint_pml_opr$PMLOPR_ban$lpar(out, _) = fprint_pml_opr$lpar(out)
-implement{}
-fprint_pml_opr$PMLOPR_ban$rpar(out, _) = fprint_pml_opr$rpar(out)
-//
-(* ****** ****** *)
-(* ****** ****** *)
-//
-extern
-fun{}
 fprint_pml_anyexp$PMLANYEXP_binarop: $d2ctype(fprint_pml_anyexp<>)
 extern
 fun{}
@@ -1295,16 +922,10 @@ fun{}
 fprint_pml_ivar$PMLIVAR_exp$sep1: $d2ctype(fprint_pml_ivar<>)
 extern
 fun{}
-fprint_pml_ivar$PMLIVAR_exp$sep2: $d2ctype(fprint_pml_ivar<>)
-extern
-fun{}
 fprint_pml_ivar$PMLIVAR_exp$arg1: $d2ctype(fprint_pml_ivar<>)
 extern
 fun{}
 fprint_pml_ivar$PMLIVAR_exp$arg2: $d2ctype(fprint_pml_ivar<>)
-extern
-fun{}
-fprint_pml_ivar$PMLIVAR_exp$arg3: $d2ctype(fprint_pml_ivar<>)
 //
 implement{}
 fprint_pml_ivar$PMLIVAR_exp(out, arg0) = 
@@ -1315,8 +936,6 @@ val () = fprint_pml_ivar$PMLIVAR_exp$lpar<>(out, arg0)
 val () = fprint_pml_ivar$PMLIVAR_exp$arg1<>(out, arg0)
 val () = fprint_pml_ivar$PMLIVAR_exp$sep1<>(out, arg0)
 val () = fprint_pml_ivar$PMLIVAR_exp$arg2<>(out, arg0)
-val () = fprint_pml_ivar$PMLIVAR_exp$sep2<>(out, arg0)
-val () = fprint_pml_ivar$PMLIVAR_exp$arg3<>(out, arg0)
 val () = fprint_pml_ivar$PMLIVAR_exp$rpar<>(out, arg0)
 //
 }
@@ -1329,16 +948,11 @@ fprint_pml_ivar$PMLIVAR_exp$rpar(out, _) = fprint_pml_ivar$rpar(out)
 implement{}
 fprint_pml_ivar$PMLIVAR_exp$sep1(out, _) = fprint_pml_ivar$sep<>(out)
 implement{}
-fprint_pml_ivar$PMLIVAR_exp$sep2(out, _) = fprint_pml_ivar$sep<>(out)
-implement{}
 fprint_pml_ivar$PMLIVAR_exp$arg1(out, arg0) =
-  let val-PMLIVAR_exp(arg1, _, _) = arg0 in fprint_pml_ivar$carg(out, arg1) end
+  let val-PMLIVAR_exp(arg1, _) = arg0 in fprint_pml_ivar$carg(out, arg1) end
 implement{}
 fprint_pml_ivar$PMLIVAR_exp$arg2(out, arg0) =
-  let val-PMLIVAR_exp(_, arg2, _) = arg0 in fprint_pml_ivar$carg(out, arg2) end
-implement{}
-fprint_pml_ivar$PMLIVAR_exp$arg3(out, arg0) =
-  let val-PMLIVAR_exp(_, _, arg3) = arg0 in fprint_pml_ivar$carg(out, arg3) end
+  let val-PMLIVAR_exp(_, arg2) = arg0 in fprint_pml_ivar$carg(out, arg2) end
 //
 extern
 fun{}
@@ -1354,16 +968,10 @@ fun{}
 fprint_pml_ivar$PMLIVAR_chan$sep1: $d2ctype(fprint_pml_ivar<>)
 extern
 fun{}
-fprint_pml_ivar$PMLIVAR_chan$sep2: $d2ctype(fprint_pml_ivar<>)
-extern
-fun{}
 fprint_pml_ivar$PMLIVAR_chan$arg1: $d2ctype(fprint_pml_ivar<>)
 extern
 fun{}
 fprint_pml_ivar$PMLIVAR_chan$arg2: $d2ctype(fprint_pml_ivar<>)
-extern
-fun{}
-fprint_pml_ivar$PMLIVAR_chan$arg3: $d2ctype(fprint_pml_ivar<>)
 //
 implement{}
 fprint_pml_ivar$PMLIVAR_chan(out, arg0) = 
@@ -1374,8 +982,6 @@ val () = fprint_pml_ivar$PMLIVAR_chan$lpar<>(out, arg0)
 val () = fprint_pml_ivar$PMLIVAR_chan$arg1<>(out, arg0)
 val () = fprint_pml_ivar$PMLIVAR_chan$sep1<>(out, arg0)
 val () = fprint_pml_ivar$PMLIVAR_chan$arg2<>(out, arg0)
-val () = fprint_pml_ivar$PMLIVAR_chan$sep2<>(out, arg0)
-val () = fprint_pml_ivar$PMLIVAR_chan$arg3<>(out, arg0)
 val () = fprint_pml_ivar$PMLIVAR_chan$rpar<>(out, arg0)
 //
 }
@@ -1388,16 +994,11 @@ fprint_pml_ivar$PMLIVAR_chan$rpar(out, _) = fprint_pml_ivar$rpar(out)
 implement{}
 fprint_pml_ivar$PMLIVAR_chan$sep1(out, _) = fprint_pml_ivar$sep<>(out)
 implement{}
-fprint_pml_ivar$PMLIVAR_chan$sep2(out, _) = fprint_pml_ivar$sep<>(out)
-implement{}
 fprint_pml_ivar$PMLIVAR_chan$arg1(out, arg0) =
-  let val-PMLIVAR_chan(arg1, _, _) = arg0 in fprint_pml_ivar$carg(out, arg1) end
+  let val-PMLIVAR_chan(arg1, _) = arg0 in fprint_pml_ivar$carg(out, arg1) end
 implement{}
 fprint_pml_ivar$PMLIVAR_chan$arg2(out, arg0) =
-  let val-PMLIVAR_chan(_, arg2, _) = arg0 in fprint_pml_ivar$carg(out, arg2) end
-implement{}
-fprint_pml_ivar$PMLIVAR_chan$arg3(out, arg0) =
-  let val-PMLIVAR_chan(_, _, arg3) = arg0 in fprint_pml_ivar$carg(out, arg3) end
+  let val-PMLIVAR_chan(_, arg2) = arg0 in fprint_pml_ivar$carg(out, arg2) end
 //
 extern
 fun{}
@@ -2426,9 +2027,9 @@ datcon_pml_atom
   (arg0) =
 (
 case+ arg0 of
-| PMLATOM_INT _ => "PMLATOM_INT"
-| PMLATOM_BOOL _ => "PMLATOM_BOOL"
-| PMLATOM_CHAR _ => "PMLATOM_CHAR"
+| PMLATOM_int _ => "PMLATOM_int"
+| PMLATOM_bool _ => "PMLATOM_bool"
+| PMLATOM_char _ => "PMLATOM_char"
 )
 //
 (* ****** ****** *)
