@@ -38,7 +38,7 @@ implement fprint_emit_unit (out, eu) =
   fprint_emit_unit_list (out, eu :: nil)
 
 implement fprint_emit_unit_list (out, eus) = let
-fun aux_level (out: FILEref, eus: eulist, level: int): int =
+fun aux_level (out: FILEref, eus: eulst, level: int): int =
 case+ eus of
 | nil () => level
 | eu :: eus =>
@@ -63,7 +63,7 @@ in end
 
 
 implement emit_unit_list_process (eus, sep, lwrapper, rwrapper) = let
-  fun loop_tail (eus: eulist, res: eulist) =
+  fun loop_tail (eus: eulst, res: eulst) =
   case+ eus of
   | cons0 (eu, eus1) => let
     val res = eu :: EUstring (sep) :: res
@@ -78,7 +78,7 @@ in
 end
 
 implement emit_list {a} (xs, sep, lwrapper, rwrapper, fopr) = let
-  fun loop_tail (xs: list0 a, res: eulist) =
+  fun loop_tail (xs: list0 a, res: eulst) =
   case+ xs of
   | cons0 (x, xs1) => let
     val res = fopr (x) :: sep :: res
@@ -92,5 +92,28 @@ in
   | nil0 () => lwrapper :: rwrapper :: nil0
 end
 
+implement {a} emit_list0 (xs, sep) = let
+fun loop (xs: list0 a, sep: eu, res: eulst): eulst =
+case+ xs of
+| x :: xs1 => let
+  val eu = emit_val (x)
+  val res = eu :: sep :: res
+in
+  loop (xs1, sep, res)
+end
+| nil0 () => res
+
+in
+  case+ xs of
+  | x :: xs1 => let
+    val eu = emit_val (x)
+    val eulst = eu :: nil0
+    val rev = loop (xs1, sep, eulst)
+    val ret = list0_reverse (rev)
+  in
+    ret
+  end
+  | nil0 () => nil ()
+end
 
 
