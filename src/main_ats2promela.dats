@@ -94,7 +94,7 @@ implement main0 (argc, argv) = let
   val sa = stamp_allocator_create ()
   val i0prog = i0transform_d2eclst_global (sa, d2ecs)
   val () = fprint (stdout_ref, 
-    "## ======== level instr0 ==============================\n\n")
+    "\n## ======== level instr0 ==============================\n\n")
   val () = fprint (stdout_ref, i0prog)
 
   (* ************** ************** *)
@@ -102,7 +102,7 @@ implement main0 (argc, argv) = let
   val i0prog = i0optimize_tailcall (sa, i0prog)
 
   val () = fprint (stdout_ref, 
-    "## ======== level instr0 after optimization ==============================\n\n")
+    "\n## ======== level instr0 after optimization ==============================\n\n")
   val () = fprint (stdout_ref, i0prog)
 
   (* ************** ************** *)
@@ -110,7 +110,7 @@ implement main0 (argc, argv) = let
   val pml_prog = pmltransform_i0prog (i0prog)
 
   val () = fprint (stdout_ref, 
-    "## ======== level promela AST ==============================\n\n")
+    "\n## ======== level promela AST ==============================\n\n")
   val () = fprint (stdout_ref, pml_prog)
 
 
@@ -118,7 +118,7 @@ implement main0 (argc, argv) = let
 
   val eu = emit_pml_program (pml_prog)
   val () = fprint (stdout_ref, 
-    "## ======== level promela ==============================\n\n")
+    "\n## ======== level promela ==============================\n\n")
   val () = fprint_emit_unit (stdout_ref, eu)
   
   val () = if fopen > 0 then fileref_close (inpref)

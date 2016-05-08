@@ -20,6 +20,13 @@ extern fun emit_pml_proctype (pml_proctype): eu
 extern fun emit_pml_decl (pml_decl): eu
 extern fun emit_pml_name (pml_name): eu
 extern fun emit_pml_step (pml_step): eu
+extern fun emit_pml_type (pml_type): eu
+extern fun emit_pml_ivar (pml_ivar): eu
+extern fun emit_pml_exp (pml_exp): eu
+extern fun emit_pml_anyexp (pml_anyexp): eu
+extern fun emit_pml_varref (pml_varref): eu
+extern fun emit_pml_stmnt (pml_stmnt): eu
+extern fun emit_pml_opr (pml_opr): eu
 
 (* ************ ************* *)
 
@@ -32,6 +39,9 @@ implement emit_val<pml_decl> (decl) =
 
 implement emit_val<pml_step> (step) =
   emit_pml_step (step)
+
+implement emit_val<pml_ivar> (ivar) =
+  emit_pml_ivar (ivar)
 
 (* ************ ************* *)
 
@@ -78,15 +88,154 @@ in
 end
 
 implement emit_pml_decl (pml_decl) = let
-  #define pml_decl = dec
+  #define dec pml_decl
   val eus = 
-    emit_pml_type (pml_decl.pml_decl_type) ::
-    :: emit_text (
+    emit_pml_type (dec.pml_decl_type)
+    :: emit_text (" ")
+    :: emit<pml_ivar> (dec.pml_decl_ivarlst, emit_text (", "))
+in
+  EUlist (eus)
+end
    
+implement emit_pml_ivar (pml_ivar) = let
+  #define ivar pml_ivar
+in
+case+ ivar of
+| PMLIVAR_exp (pml_name (* bool (is constant)*), pml_exp) => let
+    val eus =
+      emit_pml_name (pml_name) 
+      :: emit_text (" = ")
+      :: emit_pml_exp (pml_exp)
+      :: nil0
+in
+  EUlist (eus)
+end
+| PMLIVAR_chan (pml_name (* bool (is constant)*), pml_chan_init) =>
+    exitlocmsg ("not supported")
+| PMLIVAR_name (pml_name) => emit_pml_name (pml_name)
+end
 
-////
-typedef pml_decl = '{
-  pml_decl_visible = bool
-  , pml_decl_type = pml_type
-  , pml_decl_ivarlst = pml_ivarlst
-}
+implement emit_pml_step (pml_step) = let
+  #define step pml_step
+in
+case+ step of
+| PMLSTEP_declst (pml_declst) =>
+  EUlist (emit<pml_decl> (pml_declst, emit_newline ()))
+| PMLSTEP_stmnt (pml_stmnt) => emit_pml_stmnt (pml_stmnt)
+// | PMLSTEP_xr of (list0 varref) (* read only *)
+// | PMLSTEP_xs of (list0 varref) (* write only *)
+end
+
+implement emit_pml_type (pml_type) =
+case+ pml_type of
+| PMLTYPE_bit () => exitlocmsg ("not supported")
+| PMLTYPE_bool () => exitlocmsg ("not supported")
+| PMLTYPE_byte () => exitlocmsg ("not supported")
+| PMLTYPE_pid () => exitlocmsg ("not supported")
+| PMLTYPE_short () => exitlocmsg ("not supported")
+| PMLTYPE_int () => exitlocmsg ("not supported")
+| PMLTYPE_mtype () => exitlocmsg ("not supported")
+| PMLTYPE_chan () => exitlocmsg ("not supported")
+| PMLTYPE_uname pml_uname => exitlocmsg ("not supported")
+| PMLTYPE_todo () => emit_text ("int")
+
+implement emit_pml_stmnt (pml_stmnt) = let
+  #define st pml_stmnt
+in
+case+ st of
+| PMLSTMNT_if pml_options => exitlocmsg ("not supported")
+| PMLSTMNT_do pml_options => exitlocmsg ("not supported")
+| PMLSTMNT_atomic pml_steplst => exitlocmsg ("not supported")
+| PMLSTMNT_dstep pml_steplst => exitlocmsg ("not supported")
+| PMLSTMNT_block pml_steplst  (* { xxx } *) => exitlocmsg ("not supported")
+// | PMLSTMNT_send   // todo
+// | PMLSTMNT_receive
+| PMLSTMNT_assign () => exitlocmsg ("not supported")
+| PMLSTMNT_else () => exitlocmsg ("not supported")
+| PMLSTMNT_break () => exitlocmsg ("not supported")
+| PMLSTMNT_goto pml_name => exitlocmsg ("not supported")
+| PMLSTMNT_name (pml_name, pml_stmnt) => exitlocmsg ("not supported")
+// | PMLSTMNT_print
+| PMLSTMNT_assert pml_exp => exitlocmsg ("not supported")
+| PMLSTMNT_exp pml_exp => exitlocmsg ("not supported")
+// Inline call
+| PMLSTMNT_inline (pml_name, pml_anyexplst) => 
+    exitlocmsg ("not supported")
+// | PMLSTMNT_c_code
+// | PMLSTMNT_c_expr
+end
+
+implement emit_pml_exp (pml_exp) =
+case+ pml_exp of
+| PMLEXP_anyexp (pml_anyexp) => emit_pml_anyexp (pml_anyexp)
+| PMLEXP_chanop (pml_varref) => exitlocmsg ("not supported")
+
+implement emit_pml_anyexp (pml_anyexp) = 
+case+ pml_anyexp of
+| PMLANYEXP_binarop (opr, any_exp1, any_exp2) => let
+  val eus = emit_text ("(")
+    :: emit_pml_anyexp (any_exp1)
+    :: emit_text (")")
+    :: emit_text (" ")
+    :: emit_pml_opr (opr)
+    :: emit_text (" ")
+    :: emit_text ("(")
+    :: emit_pml_anyexp (any_exp2)
+    :: emit_text (") ")
+    :: nil0
+in
+  EUlist (eus)
+end
+| PMLANYEXP_unarop (pml_opr, pml_anyexp)
+  => exitlocmsg ("not supported")
+// x -> a : b
+| PMLANYEXP_select (pml_anyexp, pml_anyexp, pml_anyexp)
+  => exitlocmsg ("not supported")
+// | PMLANYEXP_len
+// | PMLANYEXP_recv_poll
+| PMLANYEXP_varref pml_varref  // e.g. arr[2]
+  => emit_pml_varref (pml_varref)
+| PMLANYEXP_const pml_atom
+  => exitlocmsg ("not supported")
+// | PMLANYEXP_timeout
+// | PMLANYEXP_np (* non-progress system state *)
+// | PMLANYEXP_enabled (pml_anyexp)
+// | PMLANYEXP_pc_value (pml_anyexp)
+// | PMLANYEXP_name (pml_name, pml_anyexp, pml_name)
+// | PMLANYEXP_run (pml_name, pml_arglst, pml_priority_opt)
+
+
+implement emit_pml_opr (pml_opr) =
+case+ pml_opr of
+| PMLOPR_plus () => emit_text ("+")
+| PMLOPR_minus () => emit_text ("-")
+| PMLOPR_and () => emit_text ("&&")
+| PMLOPR_or () => emit_text ("||")
+| PMLOPR_neg () => emit_text ("~")
+| PMLOPR_ban () => emit_text ("!")
+
+implement emit_pml_varref (pml_varref) = let
+  val+ PMLVARREF (pml_name, pml_anyexp_opt, pml_varref_opt) = pml_varref
+  val eu_name = emit_pml_name (pml_name)
+in
+  case+ pml_anyexp_opt of
+  | Some0 (pml_anyexp) => let
+    val eu_anyexp = emit_pml_anyexp (pml_anyexp)
+  in
+    case+ pml_varref_opt of
+    | Some0 (pml_varref) => exitlocmsg ("not supported")
+    | None0 () => let
+      val eus = 
+        eu_name
+        :: emit_text ("[")
+        :: eu_anyexp
+        :: emit_text ("]")
+        :: nil0
+    in
+      EUlist (eus)
+    end
+  end
+  | None0 () => eu_name
+end
+
+
