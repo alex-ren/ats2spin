@@ -19,6 +19,8 @@ staload "libats/ML/SATS/basis.sats"
 
 implement emit_text (text) = EUstring text
 implement emit_int (n) = EUint n
+implement emit_bool (b) = EUbool b
+implement emit_char (c) = EUchar c
 
 implement emit_newline () = EUnewline
 
@@ -53,6 +55,8 @@ case+ eus of
                     )
   | EUstring (text) => (fprint (out, text); aux_level (out, eus, level))
   | EUint (n) => (fprint (out, n); aux_level (out, eus, level))
+  | EUbool (b) => (fprint (out, b); aux_level (out, eus, level))
+  | EUchar (c) => (fprint (out, c); aux_level (out, eus, level))
   | EUlist (eus0) => let
     val level0 = aux_level (out, eus0, level)
   in

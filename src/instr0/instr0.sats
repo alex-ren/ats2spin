@@ -93,6 +93,7 @@ and i0exp =
 | EXP0string of (string)
 | EXP0var of (i0id)
 | EXP0app of (i0id, i0explst)
+| EXP0extfcall of (string, i0explst)
 
 where
 i0inslst = list0 i0ins

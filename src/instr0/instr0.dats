@@ -298,6 +298,7 @@ end
 in
   inss
 end
+
 //   | D2Esym of (d2sym)
 // //
 //   | D2Eint of (int)
@@ -434,7 +435,7 @@ in
   | D2Ei0nt (str) => EXP0i0nt (str)
 //   | D2Ec0har of (char)
 //   | D2Ef0loat of (string)
-  | D2Es0tring (str) => exitlocmsg ("string is only used in print")
+  | D2Es0tring (str) => EXP0string (str)
 // //
 //   | D2Eempty of ((*void*))
 // //
@@ -467,6 +468,11 @@ in
 // //
 //   | D2Elam of (p2atlst, d2exp)
 //   | D2Efix of (d2var, p2atlst, d2exp)
+  | D2Eextfcall (name, d2explst) => let
+    val i0explst = i0transform_d2explst_expvalue (sa, d2explst)
+  in
+    EXP0extfcall (name, i0explst)
+  end
 // //
 //   | D2Eignored of ((*void*)) // HX: error-handling
 | _ => exitlocmsg (datcon_d2exp_node (node) + " not allowed")

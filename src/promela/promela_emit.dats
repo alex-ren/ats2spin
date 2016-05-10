@@ -16,6 +16,7 @@ staload "./promela.sats"
 (* ************ ************* *)
 
 extern fun emit_pml_module (pml_module): eu
+extern fun emit_pml_init (pml_steplst): eu
 extern fun emit_pml_proctype (pml_proctype): eu
 extern fun emit_pml_decl (pml_decl): eu
 extern fun emit_pml_name (pml_name): eu
@@ -25,8 +26,10 @@ extern fun emit_pml_ivar (pml_ivar): eu
 extern fun emit_pml_exp (pml_exp): eu
 extern fun emit_pml_anyexp (pml_anyexp): eu
 extern fun emit_pml_varref (pml_varref): eu
+extern fun emit_pml_anyexp_fcall (string, pml_anyexplst): eu
 extern fun emit_pml_stmnt (pml_stmnt): eu
 extern fun emit_pml_opr (pml_opr): eu
+extern fun emit_pml_atom (pml_atom): eu
 
 (* ************ ************* *)
 
@@ -43,6 +46,9 @@ implement emit_val<pml_step> (step) =
 implement emit_val<pml_ivar> (ivar) =
   emit_pml_ivar (ivar)
 
+implement emit_val<pml_anyexp> (anyexp) =
+  emit_pml_anyexp (anyexp)
+
 (* ************ ************* *)
 
 implement emit_pml_program (program) = 
@@ -56,9 +62,26 @@ case+ pml_module of
 | PMLMODULE_proctype proctype => 
     emit_pml_proctype (proctype)
 | PMLMODULE_inline _ => exitlocmsg ("not supported")
-| PMLMODULE_init _ => exitlocmsg ("not supported")
+| PMLMODULE_init pml_steplst =>
+    emit_pml_init (pml_steplst)
 | PMLMODULE_never _ => exitlocmsg ("not supported")
 | PMLMODULE_c_code _ => exitlocmsg ("not supported")
+
+implement emit_pml_init (pml_steplst) = let
+  #define steps pml_steplst
+  val eus = emit ("init {")
+  :: emit_indent ()
+  :: emit_newline ()
+  :: EUlist (
+     emit<pml_step> (pml_steplst,
+         EUlist ((emit ";") :: (emit_newline ()) :: nil0)))
+  :: emit_unindent ()
+  :: emit_newline ()
+  :: emit ("}")
+  :: nil0
+in
+  EUlist (eus)
+end
 
 implement emit_pml_proctype (pml_proctype) = let
   #define proc pml_proctype
@@ -73,7 +96,8 @@ implement emit_pml_proctype (pml_proctype) = let
     :: emit_indent ()
     :: emit_newline ()
     :: EUlist (
-       emit<pml_step> (proc.pml_proctype_seq, emit_newline ()))
+       emit<pml_step> (proc.pml_proctype_seq,
+           EUlist ((emit ";") :: (emit_newline ()) :: nil0)))
     :: emit_unindent ()
     :: emit_newline ()
     :: emit_text ("}") :: nil0
@@ -92,7 +116,8 @@ implement emit_pml_decl (pml_decl) = let
   val eus = 
     emit_pml_type (dec.pml_decl_type)
     :: emit_text (" ")
-    :: emit<pml_ivar> (dec.pml_decl_ivarlst, emit_text (", "))
+    :: EUlist (emit<pml_ivar> (dec.pml_decl_ivarlst, emit_text (", ")))
+    :: nil0
 in
   EUlist (eus)
 end
@@ -120,7 +145,8 @@ implement emit_pml_step (pml_step) = let
 in
 case+ step of
 | PMLSTEP_declst (pml_declst) =>
-  EUlist (emit<pml_decl> (pml_declst, emit_newline ()))
+  EUlist (emit<pml_decl> (pml_declst, 
+    EUlist (emit (";") :: emit_newline () :: nil0)))
 | PMLSTEP_stmnt (pml_stmnt) => emit_pml_stmnt (pml_stmnt)
 // | PMLSTEP_xr of (list0 varref) (* read only *)
 // | PMLSTEP_xs of (list0 varref) (* write only *)
@@ -157,7 +183,7 @@ case+ st of
 | PMLSTMNT_name (pml_name, pml_stmnt) => exitlocmsg ("not supported")
 // | PMLSTMNT_print
 | PMLSTMNT_assert pml_exp => exitlocmsg ("not supported")
-| PMLSTMNT_exp pml_exp => exitlocmsg ("not supported")
+| PMLSTMNT_exp pml_exp => emit_pml_exp (pml_exp)
 // Inline call
 | PMLSTMNT_inline (pml_name, pml_anyexplst) => 
     exitlocmsg ("not supported")
@@ -181,7 +207,7 @@ case+ pml_anyexp of
     :: emit_text (" ")
     :: emit_text ("(")
     :: emit_pml_anyexp (any_exp2)
-    :: emit_text (") ")
+    :: emit_text (")")
     :: nil0
 in
   EUlist (eus)
@@ -196,7 +222,10 @@ end
 | PMLANYEXP_varref pml_varref  // e.g. arr[2]
   => emit_pml_varref (pml_varref)
 | PMLANYEXP_const pml_atom
-  => exitlocmsg ("not supported")
+  => emit_pml_atom (pml_atom)
+| PMLANYEXP_fcall (name, pml_anyexplst) => 
+    emit_pml_anyexp_fcall (name, pml_anyexplst)
+| PMLANYEXP_string (str) => emit_text ("\"" + str + "\"")
 // | PMLANYEXP_timeout
 // | PMLANYEXP_np (* non-progress system state *)
 // | PMLANYEXP_enabled (pml_anyexp)
@@ -237,5 +266,26 @@ in
   end
   | None0 () => eu_name
 end
+
+implement emit_pml_atom (pml_atom) =
+case+ pml_atom of
+| PMLATOM_int (n) => emit (n)
+| PMLATOM_i0nt (n_str) => emit (n_str)
+| PMLATOM_bool (b) => emit (b)
+| PMLATOM_char (c) => emit c
+
+implement emit_pml_anyexp_fcall (name, pml_anyexplst) = let
+  val eus = emit_text (name)
+  :: emit_text ("(")
+  :: EUlist (emit<pml_anyexp> (pml_anyexplst, emit_text (", ")))
+  :: emit_text (")")
+  :: nil0
+in
+  EUlist (eus)
+end
+
+
+
+
 
 

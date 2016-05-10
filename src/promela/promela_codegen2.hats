@@ -363,6 +363,12 @@ fprint_pml_anyexp$PMLANYEXP_varref: $d2ctype(fprint_pml_anyexp<>)
 extern
 fun{}
 fprint_pml_anyexp$PMLANYEXP_const: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_fcall: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_string: $d2ctype(fprint_pml_anyexp<>)
 //
 (* ****** ****** *)
 //
@@ -376,6 +382,8 @@ case+ arg0 of
 | PMLANYEXP_select _ => fprint_pml_anyexp$PMLANYEXP_select<>(out, arg0)
 | PMLANYEXP_varref _ => fprint_pml_anyexp$PMLANYEXP_varref<>(out, arg0)
 | PMLANYEXP_const _ => fprint_pml_anyexp$PMLANYEXP_const<>(out, arg0)
+| PMLANYEXP_fcall _ => fprint_pml_anyexp$PMLANYEXP_fcall<>(out, arg0)
+| PMLANYEXP_string _ => fprint_pml_anyexp$PMLANYEXP_string<>(out, arg0)
 )
 //
 (* ****** ****** *)
@@ -635,6 +643,85 @@ fprint_pml_anyexp$PMLANYEXP_const$rpar(out, _) = fprint_pml_anyexp$rpar(out)
 implement{}
 fprint_pml_anyexp$PMLANYEXP_const$arg1(out, arg0) =
   let val-PMLANYEXP_const(arg1) = arg0 in fprint_pml_anyexp$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_fcall$con: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_fcall$lpar: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_fcall$rpar: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_fcall$sep1: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_fcall$arg1: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_fcall$arg2: $d2ctype(fprint_pml_anyexp<>)
+//
+implement{}
+fprint_pml_anyexp$PMLANYEXP_fcall(out, arg0) = 
+{
+//
+val () = fprint_pml_anyexp$PMLANYEXP_fcall$con<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_fcall$lpar<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_fcall$arg1<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_fcall$sep1<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_fcall$arg2<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_fcall$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_pml_anyexp$PMLANYEXP_fcall$con(out, _) = fprint(out, "PMLANYEXP_fcall")
+implement{}
+fprint_pml_anyexp$PMLANYEXP_fcall$lpar(out, _) = fprint_pml_anyexp$lpar(out)
+implement{}
+fprint_pml_anyexp$PMLANYEXP_fcall$rpar(out, _) = fprint_pml_anyexp$rpar(out)
+implement{}
+fprint_pml_anyexp$PMLANYEXP_fcall$sep1(out, _) = fprint_pml_anyexp$sep<>(out)
+implement{}
+fprint_pml_anyexp$PMLANYEXP_fcall$arg1(out, arg0) =
+  let val-PMLANYEXP_fcall(arg1, _) = arg0 in fprint_pml_anyexp$carg(out, arg1) end
+implement{}
+fprint_pml_anyexp$PMLANYEXP_fcall$arg2(out, arg0) =
+  let val-PMLANYEXP_fcall(_, arg2) = arg0 in fprint_pml_anyexp$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_string$con: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_string$lpar: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_string$rpar: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_string$arg1: $d2ctype(fprint_pml_anyexp<>)
+//
+implement{}
+fprint_pml_anyexp$PMLANYEXP_string(out, arg0) = 
+{
+//
+val () = fprint_pml_anyexp$PMLANYEXP_string$con<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_string$lpar<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_string$arg1<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_string$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_pml_anyexp$PMLANYEXP_string$con(out, _) = fprint(out, "PMLANYEXP_string")
+implement{}
+fprint_pml_anyexp$PMLANYEXP_string$lpar(out, _) = fprint_pml_anyexp$lpar(out)
+implement{}
+fprint_pml_anyexp$PMLANYEXP_string$rpar(out, _) = fprint_pml_anyexp$rpar(out)
+implement{}
+fprint_pml_anyexp$PMLANYEXP_string$arg1(out, arg0) =
+  let val-PMLANYEXP_string(arg1) = arg0 in fprint_pml_anyexp$carg(out, arg1) end
 //
 (* ****** ****** *)
 (* ****** ****** *)
@@ -1928,6 +2015,9 @@ fprint_pml_module$PMLMODULE_init$lpar: $d2ctype(fprint_pml_module<>)
 extern
 fun{}
 fprint_pml_module$PMLMODULE_init$rpar: $d2ctype(fprint_pml_module<>)
+extern
+fun{}
+fprint_pml_module$PMLMODULE_init$arg1: $d2ctype(fprint_pml_module<>)
 //
 implement{}
 fprint_pml_module$PMLMODULE_init(out, arg0) = 
@@ -1935,6 +2025,7 @@ fprint_pml_module$PMLMODULE_init(out, arg0) =
 //
 val () = fprint_pml_module$PMLMODULE_init$con<>(out, arg0)
 val () = fprint_pml_module$PMLMODULE_init$lpar<>(out, arg0)
+val () = fprint_pml_module$PMLMODULE_init$arg1<>(out, arg0)
 val () = fprint_pml_module$PMLMODULE_init$rpar<>(out, arg0)
 //
 }
@@ -1944,6 +2035,9 @@ implement{}
 fprint_pml_module$PMLMODULE_init$lpar(out, _) = fprint_pml_module$lpar(out)
 implement{}
 fprint_pml_module$PMLMODULE_init$rpar(out, _) = fprint_pml_module$rpar(out)
+implement{}
+fprint_pml_module$PMLMODULE_init$arg1(out, arg0) =
+  let val-PMLMODULE_init(arg1) = arg0 in fprint_pml_module$carg(out, arg1) end
 //
 extern
 fun{}
@@ -2028,6 +2122,7 @@ datcon_pml_atom
 (
 case+ arg0 of
 | PMLATOM_int _ => "PMLATOM_int"
+| PMLATOM_i0nt _ => "PMLATOM_i0nt"
 | PMLATOM_bool _ => "PMLATOM_bool"
 | PMLATOM_char _ => "PMLATOM_char"
 )
@@ -2063,6 +2158,8 @@ case+ arg0 of
 | PMLANYEXP_select _ => "PMLANYEXP_select"
 | PMLANYEXP_varref _ => "PMLANYEXP_varref"
 | PMLANYEXP_const _ => "PMLANYEXP_const"
+| PMLANYEXP_fcall _ => "PMLANYEXP_fcall"
+| PMLANYEXP_string _ => "PMLANYEXP_string"
 )
 //
 (* ****** ****** *)

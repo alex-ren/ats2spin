@@ -196,7 +196,9 @@ testall:: all
 #
 testall:: ; $(MAKE) -C TEST
 #
-testall:: ; ./ats2promela TEST/test_pml_01_dats.json
+testall:: test_pml_01
+
+# testall:: ; ./ats2promela TEST/test_pml_01_dats.json
 # testall:: ; ./ats2promela TEST/test01_dats.json
 # testall:: ; ./utfpleval TEST/test02_utfpl.json
 # testall:: ; ./utfpleval TEST/test03_utfpl.json
@@ -208,6 +210,9 @@ testall:: ; ./ats2promela TEST/test_pml_01_dats.json
 # testall:: cleanall
 # #
 # ######
+
+test_%: TEST/test_%_dats.json
+	./ats2promela $< | tee TEST/$@_dats.log
 
 cleanats:: ; $(RMF) postiats/*_?ats.c
 cleanats:: ; $(RMF) utils/*_?ats.c

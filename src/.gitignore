@@ -1,6 +1,8 @@
 
 # ATS tags
 tags
+.depend
+
 MYTAGS
 
 *_dats.c

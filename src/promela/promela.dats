@@ -37,10 +37,15 @@ in
 end
 
 fun pml_name_make_inline (i0id: i0id): option0 (pml_name) = 
-  pml_name_make_startwith_prefix (i0id, INLINE)
+  pml_name_make_startwith_prefix (i0id, PML_INLINE)
 
 fun pml_name_make_proctype (i0id: i0id): option0 (pml_name) =
-  pml_name_make_startwith_prefix (i0id, PROCTYPE)
+  pml_name_make_startwith_prefix (i0id, PML_PROCTYPE)
+
+fun pml_name_is_init (i0id: i0id): bool =
+case+ pml_name_make_startwith_prefix (i0id, PML_INIT) of
+| Some0 _ => true
+| None0 () => false
 
 (* ************ ************* *)
 implement i0exp_is_inline_call (i0exp) =
@@ -84,11 +89,13 @@ in
 in
   case+ pml_name_opt of
   | Some0 (pml_name) => pmltransform_inline (pml_name, i0fundef)
-  | None0 () => exitlocmsg ("Not supported.")
+  | None0 () => if pml_name_is_init (i0id) then
+                  pmltransform_init (i0fundef)
+                else exitlocmsg ("Not supported.")
 end
 end
 
-implement pmltransform_inline (pml_namee, i0fundef) = exitlocmsg ("todo")
+implement pmltransform_inline (pml_name, i0fundef) = exitlocmsg ("todo")
 
 implement pmltransform_proctype (pml_name, i0fundef) = let
   // paralst
@@ -115,6 +122,12 @@ in
   PMLMODULE_proctype (proctype)
 end
 
+implement pmltransform_init (i0fundef) = let
+  val inss = i0fundef_get_instructions (i0fundef)
+  val pml_steplst = pmltransform_i0inslst (inss)
+in
+  PMLMODULE_init pml_steplst
+end
 
 implement pmltransform_i0id (i0id) = let
   val name = tostring_i0id (i0id)
@@ -177,9 +190,9 @@ implement pmltransform_i0type () = PMLTYPE_todo
 
 implement pmltransform_i0exp2pml_anyexp (i0exp) =
 case+ i0exp of
-| EXP0int (i) => PMLANYEXP_const (PMLATOM_int (i))
-| EXP0i0nt (i_str) => exitlocmsg ("not supported")
-| EXP0string (str) => exitlocmsg ("string cannot be used in return value")
+| EXP0int (i) => exitlocmsg ("not supported")  // PMLANYEXP_const (PMLATOM_int (i))
+| EXP0i0nt (i_str) => PMLANYEXP_const (PMLATOM_i0nt (i_str))
+| EXP0string (str) => PMLANYEXP_string (str)
 | EXP0var (i0id) => 
       PMLANYEXP_varref (pml_varref_make (pmltransform_i0id (i0id)))
 | EXP0app (i0id, i0explst) => let
@@ -209,7 +222,24 @@ in
     end
     | nil0 () => exitlocmsg ("Nullary operator is not supported.")
     )
-  | None0 () => exitlocmsg ("function call not supported")
+  | None0 () => exitlocmsg ("This should not happen: " + tostring_i0id (i0id))
+end
+| EXP0extfcall (name, i0explst) => let
+  val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (i0explst)
+in
+  PMLANYEXP_fcall (name, pml_anyexplst)
+end
+
+implement pmltransform_i0explst2pml_anyexplst (i0explst) = let
+  val ret = list0_foldright<i0exp> (i0explst, fopr, nil0) where {
+  fun fopr (i0exp: i0exp, res: pml_anyexplst):<cloref1> pml_anyexplst = let
+    val anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
+  in
+    anyexp :: res
+  end
+  }
+in
+  ret
 end
 
 implement pmltransform_i0id2operator (i0id) = let
@@ -263,7 +293,7 @@ end
 //   val fname = i0fundef_get_id (i0fundef)
 //   val fname_str = tostring_i0id (fname)
 // in
-//   case+ fname_str.removePrefix (PROCTYPE) of
+//   case+ fname_str.removePrefix (PML_PROCTYPE) of
 //   | Some (proc_name) => let
 //     // proctype name
 //     val fname = EUstring (proc_name)

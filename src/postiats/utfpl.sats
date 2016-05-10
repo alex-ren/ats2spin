@@ -413,6 +413,7 @@ and d2exp_node =
 //
   | D2Elam of (p2atlst, d2exp)
   | D2Efix of (d2var, p2atlst, d2exp)
+  | D2Eextfcall of (string, d2explst)
 //
   | D2Eignored of ((*void*)) // HX: error-handling
 //
@@ -679,3 +680,6 @@ fun{} datcon_d2exp_node : (d2exp_node) -> string
 (* ****** ****** *)
 
 (* end of [utfpl.sats] *)
+
+
+

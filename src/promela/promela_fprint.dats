@@ -133,6 +133,7 @@ case+ opr of
 implement fprint_pml_atom (out, atom) =
 case+ atom of
 | PMLATOM_int (x)  => fprint (out, x)
+| PMLATOM_i0nt (str)  => fprint (out, str)
 | PMLATOM_bool (x) => fprint (out, x)
 | PMLATOM_char (x) => fprint (out, x)
 

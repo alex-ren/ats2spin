@@ -15,6 +15,9 @@ fprint_i0exp$EXP0var: $d2ctype(fprint_i0exp<>)
 extern
 fun{}
 fprint_i0exp$EXP0app: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0extfcall: $d2ctype(fprint_i0exp<>)
 //
 (* ****** ****** *)
 //
@@ -28,6 +31,7 @@ case+ arg0 of
 | EXP0string _ => fprint_i0exp$EXP0string<>(out, arg0)
 | EXP0var _ => fprint_i0exp$EXP0var<>(out, arg0)
 | EXP0app _ => fprint_i0exp$EXP0app<>(out, arg0)
+| EXP0extfcall _ => fprint_i0exp$EXP0extfcall<>(out, arg0)
 )
 //
 (* ****** ****** *)
@@ -235,6 +239,52 @@ fprint_i0exp$EXP0app$arg1(out, arg0) =
 implement{}
 fprint_i0exp$EXP0app$arg2(out, arg0) =
   let val-EXP0app(_, arg2) = arg0 in fprint_i0exp$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_i0exp$EXP0extfcall$con: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0extfcall$lpar: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0extfcall$rpar: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0extfcall$sep1: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0extfcall$arg1: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0extfcall$arg2: $d2ctype(fprint_i0exp<>)
+//
+implement{}
+fprint_i0exp$EXP0extfcall(out, arg0) = 
+{
+//
+val () = fprint_i0exp$EXP0extfcall$con<>(out, arg0)
+val () = fprint_i0exp$EXP0extfcall$lpar<>(out, arg0)
+val () = fprint_i0exp$EXP0extfcall$arg1<>(out, arg0)
+val () = fprint_i0exp$EXP0extfcall$sep1<>(out, arg0)
+val () = fprint_i0exp$EXP0extfcall$arg2<>(out, arg0)
+val () = fprint_i0exp$EXP0extfcall$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_i0exp$EXP0extfcall$con(out, _) = fprint(out, "EXP0extfcall")
+implement{}
+fprint_i0exp$EXP0extfcall$lpar(out, _) = fprint_i0exp$lpar(out)
+implement{}
+fprint_i0exp$EXP0extfcall$rpar(out, _) = fprint_i0exp$rpar(out)
+implement{}
+fprint_i0exp$EXP0extfcall$sep1(out, _) = fprint_i0exp$sep<>(out)
+implement{}
+fprint_i0exp$EXP0extfcall$arg1(out, arg0) =
+  let val-EXP0extfcall(arg1, _) = arg0 in fprint_i0exp$carg(out, arg1) end
+implement{}
+fprint_i0exp$EXP0extfcall$arg2(out, arg0) =
+  let val-EXP0extfcall(_, arg2) = arg0 in fprint_i0exp$carg(out, arg2) end
 //
 (* ****** ****** *)
 (* ****** ****** *)
@@ -652,6 +702,7 @@ case+ arg0 of
 | EXP0string _ => "EXP0string"
 | EXP0var _ => "EXP0var"
 | EXP0app _ => "EXP0app"
+| EXP0extfcall _ => "EXP0extfcall"
 )
 //
 (* ****** ****** *)

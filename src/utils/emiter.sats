@@ -17,6 +17,8 @@ emit_unit =
 | EUnewline of ()
 | EUstring of string
 | EUint of int
+| EUbool of bool
+| EUchar of char
 | EUlist of eulst
 where
 eu = emit_unit
@@ -40,11 +42,18 @@ emit_type_list
 
 fun emit_text : emit_type (string)
 fun emit_int : emit_type (int)
+fun emit_bool : emit_type (bool)
+fun emit_char : emit_type (char)
 fun emit_newline (): eu
 fun emit_indent (): eu
 fun emit_unindent (): eu
 fun emit_lwrapper (): eu
 fun emit_rwrapper (): eu
+
+overload emit with emit_text
+overload emit with emit_int
+overload emit with emit_bool
+overload emit with emit_char
 
 fun {a:t@ype} emit_list0 (xs: list0 a, sep: emit_unit): eulst
 overload emit with emit_list0

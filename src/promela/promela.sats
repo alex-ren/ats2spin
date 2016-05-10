@@ -11,8 +11,9 @@ staload "./../postiats/utfpl.sats"
 
 (* ********** ************ *)
 
-#define PROCTYPE "proctype$"
-#define INLINE "inline$"
+#define PML_PROCTYPE "proctype$"
+#define PML_INLINE "inline$"
+#define PML_INIT "init$"
 
 (* ********** ************ *)
 
@@ -62,6 +63,7 @@ overload fprint with fprint_pml_chan_init
 
 datatype pml_atom =
 | PMLATOM_int of (int)   
+| PMLATOM_i0nt of (string)   
 | PMLATOM_bool of (bool)   
 | PMLATOM_char of (char)   
 
@@ -93,6 +95,9 @@ datatype pml_anyexp =
 // | PMLANYEXP_recv_poll
 | PMLANYEXP_varref of pml_varref  // e.g. arr[2]
 | PMLANYEXP_const of pml_atom
+| PMLANYEXP_fcall of (string, pml_anyexplst)
+// used as argument for fcall
+| PMLANYEXP_string of (string)
 // | PMLANYEXP_timeout
 // | PMLANYEXP_np (* non-progress system state *)
 // | PMLANYEXP_enabled (pml_anyexp)
@@ -104,6 +109,8 @@ and
 (* x[y].z[2] *)
 pml_varref = 
 | PMLVARREF of (pml_name, option0 pml_anyexp, option0 pml_varref)
+where 
+pml_anyexplst = list0 pml_anyexp
 
 fun{} datcon_pml_anyexp (pml_anyexp): string
 fun{} fprint_pml_anyexp : (FILEref, pml_anyexp) -> void
@@ -246,7 +253,7 @@ datatype pml_module =
 | PMLMODULE_declst of pml_declst
 | PMLMODULE_proctype of pml_proctype
 | PMLMODULE_inline of pml_inline
-| PMLMODULE_init
+| PMLMODULE_init of pml_steplst
 | PMLMODULE_never
 | PMLMODULE_c_code
 
@@ -302,6 +309,7 @@ fun pmltransform_i0fundef (i0fundef: i0fundef): pml_module
 *)
 fun pmltransform_inline (pml_name: pml_name, i0fundef: i0fundef): pml_module
 fun pmltransform_proctype (pml_name: pml_name, i0fundef: i0fundef): pml_module
+fun pmltransform_init (i0fundef: i0fundef): pml_module
 
 fun pmltransform_i0id (i0id: i0id): pml_name
 fun pmltransform_i0inslst (i0inslst: i0inslst): pml_steplst
@@ -310,6 +318,8 @@ fun pmltransform_i0type (): pml_type
 
 // i0exp is not inline function invocation.
 fun pmltransform_i0exp2pml_anyexp (i0exp): pml_anyexp
+
+fun pmltransform_i0explst2pml_anyexplst (i0explst): pml_anyexplst
 
 fun pmltransform_i0id2operator (i0id): option0 pml_opr
 
