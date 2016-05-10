@@ -20,7 +20,7 @@ staload "{$JSONC}/SATS/json.sats"
 staload "{$JSONC}/SATS/json_ML.sats"
 
 staload "./parsing/parsing.sats"
-staload UTFPL = "./postiats/utfpl.sats"
+staload "./postiats/utfpl.sats"
 staload "./instr0/instr0.sats"
 staload "./promela/promela.sats"
 staload "./utils/emiter.sats"
@@ -87,10 +87,15 @@ implement main0 (argc, argv) = let
   val jsv = postiats2jsonval (inpref)
 
   // symbol_manager
-  val () = $UTFPL.the_symbol_mgr_initialize ()
+  val () = the_symbol_mgr_initialize ()
 
   val d2ecs = parse_d2eclist_export (jsv)
+  val () = fprint (stdout_ref, 
+    "\n## ======== level postiats ==============================\n\n")
+  val () = fprint_d2eclist (stdout_ref, d2ecs)
 
+  val () = fprint (stdout_ref, 
+    "\n## ======== transform postiats to instr0 ================\n\n")
   val sa = stamp_allocator_create ()
   val i0prog = i0transform_d2eclst_global (sa, d2ecs)
   val () = fprint (stdout_ref, 

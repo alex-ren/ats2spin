@@ -106,6 +106,8 @@ end
 
 fun f2undec_is_recursive (f: f2undec): bool = let
   val fvar = f.f2undec_var
+  val () = fprint ("xxx " + datcon f.f2undec_def.d2exp_node)
+
   val- D2Elam (_, fbody) = f.f2undec_def.d2exp_node
 
   fun d2exp_is_fun (fexp: d2exp, fvar: d2var): bool =

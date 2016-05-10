@@ -13,7 +13,8 @@ fun proctype$foo {x: int} (x: int x, y: int): void = let
 in
 end
 
-fun init$main (): void = ()
+fun init$main (): void = let
+  val x = 1 in end
 
 
 
