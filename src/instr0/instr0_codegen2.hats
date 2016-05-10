@@ -18,6 +18,9 @@ fprint_i0exp$EXP0app: $d2ctype(fprint_i0exp<>)
 extern
 fun{}
 fprint_i0exp$EXP0extfcall: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0lambody: $d2ctype(fprint_i0exp<>)
 //
 (* ****** ****** *)
 //
@@ -32,6 +35,7 @@ case+ arg0 of
 | EXP0var _ => fprint_i0exp$EXP0var<>(out, arg0)
 | EXP0app _ => fprint_i0exp$EXP0app<>(out, arg0)
 | EXP0extfcall _ => fprint_i0exp$EXP0extfcall<>(out, arg0)
+| EXP0lambody _ => fprint_i0exp$EXP0lambody<>(out, arg0)
 )
 //
 (* ****** ****** *)
@@ -285,6 +289,39 @@ fprint_i0exp$EXP0extfcall$arg1(out, arg0) =
 implement{}
 fprint_i0exp$EXP0extfcall$arg2(out, arg0) =
   let val-EXP0extfcall(_, arg2) = arg0 in fprint_i0exp$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_i0exp$EXP0lambody$con: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0lambody$lpar: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0lambody$rpar: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0lambody$arg1: $d2ctype(fprint_i0exp<>)
+//
+implement{}
+fprint_i0exp$EXP0lambody(out, arg0) = 
+{
+//
+val () = fprint_i0exp$EXP0lambody$con<>(out, arg0)
+val () = fprint_i0exp$EXP0lambody$lpar<>(out, arg0)
+val () = fprint_i0exp$EXP0lambody$arg1<>(out, arg0)
+val () = fprint_i0exp$EXP0lambody$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_i0exp$EXP0lambody$con(out, _) = fprint(out, "EXP0lambody")
+implement{}
+fprint_i0exp$EXP0lambody$lpar(out, _) = fprint_i0exp$lpar(out)
+implement{}
+fprint_i0exp$EXP0lambody$rpar(out, _) = fprint_i0exp$rpar(out)
+implement{}
+fprint_i0exp$EXP0lambody$arg1(out, arg0) =
+  let val-EXP0lambody(arg1) = arg0 in fprint_i0exp$carg(out, arg1) end
 //
 (* ****** ****** *)
 (* ****** ****** *)
@@ -703,6 +740,7 @@ case+ arg0 of
 | EXP0var _ => "EXP0var"
 | EXP0app _ => "EXP0app"
 | EXP0extfcall _ => "EXP0extfcall"
+| EXP0lambody _ => "EXP0lambody"
 )
 //
 (* ****** ****** *)

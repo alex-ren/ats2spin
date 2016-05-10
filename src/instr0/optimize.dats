@@ -140,6 +140,7 @@ else let
         | EXP0string _ => ins
         | EXP0var _ => ins
         | EXP0extfcall _ => ins
+        | EXP0lambody _ => exitlocmsg ("This should not happen.")
         | EXP0app (i0id, i0explst) => let
           val tag_id_opt = i0idmap_search (map_fname_tag, i0id)
         in

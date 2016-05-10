@@ -10,11 +10,6 @@ in
 end
 
 
-fun init$main (): void = let
-  val x = 1 
-in 
-end
-
 
 
 

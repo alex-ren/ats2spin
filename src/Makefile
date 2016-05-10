@@ -197,6 +197,7 @@ testall:: all
 testall:: ; $(MAKE) -C TEST
 #
 testall:: test_pml_01
+testall:: test_pml_02
 
 # testall:: ; ./ats2promela TEST/test_pml_01_dats.json
 # testall:: ; ./ats2promela TEST/test01_dats.json

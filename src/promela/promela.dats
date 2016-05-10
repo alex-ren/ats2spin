@@ -229,6 +229,7 @@ end
 in
   PMLANYEXP_fcall (name, pml_anyexplst)
 end
+| EXP0lambody _ => exitlocmsg ("This should not happen.")
 
 implement pmltransform_i0explst2pml_anyexplst (i0explst) = let
   val ret = list0_foldright<i0exp> (i0explst, fopr, nil0) where {

@@ -473,9 +473,13 @@ in
   in
     EXP0extfcall (name, i0explst)
   end
-// //
+  | D2Elam (p2atlst, d2exp) => let
+    val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
+  in
+    EXP0lambody i0exp
+  end
 //   | D2Eignored of ((*void*)) // HX: error-handling
-| _ => exitlocmsg (datcon_d2exp_node (node) + " not allowed")
+  | _ => exitlocmsg (datcon_d2exp_node (node) + " not allowed")
 // //
 end  // end of [i0transform_d2exp_expvalue]
 

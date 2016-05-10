@@ -64,7 +64,7 @@ in jsv0 end
 implement main0 (argc, argv) = let
   //
   val () =
-  println! ("Hello from UTFPL0!")
+  println! ("\n\n ========= Hello from UTFPL0! =============")
   //
   // val () = the_d2symmap_init ()
   //

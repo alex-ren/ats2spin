@@ -1,0 +1,77 @@
+
+
+ ========= Hello from UTFPL0! =============
+
+## ======== level postiats ==============================
+
+D2Cignored(), D2Cignored(), D2Cfundecs(
+f2undec{d2v= proctype$foo(3868); def= D2Eexp(D2Elam(P2Tpat(P2Tvar(x(3869))), P2Tpat(P2Tvar(y(3870))); D2Eexp(D2Eexp(D2Elet(D2Cvaldecs(
+v2aldec{pat= P2Tvar(v1(3871)); def= D2Eapplst(D2Esym(+); D2EXPARGdyn(-1; D2Evar(x(3869)), D2Evar(y(3870))))}
+), D2Cvaldecs(
+v2aldec{pat= P2Tvar(v2(3872)); def= D2Eapplst(D2Esym(-); D2EXPARGdyn(-1; D2Evar(x(3869)), D2Evar(y(3870))))}
+), D2Cvaldecs(
+v2aldec{pat= P2Tempty(); def= D2E...(...)}
+); D2Eempty()))))}
+)
+## ======== transform postiats to instr0 ================
+
+======== i0transform_d2eclst_global
+======== i0transform_d2ecl_global
+======== i0transform_d2ecl_global
+======== i0transform_d2ecl_global
+======== i0transform_D2Cfundecs
+======== i0transform_fundec: proctype$foo(3868)
+======== i0transform_p2at2para: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 103(line=5, offs=28) -- 111(line=5, offs=36)
+======== i0transform_p2at2para: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 103(line=5, offs=28) -- 104(line=5, offs=29)
+======== i0transform_p2at2para: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 113(line=5, offs=38) -- 119(line=5, offs=44)
+======== i0transform_p2at2para: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 113(line=5, offs=38) -- 114(line=5, offs=39)
+======== i0transform_d2exp_fbody: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 122(line=5, offs=47) -- 225(line=10, offs=4)
+======== i0transform_d2exp_fbody: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 122(line=5, offs=47) -- 225(line=10, offs=4)
+======== i0transform_d2exp_fbody: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 129(line=5, offs=54) -- 225(line=10, offs=4)
+======== i0transform_p2at2holder: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 139(line=6, offs=7) -- 141(line=6, offs=9)
+======== i0transform_d2exp_fname: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 146(line=6, offs=14) -- 147(line=6, offs=15)
+======== i0transform_p2at2holder: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 156(line=7, offs=7) -- 158(line=7, offs=9)
+======== i0transform_d2exp_fname: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 163(line=7, offs=14) -- 164(line=7, offs=15)
+======== i0transform_p2at2holder: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 173(line=8, offs=7) -- 175(line=8, offs=9)
+======== i0transform_d2exp_fbody: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 219(line=9, offs=1) -- 225(line=10, offs=4)
+
+## ======== level instr0 ==============================
+
+===================== functions =====================
+// group contains ()
+fun proctype$foo_0(x_1, y_2) {
+INS0assign(v1_3,EXP0app(+_4,EXP0var(x_1), EXP0var(y_2)))
+INS0assign(v2_5,EXP0app(-_6,EXP0var(x_1), EXP0var(y_2)))
+INS0assign(none,EXP0extfcall(printf,EXP0string(x is %d), EXP0i0nt(3)))
+INS0return(none)
+}
+
+
+## ======== level instr0 after optimization ==============================
+
+===================== functions =====================
+// group contains ()
+fun proctype$foo_0(x_1, y_2) {
+INS0assign(v1_3,EXP0app(+_4,EXP0var(x_1), EXP0var(y_2)))
+INS0assign(v2_5,EXP0app(-_6,EXP0var(x_1), EXP0var(y_2)))
+INS0assign(none,EXP0extfcall(printf,EXP0string(x is %d), EXP0i0nt(3)))
+INS0return(none)
+}
+
+
+## ======== level promela AST ==============================
+
+PMLMODULE_proctype(proctype foo_0(PMLTYPE_todo() PMLIVAR_name(x_1); PMLTYPE_todo() PMLIVAR_name(y_2)) {
+PMLSTEP_declst(PMLTYPE_todo() PMLIVAR_exp(v1_3,PMLEXP_anyexp(PMLANYEXP_binarop(+,PMLANYEXP_varref(PMLVARREF(x_1,None(),None())),PMLANYEXP_varref(PMLVARREF(y_2,None(),None()))))))
+PMLSTEP_declst(PMLTYPE_todo() PMLIVAR_exp(v2_5,PMLEXP_anyexp(PMLANYEXP_binarop(-,PMLANYEXP_varref(PMLVARREF(x_1,None(),None())),PMLANYEXP_varref(PMLVARREF(y_2,None(),None()))))))
+PMLSTEP_stmnt(PMLSTMNT_exp(PMLEXP_anyexp(PMLANYEXP_fcall(printf,PMLANYEXP_string(x is %d), PMLANYEXP_const(3)))))
+}
+)
+## ======== level promela ==============================
+
+proctype foo_0(int x_1; int y_2) {
+  int v1_3 = (x_1) + (y_2);
+  int v2_5 = (x_1) - (y_2);
+  printf("x is %d", 3)
+}
+

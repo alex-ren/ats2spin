@@ -30,6 +30,7 @@ all::
 all:: test01_dats.json
 all:: test02_dats.json
 all:: test_pml_01_dats.json
+all:: test_pml_02_dats.json
 
 ######
 #
