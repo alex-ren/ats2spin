@@ -179,6 +179,7 @@ implement pmltransform_i0exp2pml_anyexp (i0exp) =
 case+ i0exp of
 | EXP0int (i) => PMLANYEXP_const (PMLATOM_int (i))
 | EXP0i0nt (i_str) => exitlocmsg ("not supported")
+| EXP0string (str) => exitlocmsg ("string cannot be used in return value")
 | EXP0var (i0id) => 
       PMLANYEXP_varref (pml_varref_make (pmltransform_i0id (i0id)))
 | EXP0app (i0id, i0explst) => let

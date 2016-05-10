@@ -90,6 +90,7 @@ datatype i0ins =
 and i0exp =
 | EXP0int of (int)
 | EXP0i0nt of (string)
+| EXP0string of (string)
 | EXP0var of (i0id)
 | EXP0app of (i0id, i0explst)
 

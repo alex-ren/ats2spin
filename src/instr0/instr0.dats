@@ -104,11 +104,24 @@ in
 //   | _ => exitlocmsg (datcon_d2ecl_node (node) + " not supported")
 end
 
+(*
+* p2atlst: parameters
+* d2exp: body
+*)
+extern fun d2exp_node_get_lambda (d2exp_node): (p2atlst, d2exp)
+implement d2exp_node_get_lambda (node) =
+case+ node of
+| D2Elam (p2atlst, d2exp) => (p2atlst, d2exp)
+| D2Eexp (node) => d2exp_node_get_lambda (node.d2exp_node)
+| _ => exitlocmsg ("This should not happen.")
+
 fun f2undec_is_recursive (f: f2undec): bool = let
   val fvar = f.f2undec_var
-  val () = fprint ("xxx " + datcon f.f2undec_def.d2exp_node)
-
-  val- D2Elam (_, fbody) = f.f2undec_def.d2exp_node
+  // val () = fprint (stdout_ref, "xxx fvar is ")
+  // val () = fprint (stdout_ref, fvar)
+  // val () = fprint (stdout_ref, "\n")
+  // val () = fprint (stdout_ref, "xxx " + datcon_d2exp_node f.f2undec_def.d2exp_node + "\n")
+  val (_, fbody) = d2exp_node_get_lambda (f.f2undec_def.d2exp_node)
 
   fun d2exp_is_fun (fexp: d2exp, fvar: d2var): bool =
     case+ fexp.d2exp_node of
@@ -215,7 +228,7 @@ implement i0transform_fundec (sa, group, f2undec, fmap, gvs) = let
     "======== i0transform_fundec: ", f2undec.f2undec_var, "\n")
 
   val name = i0transform_d2var (sa, f2undec.f2undec_var)
-  val- D2Elam (p2atlst, body) = f2undec.f2undec_def.d2exp_node
+  val (p2atlst, body) = d2exp_node_get_lambda (f2undec.f2undec_def.d2exp_node)
   val paralst = i0transform_p2atlst2paralst (sa, p2atlst)
   val inss = i0transform_d2exp_fbody (sa, body, fmap, gvs)
 
@@ -421,7 +434,7 @@ in
   | D2Ei0nt (str) => EXP0i0nt (str)
 //   | D2Ec0har of (char)
 //   | D2Ef0loat of (string)
-//   | D2Es0tring of (string)
+  | D2Es0tring (str) => exitlocmsg ("string is only used in print")
 // //
 //   | D2Eempty of ((*void*))
 // //
@@ -431,6 +444,7 @@ in
 // //
   | D2Eapplst (d2exp, d2exparglst) => let
     val i0id = i0transform_d2exp_fname (sa, d2exp)
+    // todo check whether the function is print
     val i0explst = i0transform_d2exparglst (sa, d2exparglst)
     val app = EXP0app (i0id, i0explst)
   in
