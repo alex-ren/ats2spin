@@ -21,19 +21,19 @@ v2aldec{pat= P2Tempty(); def= D2E...(...)}
 ======== i0transform_d2ecl_global
 ======== i0transform_D2Cfundecs
 ======== i0transform_fundec: proctype$foo(3868)
-======== i0transform_p2at2para: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 103(line=5, offs=28) -- 111(line=5, offs=36)
-======== i0transform_p2at2para: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 103(line=5, offs=28) -- 104(line=5, offs=29)
-======== i0transform_p2at2para: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 113(line=5, offs=38) -- 119(line=5, offs=44)
-======== i0transform_p2at2para: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 113(line=5, offs=38) -- 114(line=5, offs=39)
-======== i0transform_d2exp_fbody: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 122(line=5, offs=47) -- 225(line=10, offs=4)
-======== i0transform_d2exp_fbody: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 122(line=5, offs=47) -- 225(line=10, offs=4)
-======== i0transform_d2exp_fbody: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 129(line=5, offs=54) -- 225(line=10, offs=4)
-======== i0transform_p2at2holder: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 139(line=6, offs=7) -- 141(line=6, offs=9)
-======== i0transform_d2exp_fname: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 146(line=6, offs=14) -- 147(line=6, offs=15)
-======== i0transform_p2at2holder: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 156(line=7, offs=7) -- 158(line=7, offs=9)
-======== i0transform_d2exp_fname: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 163(line=7, offs=14) -- 164(line=7, offs=15)
-======== i0transform_p2at2holder: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 173(line=8, offs=7) -- 175(line=8, offs=9)
-======== i0transform_d2exp_fbody: /home/grad2/aren/workspace/ats2spin/src/TEST/test_pml_01.dats: 219(line=9, offs=1) -- 225(line=10, offs=4)
+======== i0transform_p2at2para: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 103(line=5, offs=28) -- 111(line=5, offs=36)
+======== i0transform_p2at2para: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 103(line=5, offs=28) -- 104(line=5, offs=29)
+======== i0transform_p2at2para: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 113(line=5, offs=38) -- 119(line=5, offs=44)
+======== i0transform_p2at2para: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 113(line=5, offs=38) -- 114(line=5, offs=39)
+======== i0transform_d2exp_fbody: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 122(line=5, offs=47) -- 225(line=10, offs=4)
+======== i0transform_d2exp_fbody: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 122(line=5, offs=47) -- 225(line=10, offs=4)
+======== i0transform_d2exp_fbody: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 129(line=5, offs=54) -- 225(line=10, offs=4)
+======== i0transform_p2at2holder: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 139(line=6, offs=7) -- 141(line=6, offs=9)
+======== i0transform_d2exp_fname: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 146(line=6, offs=14) -- 147(line=6, offs=15)
+======== i0transform_p2at2holder: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 156(line=7, offs=7) -- 158(line=7, offs=9)
+======== i0transform_d2exp_fname: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 163(line=7, offs=14) -- 164(line=7, offs=15)
+======== i0transform_p2at2holder: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 173(line=8, offs=7) -- 175(line=8, offs=9)
+======== i0transform_d2exp_fbody: /home/alex/workspace/ats_spin/src/TEST/test_pml_01.dats: 219(line=9, offs=1) -- 225(line=10, offs=4)
 
 ## ======== level instr0 ==============================
 

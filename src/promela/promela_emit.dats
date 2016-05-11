@@ -231,7 +231,17 @@ end
 // | PMLANYEXP_enabled (pml_anyexp)
 // | PMLANYEXP_pc_value (pml_anyexp)
 // | PMLANYEXP_name (pml_name, pml_anyexp, pml_name)
-// | PMLANYEXP_run (pml_name, pml_arglst, pml_priority_opt)
+| PMLANYEXP_run (pml_name, pml_arglst (*pml_priority_opt*)) => let
+  val eus = emit ("run ")
+    :: emit_pml_name (pml_name)
+    :: emit ("(")
+    :: EUlist (emit<pml_anyexp> (pml_arglst, emit (", ")))
+    :: emit (")")
+    :: nil0
+in
+  EUlist (eus)
+end
+
 
 
 implement emit_pml_opr (pml_opr) =
@@ -242,6 +252,7 @@ case+ pml_opr of
 | PMLOPR_or () => emit_text ("||")
 | PMLOPR_neg () => emit_text ("~")
 | PMLOPR_ban () => emit_text ("!")
+| PMLOPR_run () => exitlocmsg ("should not happen")
 
 implement emit_pml_varref (pml_varref) = let
   val+ PMLVARREF (pml_name, pml_anyexp_opt, pml_varref_opt) = pml_varref

@@ -199,28 +199,41 @@ case+ i0exp of
   val opr_opt = pmltransform_i0id2operator (i0id)
 in
   case+ opr_opt of
-  | Some0 (opr) => 
+  | Some0 (opr) =>
     (
-    case+ i0explst of
-    | arg1 :: i0explst1 => let
-      val pml_arg1 = pmltransform_i0exp2pml_anyexp (arg1)
-    in
-      (
-      case+ i0explst1 of
-      | arg2 :: _ => let
-        val pml_arg2 = pmltransform_i0exp2pml_anyexp (arg2)
-        val pml_anyexp = PMLANYEXP_binarop (opr, pml_arg1, pml_arg2)
-      in
-        pml_anyexp
-      end
-      | nil0 () => let
-        val pml_anyexp = PMLANYEXP_unarop (opr, pml_arg1)
-      in
-        pml_anyexp
-      end
-      )
+    case+ opr of
+    | PMLOPR_run () => let
+      val- i0exp :: nil0 = i0explst
+      val- EXP0lambody (proc_call) = i0exp
+      val- EXP0app (proc_id, proc_arglst) = proc_call
+      val- Some0 proc_name = pml_name_make_proctype (proc_id)
+      val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (proc_arglst)
+    in 
+      PMLANYEXP_run (proc_name, pml_anyexplst)
     end
-    | nil0 () => exitlocmsg ("Nullary operator is not supported.")
+    | _ =>
+      (
+      case+ i0explst of
+      | arg1 :: i0explst1 => let
+        val pml_arg1 = pmltransform_i0exp2pml_anyexp (arg1)
+      in
+        (
+        case+ i0explst1 of
+        | arg2 :: _ => let
+          val pml_arg2 = pmltransform_i0exp2pml_anyexp (arg2)
+          val pml_anyexp = PMLANYEXP_binarop (opr, pml_arg1, pml_arg2)
+        in
+          pml_anyexp
+        end
+        | nil0 () => let
+          val pml_anyexp = PMLANYEXP_unarop (opr, pml_arg1)
+        in
+          pml_anyexp
+        end
+        )
+      end
+      | nil0 () => exitlocmsg ("Nullary operator is not supported.")
+      )
     )
   | None0 () => exitlocmsg ("This should not happen: " + tostring_i0id (i0id))
 end
@@ -249,6 +262,7 @@ in
   case+ opr_str of
   | "+" => Some0 PMLOPR_plus
   | "-" => Some0 PMLOPR_minus
+  | PML_RUN => Some0 PMLOPR_run
   | _ => exitlocmsg ("operator " + opr_str + " is not supported")
 end
 

@@ -213,7 +213,7 @@ testall:: test_pml_02
 # ######
 
 test_%: TEST/test_%_dats.json
-	./ats2promela $< | tee TEST/$@_dats.log
+	./ats2promela $< 
 
 cleanats:: ; $(RMF) postiats/*_?ats.c
 cleanats:: ; $(RMF) utils/*_?ats.c

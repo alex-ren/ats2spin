@@ -369,6 +369,9 @@ fprint_pml_anyexp$PMLANYEXP_fcall: $d2ctype(fprint_pml_anyexp<>)
 extern
 fun{}
 fprint_pml_anyexp$PMLANYEXP_string: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_run: $d2ctype(fprint_pml_anyexp<>)
 //
 (* ****** ****** *)
 //
@@ -384,6 +387,7 @@ case+ arg0 of
 | PMLANYEXP_const _ => fprint_pml_anyexp$PMLANYEXP_const<>(out, arg0)
 | PMLANYEXP_fcall _ => fprint_pml_anyexp$PMLANYEXP_fcall<>(out, arg0)
 | PMLANYEXP_string _ => fprint_pml_anyexp$PMLANYEXP_string<>(out, arg0)
+| PMLANYEXP_run _ => fprint_pml_anyexp$PMLANYEXP_run<>(out, arg0)
 )
 //
 (* ****** ****** *)
@@ -722,6 +726,52 @@ fprint_pml_anyexp$PMLANYEXP_string$rpar(out, _) = fprint_pml_anyexp$rpar(out)
 implement{}
 fprint_pml_anyexp$PMLANYEXP_string$arg1(out, arg0) =
   let val-PMLANYEXP_string(arg1) = arg0 in fprint_pml_anyexp$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_run$con: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_run$lpar: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_run$rpar: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_run$sep1: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_run$arg1: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_run$arg2: $d2ctype(fprint_pml_anyexp<>)
+//
+implement{}
+fprint_pml_anyexp$PMLANYEXP_run(out, arg0) = 
+{
+//
+val () = fprint_pml_anyexp$PMLANYEXP_run$con<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_run$lpar<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_run$arg1<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_run$sep1<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_run$arg2<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_run$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_pml_anyexp$PMLANYEXP_run$con(out, _) = fprint(out, "PMLANYEXP_run")
+implement{}
+fprint_pml_anyexp$PMLANYEXP_run$lpar(out, _) = fprint_pml_anyexp$lpar(out)
+implement{}
+fprint_pml_anyexp$PMLANYEXP_run$rpar(out, _) = fprint_pml_anyexp$rpar(out)
+implement{}
+fprint_pml_anyexp$PMLANYEXP_run$sep1(out, _) = fprint_pml_anyexp$sep<>(out)
+implement{}
+fprint_pml_anyexp$PMLANYEXP_run$arg1(out, arg0) =
+  let val-PMLANYEXP_run(arg1, _) = arg0 in fprint_pml_anyexp$carg(out, arg1) end
+implement{}
+fprint_pml_anyexp$PMLANYEXP_run$arg2(out, arg0) =
+  let val-PMLANYEXP_run(_, arg2) = arg0 in fprint_pml_anyexp$carg(out, arg2) end
 //
 (* ****** ****** *)
 (* ****** ****** *)
@@ -2142,6 +2192,7 @@ case+ arg0 of
 | PMLOPR_or _ => "PMLOPR_or"
 | PMLOPR_neg _ => "PMLOPR_neg"
 | PMLOPR_ban _ => "PMLOPR_ban"
+| PMLOPR_run _ => "PMLOPR_run"
 )
 //
 (* ****** ****** *)
@@ -2160,6 +2211,7 @@ case+ arg0 of
 | PMLANYEXP_const _ => "PMLANYEXP_const"
 | PMLANYEXP_fcall _ => "PMLANYEXP_fcall"
 | PMLANYEXP_string _ => "PMLANYEXP_string"
+| PMLANYEXP_run _ => "PMLANYEXP_run"
 )
 //
 (* ****** ****** *)

@@ -13,7 +13,8 @@ staload "./../postiats/utfpl.sats"
 
 #define PML_PROCTYPE "proctype$"
 #define PML_INLINE "inline$"
-#define PML_INIT "init$"
+#define PML_INIT "pml$init"
+#define PML_RUN "pml$run"
 
 (* ********** ************ *)
 
@@ -79,6 +80,7 @@ pml_opr =
 | PMLOPR_or
 | PMLOPR_neg   (* ~ *)
 | PMLOPR_ban   (* ! *)
+| PMLOPR_run
 
 fun{} datcon_pml_opr (pml_opr): string
 fun fprint_pml_opr : (FILEref, pml_opr) -> void
@@ -103,7 +105,7 @@ datatype pml_anyexp =
 // | PMLANYEXP_enabled (pml_anyexp)
 // | PMLANYEXP_pc_value (pml_anyexp)
 // | PMLANYEXP_name (pml_name, pml_anyexp, pml_name)
-// | PMLANYEXP_run (pml_name, pml_arglst, pml_priority_opt)
+| PMLANYEXP_run of (pml_name, pml_anyexplst(*, pml_priority_opt*))
 
 and 
 (* x[y].z[2] *)

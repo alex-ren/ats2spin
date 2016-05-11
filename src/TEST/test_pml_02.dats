@@ -11,9 +11,17 @@ fun proctype$foo {x: int} (x: int x, y: int): void = let
 in
 end
 
-fun init$main (): void = let
+fun proctype$foo1 {x: int} (x: int x, y: int): void = let
+  val v1 = x + y
+  val v2 = x - y
+  val () = $extfcall (void, "printf", "v1 is %d", v1)
+in
+end
+
+fun pml$init (): void = let
   val x = 1 
-  val _ = pml$run (lam () => proctype$foo (1, x))
+  val y = pml$run (lam () => proctype$foo (1, x))
+  val _ = pml$run (lam () => proctype$foo1 (1, y))
 in 
 end
 

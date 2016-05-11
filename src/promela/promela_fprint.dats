@@ -129,6 +129,7 @@ case+ opr of
 | PMLOPR_or ()    => fprint (out, "/")
 | PMLOPR_neg ()   => fprint (out, "~")
 | PMLOPR_ban ()   => fprint (out, "!")
+| PMLOPR_run ()   => fprint (out, "run")
 
 implement fprint_pml_atom (out, atom) =
 case+ atom of
