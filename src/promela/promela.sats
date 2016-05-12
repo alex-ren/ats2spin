@@ -80,7 +80,7 @@ pml_opr =
 | PMLOPR_or
 | PMLOPR_neg   (* ~ *)
 | PMLOPR_ban   (* ! *)
-| PMLOPR_run
+// | PMLOPR_run
 
 fun{} datcon_pml_opr (pml_opr): string
 fun fprint_pml_opr : (FILEref, pml_opr) -> void
@@ -106,6 +106,7 @@ datatype pml_anyexp =
 // | PMLANYEXP_pc_value (pml_anyexp)
 // | PMLANYEXP_name (pml_name, pml_anyexp, pml_name)
 | PMLANYEXP_run of (pml_name, pml_anyexplst(*, pml_priority_opt*))
+| PMLANYEXP_inline of (pml_name, pml_anyexplst)  // call inline function
 
 and 
 (* x[y].z[2] *)
@@ -191,7 +192,10 @@ pml_stmnt =
 | PMLSTMNT_else
 | PMLSTMNT_break
 | PMLSTMNT_goto of pml_name
-| PMLSTMNT_name of (pml_name, pml_stmnt)
+// Promela needs a label to be attached to a statement.
+// So I don't use the following currently.
+| PMLSTMNT_name of (pml_name, pml_stmnt)  
+| PMLSTMNT_label of (pml_name)
 // | PMLSTMNT_print
 | PMLSTMNT_assert of pml_exp
 | PMLSTMNT_exp of pml_exp
@@ -329,6 +333,8 @@ fun pmltransform_i0exp2pml_anyexp (i0exp): pml_anyexp
 fun pmltransform_i0explst2pml_anyexplst (i0explst): pml_anyexplst
 
 fun pmltransform_i0id2operator (i0id): option0 pml_opr
+
+fun pmltransform_i0id2decl (i0id): pml_decl
 
 fun i0id_is_run (i0id): bool
 

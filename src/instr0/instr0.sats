@@ -95,8 +95,9 @@ datatype i0ins =
 | INS0ifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))
 | INS0goto of (i0id)
 // Added for recursive functions
-| INS0init_loop of (i0idlst (*all variables*)
-                  , list0 (@(i0id, i0id)) (*variabe and initial value from para*))
+| INS0init_loop of (
+  i0idlst (*all variables*)
+  , list0 (@(i0id, i0id)) (*variabe and initial value from para*))
 // Added for recursive functions
 | INS0tail_jump of (i0inslst (*calc arg*), i0id (*jump tag*))
 

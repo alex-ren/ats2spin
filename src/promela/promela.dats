@@ -162,7 +162,6 @@ in
   pml_name_make (name, stamp, type)
 end
 
-
 implement pmltransform_i0inslst (is_inline, i0inslst) = let
 fun loop (i0inslst: i0inslst, res: pml_steplst): pml_steplst =
 case+ i0inslst of
@@ -171,9 +170,20 @@ case+ i0inslst of
   | INS0decl (i0id) => exitlocmsg ("todo: " + datcon_i0ins i0ins)
   | INS0assign (i0id_opt, i0exp) => (
     if i0exp_is_inline_call (i0exp) then 
-      exitlocmsg ("todo: invoke inline functions")
+      (
+      case+ i0id_opt of  // handle inline call
+      | Some0 (i0id) => exitlocmsg ("inline function has no return value")
+      | None0 () => let 
+        val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
+        val pml_exp = PMLEXP_anyexp (pml_anyexp)
+        val pml_stmnt = PMLSTMNT_exp (pml_exp)
+        val pml_step = PMLSTEP_stmnt (pml_stmnt)
+      in
+        loop (i0inslst, pml_step :: res)
+      end
+      )
     else case+ i0id_opt of
-    | Some0 (i0id) => let
+    | Some0 (i0id) => let  // handle normal function call with return value
       val pml_name = pmltransform_i0id (i0id)
       val pml_type = pml_name_get_type (pml_name)
       val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
@@ -186,7 +196,7 @@ case+ i0inslst of
     in
       loop (i0inslst, pml_step :: res)
     end
-    | None0 () => let 
+    | None0 () => let // hande normal function call without return value
       val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
       val pml_exp = PMLEXP_anyexp (pml_anyexp)
       val pml_stmnt = PMLSTMNT_exp (pml_exp)
@@ -203,6 +213,42 @@ case+ i0inslst of
       else exitlocmsg ("todo")
     | None0 () => loop (i0inslst, res)
     )
+  | INS0init_loop (local_vars, assignments) => let
+    val res = list0_foldleft (local_vars, res, fopr) where {
+      fun fopr (pml_steplst: pml_steplst
+                , i0id: i0id):<cloref1> pml_steplst = let
+        val pml_dec = pmltransform_i0id2decl (i0id)
+        val pml_declst = pml_dec :: nil0
+        val pml_step = PMLSTEP_declst pml_declst
+      in
+        pml_step :: res
+      end
+    }
+    // todo
+  in
+    loop (i0inslst, res)
+  end
+  | INS0label (i0id) => let
+    val pml_name = pmltransform_i0id (i0id)
+    val- ins1 :: inss1 = i0inslst
+    val steps = pmltransform_i0inslst (ins1 :: nil0)
+    val- step1 :: steps1 = steps
+
+    val pml_stmnt = PMLSTMNT_name (pml_name)
+    val pml_step = PMLSTEP_stmnt (pml_stmnt)
+  in
+    loop (i0inslst, pml_step :: res)
+  end
+  | INS0tail_jump (epiloge_inss, i0id) => let
+    val epiloge_steps = pmltransform_i0inslst (false, epiloge_inss)
+    val res = list0_reverse_append (epiloge_steps, res)
+    val pml_name = pmltransform_i0id (i0id)
+    val pml_stmnt = PMLSTMNT_goto (pml_name)
+    val pml_step = PMLSTEP_stmnt (pml_stmnt)
+    val res = pml_step :: res
+  in
+    loop (i0inslst, res)
+  end
   | _ => exitlocmsg ("todo: " + datcon_i0ins i0ins)
 )  // end of [i0ins :: i0inslst]
 | nil0 () => res
@@ -229,15 +275,15 @@ in
   | Some0 (opr) =>
     (
     case+ opr of
-    | PMLOPR_run () => let
-      val- i0exp :: nil0 = i0explst
-      val- EXP0lambody (proc_call) = i0exp
-      val- EXP0app (proc_id, proc_arglst) = proc_call
-      val- Some0 proc_name = pml_name_make_proctype (proc_id)
-      val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (proc_arglst)
-    in 
-      PMLANYEXP_run (proc_name, pml_anyexplst)
-    end
+    // | PMLOPR_run () => let
+    //   val- i0exp :: nil0 = i0explst
+    //   val- EXP0lambody (proc_call) = i0exp
+    //   val- EXP0app (proc_id, proc_arglst) = proc_call
+    //   val- Some0 proc_name = pml_name_make_proctype (proc_id)
+    //   val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (proc_arglst)
+    // in 
+    //   PMLANYEXP_run (proc_name, pml_anyexplst)
+    // end
     | _ =>
       (
       case+ i0explst of
@@ -270,16 +316,23 @@ in
     val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (proc_arglst)
   in 
     PMLANYEXP_run (proc_name, pml_anyexplst)
-  end else let // not "run" in promela
+  end // end of [i0id_is_run]
+  else let // not "run" in promela
     val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (i0explst)
     val name_opt = i0id_get_extdef (i0id)
   in
-    case+ name_opt of
+    case+ name_opt of  // check whether has external name
     | Some0 (name) => PMLANYEXP_fcall (name, pml_anyexplst)
     | None0 () => let
-      val name = tostring_i0id (i0id)
+      val name_opt = pml_name_make_inline (i0id)
     in
-      PMLANYEXP_fcall (name, pml_anyexplst)
+      case+ name_opt of  // check whether is inline
+      | Some0 (name) => PMLANYEXP_inline (name, pml_anyexplst)
+      | None0 () => let
+        val name = tostring_i0id (i0id)
+      in
+        PMLANYEXP_fcall (name, pml_anyexplst)
+      end
     end
   end
 end
@@ -310,7 +363,7 @@ in
   case+ opr_str of
   | "+" => Some0 PMLOPR_plus
   | "-" => Some0 PMLOPR_minus
-  | PML_RUN => Some0 PMLOPR_run
+//  | PML_RUN => Some0 PMLOPR_run
   | _ => exitlocmsg ("operator " + opr_str + " is not supported")
 end
 else None0
@@ -321,93 +374,23 @@ implement i0id_is_run (i0id) = let
 in
   opr_str = PML_RUN
 end
-(* ******************  ****************** *)
 
-// extern fun pml_emit_i0fundef (i0fundef): eu
-// extern fun pml_emit_para (i0id): eu
-// extern fun pml_emit_ins (i0ins): eu
-// 
-// implement pml_emit_ins (i0ins) = let
-//   val datcon = datcon_i0ins i0ins
-// in
-// case+ i0ins of
-// | INS0decl (i0id) => exitlocmsg (datcon + " not suppported")
-// | _ => exitlocmsg (datcon + " not suppported")
-// end
-// 
-// 
-// 
-// implement pml_emit_para (i0id) = let
-//   val eu_type = EUs ("int ")
-//   val eu_name = emit_i0id (i0id)
-// in
-//   EUlist (eu_type :: eu_name :: nil0)
-// end
-// 
-// implement pml_emit_i0prog (i0prog) = let
-//   val func_pairs = i0funmap_listize1 (i0prog.i0prog_i0funmap)
-//   val eus = list0_foldright<@(i0id, i0fundef)><eulist> (
-//     func_pairs, fopr, nil0) where {
-//   fun fopr (pair: @(i0id, i0fundef), res: eulist):<cloref1> eulist = let
-//     val eu = pml_emit_i0fundef (pair.1)
-//     val res = eu :: EUnewline () :: EUnewline () :: res
-//   in res end
-//   }
-// in
-//   EUlist (eus)
-// end
-// 
-// implement pml_emit_i0fundef (i0fundef) = let
-//   val fname = i0fundef_get_id (i0fundef)
-//   val fname_str = tostring_i0id (fname)
-// in
-//   case+ fname_str.removePrefix (PML_PROCTYPE) of
-//   | Some (proc_name) => let
-//     // proctype name
-//     val fname = EUstring (proc_name)
-// 
-//     // parameters
-//     val paras = i0fundef_get_paralst (i0fundef)
-//     val paras_eus = list0_foldright<i0id><eulist> (paras, fopr, nil0) where {
-//     fun fopr (para: i0id, res: eulist):<cloref1> eulist = let
-//       val eu = pml_emit_para (para)
-//       val ret = eu :: res
-//     in
-//       res
-//     end
-//     }
-// 
-//     val eus = EUs ("proctype") :: EUs " " :: fname :: EUlist (paras_eus) :: nil0
-//   in
-//     EUlist (eus)
-//   end
-//   | None () => let
-//     // inline function name
-//     val fname = emit_i0id (fname)
-// 
-//     // parameters
-//     val paras = i0fundef_get_paralst (i0fundef)
-//     val paras_eus = emit_list (paras
-//                              , EUstring "; "
-//                              , EUstring "("
-//                              , EUstring ")"
-//                              , lam x => pml_emit_para x)
-// 
-//     val inss = i0fundef_get_instructions (i0fundef)
-//     val inss_eus = emit_list (inss
-//                             , EUnewline
-//                             , EUlist (EUnewline :: EUstring "{" :: EUindent :: EUnewline :: nil0)
-//                             , EUlist (EUunindent :: EUnewline :: EUstring "}" :: nil0)
-//                             , lam x => pml_emit_ins x)
-// 
-//     val eus = EUs ("inline") :: EUs " " :: fname :: EUlist (paras_eus) ::
-//               EUlist (inss_eus) :: nil0
-//   in
-//     EUlist (eus)
-//   end
-// 
-// 
-// end
+implement pmltransform_i0id2decl (i0id) = let
+  val pml_name = pmltransform_i0id (i0id)
+  val pml_ivar = PMLIVAR_name (pml_name)
+  val pml_ivarlst = pml_ivar :: nil0
+
+  val pml_type = pml_name_get_type (pml_name)
+  val pml_decl = pml_decl_make (false (*visible*), pml_type, pml_ivarlst)
+
+in
+  pml_decl
+end
+
+
+
+
+
 
 
 

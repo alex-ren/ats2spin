@@ -1,6 +1,6 @@
 
 /*
-* This file is for testing the invocation of inline functions.
+* This file is for testing the usage of call by reference.
 *
 */
 #include "share/atspre_staload.hats"
@@ -8,14 +8,15 @@
 
 staload "./Promela.sats"
 
-fun inline$foo (x: int): void = let
+fun inline$foo {x:int} (x: &int x >> int 1): void = let
   val y = x + 1
+  val () = x := 1
 in
 end
 
 fun pml$init (): void = let
-  val _  = inline$foo (2)
-  val ()  = inline$foo (2)
+  var x
+  val _  = inline$foo (x)
 in 
 end
 

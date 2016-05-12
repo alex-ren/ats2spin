@@ -93,9 +93,9 @@ implement fprint_pml_inline (out, inline) = let
   val () = fprint_pml_name (out, inline.pml_inline_name)
   val () = fprint (out, "(")
   val () = fprint (out, inline.pml_inline_paralst)
-  val () = fprint (out, ")")
-  val () = fprint (out, "\n")
-  val () = fprint (out, "todo: fprint_pml_inline")
+  val () = fprint (out, ") {\n")
+  val () = fprint (out, inline.pml_inline_seq, "\n")
+  val () = fprint (out, "\n}\n")
 in end
 
 implement myfprint_pml_ivar (out, pml_ivar) = 
@@ -129,7 +129,6 @@ case+ opr of
 | PMLOPR_or ()    => fprint (out, "/")
 | PMLOPR_neg ()   => fprint (out, "~")
 | PMLOPR_ban ()   => fprint (out, "!")
-| PMLOPR_run ()   => fprint (out, "run")
 
 implement fprint_pml_atom (out, atom) =
 case+ atom of

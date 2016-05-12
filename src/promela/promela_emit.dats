@@ -28,6 +28,7 @@ extern fun emit_pml_exp (pml_exp): eu
 extern fun emit_pml_anyexp (pml_anyexp): eu
 extern fun emit_pml_varref (pml_varref): eu
 extern fun emit_pml_anyexp_fcall (string, pml_anyexplst): eu
+extern fun emit_pml_anyexp_inline (pml_name, pml_anyexplst): eu
 extern fun emit_pml_stmnt (pml_stmnt): eu
 extern fun emit_pml_opr (pml_opr): eu
 extern fun emit_pml_atom (pml_atom): eu
@@ -205,7 +206,22 @@ case+ st of
 | PMLSTMNT_assign () => exitlocmsg ("not supported")
 | PMLSTMNT_else () => exitlocmsg ("not supported")
 | PMLSTMNT_break () => exitlocmsg ("not supported")
-| PMLSTMNT_goto pml_name => exitlocmsg ("not supported")
+| PMLSTMNT_goto pml_name => let
+  val eus = emit "goto "
+    :: emit_pml_name (pml_name)
+    :: emit "\n"
+    :: nil0
+in
+  EUlist (eus)
+end
+
+| PMLSTMNT_label (pml_name) => let
+  val eus = emit_pml_name (pml_name)
+    :: emit ":\n"
+    :: nil0
+in
+  EUlist (eus)
+end
 | PMLSTMNT_name (pml_name, pml_stmnt) => exitlocmsg ("not supported")
 // | PMLSTMNT_print
 | PMLSTMNT_assert pml_exp => exitlocmsg ("not supported")
@@ -268,6 +284,8 @@ in
   EUlist (eus)
 end
 
+| PMLANYEXP_inline (pml_name, pml_anyexplst (*pml_priority_opt*)) =>
+    emit_pml_anyexp_inline (pml_name, pml_anyexplst)
 
 
 implement emit_pml_opr (pml_opr) =
@@ -278,7 +296,6 @@ case+ pml_opr of
 | PMLOPR_or () => emit_text ("||")
 | PMLOPR_neg () => emit_text ("~")
 | PMLOPR_ban () => emit_text ("!")
-| PMLOPR_run () => exitlocmsg ("should not happen")
 
 implement emit_pml_varref (pml_varref) = let
   val+ PMLVARREF (pml_name, pml_anyexp_opt, pml_varref_opt) = pml_varref
@@ -321,6 +338,15 @@ in
   EUlist (eus)
 end
 
+implement emit_pml_anyexp_inline (pml_name, pml_anyexplst) = let
+  val eus = emit_pml_name (pml_name)
+  :: emit_text ("(")
+  :: EUlist (emit<pml_anyexp> (pml_anyexplst, emit_text (", ")))
+  :: emit_text (")")
+  :: nil0
+in
+  EUlist (eus)
+end
 
 
 
