@@ -88,6 +88,8 @@ typedef d2cstmap = $HT.hashtbl (stamp, d2cst)
 fun parse_d2cst (d2cstmap: d2cstmap, jsv: jsonval): d2cst
 fun parse_d2cstmap (jsv: jsonval): d2cstmap
 
+fun parse_d2cst_extdef (jsv: jsonval): Option string
+
 (* ****** ****** *)
 
 typedef d2varmap = $HT.hashtbl (stamp, d2var)

@@ -4,12 +4,12 @@
 
 (* ****** ****** *)
 //
-#include
-"share/atspre_define.hats"
-#include
-"share/atspre_staload.hats"
+#include "share/atspre_staload.hats"
+#include "share/atspre_define.hats"
+#include "share/HATS/atspre_staload_libats_ML.hats"
 //
 (* ****** ****** *)
+staload "./../utils/utils.dats"
 
 staload "./parsing.sats"
 staload "./../postiats/utfpl.sats"
@@ -73,6 +73,22 @@ end // end of [the_d2cstmap_insert]
 end  // end of [local]
 (* ****** ****** *)
 
+implement parse_d2cst_extdef (jsv) = let
+  val jsv0 = jsonval_get_field (jsv, "DCSTEXTDEFsome_ext")
+in
+  case+ jsv0 of
+  | ~Some_vt (jsv1) => let
+    val-JSONarray(jsvs) = jsv1
+    val () = assertloc (length(jsvs) >= 1)
+    val jsv2 = jsvs[0]
+    val extdef = parse_string (jsv2)
+  in
+    Some (extdef)
+  end
+  | ~None_vt () => None ()
+end
+
+
 implement
 parse_d2cst
   (d2cstmap, jsv0) = let
@@ -87,15 +103,40 @@ val opt = the_d2cstmap_find (d2cstmap, stamp)
 in
 //
 case+ opt of
-| ~Some_vt (d2c) => d2c
-| ~None_vt ((*void*)) => d2c where
-  {
-    val-~Some_vt(jsv1) =
-      jsonval_get_field (jsv0, "d2cst_sym")
-    val sym = parse_symbol (jsv1)
-    val d2c = d2cst_make (sym, stamp)
+| ~Some_vt (d2c) => let
+  val jsv2 = jsonval_get_field (jsv0, "d2cst_extdef")
+in
+  case+ jsv2 of
+  | ~Some_vt (jsv3) => let
+    val extdef = parse_d2cst_extdef (jsv3)
+    val () = d2cst_update_extdef_opt (d2c, extdef)
+  in
+      d2c
+  end
+  | ~None_vt () => d2c
+end
+| ~None_vt ((*void*)) => let
+  val-~Some_vt(jsv1) =
+    jsonval_get_field (jsv0, "d2cst_sym")
+  val sym = parse_symbol (jsv1)
+  val jsv2 = jsonval_get_field (jsv0, "d2cst_extdef")
+in
+  case+ jsv2 of
+  | ~Some_vt (jsv3) => exitlocmsg ("d2cstmap should have no extdef")
+  // let
+  //   val extdef = parse_d2cst_extdef (jsv3)
+  //   val d2c = d2cst_make (sym, stamp, extdef)
+  //   val ((*void*)) = the_d2cstmap_insert (d2cstmap, d2c)
+  // in
+  //   d2c
+  // end
+  | ~None_vt () => let
+    val d2c = d2cst_make (sym, stamp, None)
     val ((*void*)) = the_d2cstmap_insert (d2cstmap, d2c)
-  } (* end of [None_vt] *)
+  in
+    d2c
+  end
+end
 //
 end // end of [parse_d2cst]
 

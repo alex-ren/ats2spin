@@ -66,6 +66,7 @@ case+ pml_module of
     emit_pml_init (pml_steplst)
 | PMLMODULE_never _ => exitlocmsg ("not supported")
 | PMLMODULE_c_code _ => exitlocmsg ("not supported")
+| PMLMODULE_literal_code code => emit code
 
 implement emit_pml_init (pml_steplst) = let
   #define steps pml_steplst

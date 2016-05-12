@@ -1,7 +1,6 @@
-
 /*
-* This file is for testing generating proctype.
-*
+* This file is for testing the usage of extfcall.
+* 
 */
 
 #include "share/atspre_staload.hats"
@@ -13,11 +12,13 @@ fun proctype$foo {x: int} (x: int x, y: int): void = let
   val v1 = x + y
   val v2 = x - y
   val () = $extfcall (void, "printf", "x is %d", 3)
+  // val z = $extfcall (int, "xxx", "x is %d", 3)
 in
 end
 
-
-
-
+fun pml$init (): void = let
+  val () = pml$run (lam () => proctype$foo (1, 2))
+in
+end
 
 

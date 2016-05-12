@@ -25,13 +25,13 @@ staload _(*anon*) = "libats/DATS/qlist.dats"
 (* ************ ************* *)
 
 // typedef i0funmap = $HT.hashtbl (i0id, i0fundef)
-implement $HT.hash_key<i0id> (x) = hash_stamp (x.i0id_stamp)
+implement $HT.hash_key<i0id> (x) = hash_stamp (i0id_get_stamp x)
  
 implement
 $HT.equal_key_key<i0id> (k1, k2) = 
-  eq_stamp_stamp (k1.i0id_stamp, k2.i0id_stamp)
+  eq_stamp_stamp (i0id_get_stamp k1, i0id_get_stamp k2)
 
-implement $HT.hash_key<i0id> (x) = hash_stamp (x.i0id_stamp)
+implement $HT.hash_key<i0id> (x) = hash_stamp (i0id_get_stamp x)
 
 (* ************ ************* *)
 

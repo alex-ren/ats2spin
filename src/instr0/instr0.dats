@@ -12,53 +12,45 @@ staload "./instr0.sats"
 
 #include "./../postiats/postiats_codegen2.hats"
 
+#include "./instr0_codegen2.hats"
+
 #define :: list0_cons
 #define nil list0_nil
 
 (* ************** ************* *)
 
-implement i0id_copy (i0id, sa) = let
-  val name = i0id.i0id_name
-  val stamp = stamp_allocate (sa)
-in
-  '{i0id_name = name
-   ,i0id_stamp = stamp
-  }
-end
+implement fprint_val<i0fundef> = fprint_i0fundef
 
-implement fprint_i0id (out, i0id) = let
-  val () = fprint! (out, i0id.i0id_name, "_", i0id.i0id_stamp)
+implement fprint_val<i0gvar> = fprint_i0gvar
+
+(* ************** ************* *)
+
+
+
+implement myfprint_i0decl (out, i0decl) = fprint_i0decl<> (out, i0decl)
+
+implement fprint_i0gvar (out, i0gvar) = let
+  val () = fprint (out, "global ")
+  val () = fprint (out, i0gvar.0)
 in
+  case+ i0gvar.1 of
+  | Some i0exp => let
+    val () = fprint (out, " = ")
+    val () = fprint (out, i0exp)
+  in end
+  | None () => ()
 end
 
 implement fprint_i0prog (out, i0prog) = let
-  val () = fprint (out, "===================== functions =====================\n")
-  
-  val funcs = i0funmap_listize1 (i0prog.i0prog_i0funmap)
-  implement 
-  fprint_val<@(i0id, i0fundef)> (out, tup) = fprint (out, tup.1)
+  // val funcs = i0funmap_listize1 (i0prog.i0prog_i0funmap)
+  val declst = i0prog.i0prog_i0declst
 
-  val () = fprint_list0_sep<@(i0id, i0fundef)> (out, funcs, "\n\n")
+  implement 
+  fprint_val<i0decl> (out, decl) = fprint (out, decl)
+  val () = fprint_list0_sep<i0decl> (out, i0prog.i0prog_i0declst, "\n\n")
   val () = fprint (out, "\n\n")
 in
 end
-
-implement eq_i0id_i0id (x, y) = x.i0id_stamp = y.i0id_stamp
-
-implement emit_i0id (id) = let
-  val unique_name = tostring_i0id (id)
-in
-  EUstring (unique_name)
-end
-
-implement tostring_i0id (id) = let
-  val name = tostring_i0name (id.i0id_name)
-  val stamp = tostring_stamp (id.i0id_stamp)
-in
-  name + "_" + stamp
-end
-
-implement tostring_i0id_name (id) = tostring_i0name (id.i0id_name)
 
 (* ********** ************ *)
 
@@ -67,40 +59,43 @@ implement i0transform_d2eclst_global (sa, d2ecs) = let
   fun loop (
     d2ecs: d2eclist
     , fmap: i0funmap
-    , gvs: &i0gvarlst
-    ): void =
+    , res: i0declst
+    ): i0declst =
     case+ d2ecs of
     | list_cons (d2ec, d2ecs) => let
-        val () = i0transform_d2ecl_global (sa, d2ec, fmap, gvs)
-    in loop (d2ecs, fmap, gvs) end
-    | list_nil () => ()
+        val i0decl = i0transform_d2ecl_global (sa, d2ec, fmap)
+        val  res = list0_append (i0decl, res)
+    in loop (d2ecs, fmap, res) end
+    | list_nil () => res
  
   val fmap = i0funmap_create (i2sz(2048))
-  var gvs = list0_nil ()
 
-  val () = loop (d2ecs, fmap, gvs)
+  val i0declst = loop (d2ecs, fmap, nil0)
+  val i0declst = list0_reverse (i0declst)
 
   val prog = '{i0prog_i0funmap = fmap
-              , i0prog_i0gvarlst = gvs
+              , i0prog_i0declst = i0declst
               }
 in
   prog
 end
 
-implement i0transform_d2ecl_global (sa, d2ec, fmap, gvs) = let
+implement i0transform_d2ecl_global (sa, d2ec, fmap) = let
   val () = print ("======== i0transform_d2ecl_global\n")
   val node = d2ec.d2ecl_node
 in
   case+ node of
   | D2Cimpdec (knd, i2mpdec) => exitlocmsg (datcon_d2ecl_node (node))
   | D2Cfundecs (knd, f2undeclst) => 
-      i0transform_D2Cfundecs (sa, f2undeclst, fmap, gvs)
+      i0transform_D2Cfundecs (sa, f2undeclst, fmap)
 
   | D2Cvaldecs (valkind, v2aldeclst) => exitlocmsg (
           datcon_d2ecl_node (node) + " not supported")
+  | D2Cdcstdecs (knd, d2cst) => nil0
   | D2Clocal (d2eclist(*head*), d2eclist(*body*)) => exitlocmsg (
           datcon_d2ecl_node (node) + " not supported")
-  | D2Cignored () => ()
+  | D2Cextcode (code) => list0_sing (DEC0extcode (code))
+  | D2Cignored () => nil0
 //   | _ => exitlocmsg (datcon_d2ecl_node (node) + " not supported")
 end
 
@@ -149,7 +144,7 @@ in
 end
 
 implement 
-i0transform_D2Cfundecs (sa, f2undeclst, fmap, gvs) = let
+i0transform_D2Cfundecs (sa, f2undeclst, fmap) = let
   val () = print ("======== i0transform_D2Cfundecs\n")
   val len = list_length (f2undeclst)
   val is_recursive = (if (len > 1) then true
@@ -174,22 +169,25 @@ i0transform_D2Cfundecs (sa, f2undeclst, fmap, gvs) = let
       }
     else list0_nil ()  // end of [val fnames]
 
-  val () = loop (sa, fnames, f2undeclst, fmap, gvs) where {
+  val ret = loop (sa, fnames, f2undeclst, fmap, nil0) where {
     fun loop (
       sa: stamp_allocator
       , group: i0idlst
       , f2undeclst: f2undeclst
       , fmap: i0funmap
-      , gvs: &i0gvarlst): void =
+      , res: i0declst): i0declst =
       case+ f2undeclst of
       | list_cons (f2undec, f2undeclst1) => let
-        val () = i0transform_fundec (sa, fnames, f2undec, fmap, gvs)
+        val i0declst = i0transform_fundec (sa, fnames, f2undec, fmap)
+        val res = list0_append (list0_reverse i0declst, res)
       in
-        loop (sa, group, f2undeclst1, fmap, gvs)
+        loop (sa, group, f2undeclst1, fmap, res)
       end
-      | list_nil () => ()
+      | list_nil () => res
   }
+  val ret = list0_reverse (ret)
 in
+  ret
 end
 
 implement i0transform_d2var (sa, d2var) = let
@@ -197,19 +195,19 @@ implement i0transform_d2var (sa, d2var) = let
   val name = d2var_get_name (d2var)
   val i0name = i0name_make (name)
 in
-  '{i0id_name = i0name
-  , i0id_stamp = stamp
-  }
+  i0id_make_var (i0name, stamp)
 end
 
 implement i0transform_d2cst (sa, d2cst) = let
   val stamp = stamp_get_from_d2cst (sa, d2cst)
   val name = d2cst_get_name (d2cst)
+  val extdef_opt = (case+ d2cst_get_extdef_opt (d2cst) of
+            | Some (v) => Some0 v
+            | None () => None0
+            ): option0 string
   val i0name = i0name_make (name)
 in
-  '{i0id_name = i0name
-  , i0id_stamp = stamp
-  }
+  i0id_make_cst (i0name, stamp, extdef_opt)
 end
 
 implement i0transform_d2sym (sa, d2sym) = let
@@ -217,24 +215,25 @@ implement i0transform_d2sym (sa, d2sym) = let
   val name = d2sym_get_name (d2sym)
   val i0name = i0name_make (name)
 in
-  '{i0id_name = i0name
-  , i0id_stamp = stamp
-  }
+  i0id_make_sym (i0name, stamp)
 end
 
 
-implement i0transform_fundec (sa, group, f2undec, fmap, gvs) = let
+implement i0transform_fundec (sa, group, f2undec, fmap) = let
   val () = fprint! (stdout_ref, 
     "======== i0transform_fundec: ", f2undec.f2undec_var, "\n")
 
   val name = i0transform_d2var (sa, f2undec.f2undec_var)
   val (p2atlst, body) = d2exp_node_get_lambda (f2undec.f2undec_def.d2exp_node)
   val paralst = i0transform_p2atlst2paralst (sa, p2atlst)
-  val inss = i0transform_d2exp_fbody (sa, body, fmap, gvs)
+  val (i0declst, inss) = i0transform_d2exp_fbody (sa, body, fmap)
 
   val fundef = i0fundef_create (name, paralst, inss, group)
   val () = i0funmap_insert_any (fmap, name, fundef)
-in end
+  val i0decl = DEC0fun (fundef)
+in 
+  i0decl :: i0declst
+end
 
 implement i0transform_p2atlst2paralst (sa, p2atlst) = let
   val paralst = loop (p2atlst) where {
@@ -278,7 +277,7 @@ case+ p2at.p2at_node of
 end
 
 
-implement i0transform_d2exp_fbody (sa, body, fmap, gvs) = let
+implement i0transform_d2exp_fbody (sa, body, fmap) = let
   val node = body.d2exp_node
   val () = fprint! (stdout_ref, 
     "======== i0transform_d2exp_fbody: ", body.d2exp_loc, "\n")
@@ -289,14 +288,14 @@ case+ node of
   val i0exp = EXP0var (i0id)
   val inss = list0_sing (INS0return (Some0 i0exp))
 in
-  inss
+  (nil0, inss)
 end
 | D2Evar (d2var) => let
   val i0id = i0transform_d2var (sa, d2var)
   val i0exp = EXP0var (i0id)
   val inss = list0_sing (INS0return (Some0 i0exp))
 in
-  inss
+  (nil0, inss)
 end
 
 //   | D2Esym of (d2sym)
@@ -307,42 +306,49 @@ end
 //   | D2Efloat of (double)
 //   | D2Estring of (string)
 // //
-//   | D2Ei0nt of (string)
+| D2Ei0nt (str) => let
+  val inss = list0_sing (INS0return (Some0 (EXP0i0nt (str))))
+in
+  (nil0, inss)
+end
 //   | D2Ec0har of (char)
 //   | D2Ef0loat of (string)
 //   | D2Es0tring of (string)
 // //
-| D2Eempty ((*void*)) => list0_cons (INS0return (None0 ()), list0_nil ())
+| D2Eempty ((*void*)) => (nil0, list0_cons (INS0return (None0 ()), list0_nil ()))
 // //
-| D2Eexp (d2exp) => i0transform_d2exp_fbody (sa, d2exp, fmap, gvs)
+| D2Eexp (d2exp) => i0transform_d2exp_fbody (sa, d2exp, fmap)
 // //
 | D2Elet (d2eclist, d2exp) => let
-  val inss1 = i0transform_d2eclist (sa, d2eclist, fmap, gvs)
-  val inss2 = i0transform_d2exp_fbody (sa, d2exp, fmap, gvs)
+  val (i0declst1, inss1) = i0transform_d2eclist (sa, d2eclist, fmap)
+  val (i0declst2, inss2) = i0transform_d2exp_fbody (sa, d2exp, fmap)
+  val i0declst = list0_append (i0declst1, i0declst2)
+  val inss = list0_append (inss1, inss2)
 in
-  list0_append (inss1, inss2)
+  (i0declst, inss)
 end
 | D2Eapplst (d2exp, d2exparglst) => let
     val i0id = i0transform_d2exp_fname (sa, d2exp)
     val i0explst = i0transform_d2exparglst (sa, d2exparglst)
     val app = EXP0app (i0id, i0explst)
   in
-    list0_sing (INS0return (Some0 app))
+    (nil0, list0_sing (INS0return (Some0 app)))
   end
 // //
-   | D2Eifopt (
-       d2exp1(*test*), d2exp2(*then*), d2expopt(*else*)
-     ) => let
-       val i0exp = i0transform_d2exp_expvalue (sa, d2exp1)
-       val inss1 = i0transform_d2exp_fbody (sa, d2exp2, fmap,gvs)
-       val inss2 = (case+ d2expopt of
-                    | Some (d2exp) => 
-                        i0transform_d2exp_fbody (sa, d2exp, fmap, gvs)
-                    | None () => list0_sing (INS0return (None0))
-       )
-    in
-      list0_sing (INS0ifbranch (i0exp, inss1, inss2))
-    end
+| D2Eifopt (
+    d2exp1(*test*), d2exp2(*then*), d2expopt(*else*)
+  ) => let
+    val i0exp = i0transform_d2exp_expvalue (sa, d2exp1)
+    val (i0declst1, inss1) = i0transform_d2exp_fbody (sa, d2exp2, fmap)
+    val (i0declst2, inss2) = (case+ d2expopt of
+                 | Some (d2exp) => 
+                     i0transform_d2exp_fbody (sa, d2exp, fmap)
+                 | None () => (nil0, list0_sing (INS0return (None0)))
+    ): (i0declst, i0inslst)
+ in
+   (list0_append (i0declst1, i0declst2)
+   , list0_sing (INS0ifbranch (i0exp, inss1, inss2)))
+ end
 // //
 //   | D2Esing of (d2exp)
 //   | D2Elist of (d2explst)
@@ -361,34 +367,37 @@ end
 | _ => exitlocmsg (datcon_d2exp_node (node) + " todo")
 end
 
-implement i0transform_d2eclist (sa, d2eclist, fmap, gvs) =
+implement i0transform_d2eclist (sa, d2eclist, fmap) =
 case+ d2eclist of
 | list_cons (d2ecl, d2eclist1) => let
-  val inss1 = i0transform_d2ecl (sa, d2ecl, fmap, gvs)
-  val inss2 = i0transform_d2eclist (sa, d2eclist1, fmap, gvs)
+  val (i0declst1, inss1) = i0transform_d2ecl (sa, d2ecl, fmap)
+  val (i0declst2, inss2) = i0transform_d2eclist (sa, d2eclist1, fmap)
+  val i0declst = list0_append (i0declst1, i0declst2)
   val inss = list0_append (inss1, inss2)
 in
-  inss
+  (i0declst, inss)
 end
-| list_nil () => list0_nil ()
+| list_nil () => (nil0, nil0)
 
-implement i0transform_d2ecl (sa, d2ecl, fmap, gvs) = let
+implement i0transform_d2ecl (sa, d2ecl, fmap) = let
   val node = d2ecl.d2ecl_node
 in
   case+ node of
   | D2Cimpdec (knd, i2mpdec) => exitlocmsg (
     datcon_d2ecl_node (node) + " not allowed")
   | D2Cfundecs (funkind, f2undeclst) => let
-    val () = i0transform_D2Cfundecs (sa, f2undeclst, fmap, gvs)
+    val i0declst = i0transform_D2Cfundecs (sa, f2undeclst, fmap)
   in
-    list0_nil ()
+    (i0declst, list0_nil ())
   end
   | D2Cvaldecs (valkind, v2aldeclst) => let
     val inss = i0transform_D2Cvaldecs (sa, v2aldeclst)
-  in inss end
+  in (nil0, inss) end
+  | D2Cdcstdecs (knd, d2cst) => (nil0, nil0)
   | D2Clocal (d2eclist(*head*), d2eclist(*body*)) => exitlocmsg (
           datcon_d2ecl_node (node) + " not supported")
-  | D2Cignored ((*void*)) => list0_nil ()
+  | D2Cextcode (code) => exitlocmsg ("external code can only be at global level")
+  | D2Cignored ((*void*)) => (nil0, nil0)
 end
 
 

@@ -207,12 +207,14 @@ emit_d2cst: emit_type (d2cst)
 
 (* ****** ****** *)
 
-fun d2cst_make (symbol, stamp): d2cst
+fun d2cst_make (symbol, stamp, Option string): d2cst
 
 (* ****** ****** *)
 //
 fun d2cst_get_name (d2cst):<> symbol
 fun d2cst_get_stamp (d2cst):<> stamp
+fun d2cst_get_extdef_opt (d2cst):<> Option string
+fun d2cst_update_extdef_opt (d2cst, Option string): void
 //
 (* ****** ****** *)
 //
@@ -368,7 +370,10 @@ d2ecl_node =
   | D2Cfundecs of (funkind, f2undeclst)
   | D2Cvaldecs of (valkind, v2aldeclst)
 //
+  | D2Cdcstdecs of (int, d2cst)
+//
   | D2Clocal of (d2eclist(*head*), d2eclist(*body*))
+  | D2Cextcode of (string (*code*))
 //
   | D2Cignored of ((*void*)) // HX: error-handling
 // end of [d2ecl_node]

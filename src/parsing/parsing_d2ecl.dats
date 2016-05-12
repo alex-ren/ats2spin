@@ -77,6 +77,12 @@ fun parse_D2Cvaldecs (d2parsingenv, jsonval): d2ecl_node
 extern
 fun parse_D2Clocal (d2parsingenv, jsonval): d2ecl_node
 
+extern
+fun parse_D2Cextcode (d2parsingenv, jsonval): d2ecl_node
+
+extern
+fun parse_D2Cdcstdecs (d2parsingenv, jsonval): d2ecl_node
+
 (* ****** ****** *)
 
 extern
@@ -104,6 +110,9 @@ case+ name of
 //
 | "D2Clocal" => parse_D2Clocal (d2env, jsv2)
 //
+| "D2Cextcode" => parse_D2Cextcode (d2env, jsv2)
+| "D2Cdcstdecs" => parse_D2Cdcstdecs (d2env, jsv2)
+
 | _(*rest*) => parse_D2Cignored (jsv2)
 //
 end // end of [parse_d2ecl_node]
@@ -191,7 +200,22 @@ val imp = parse_i2mpdec (d2env, jsvs[1])
 //
 in
   D2Cimpdec (knd, imp)
-end // end of [parse_D2Cfundecs]
+end // end of [parse_D2Cimpdec]
+
+(* ****** ****** *)
+
+implement parse_D2Cdcstdecs (d2env, jsv0) = let
+//
+val-JSONarray(jsvs) = jsv0
+val () = assertloc (length(jsvs) >= 3)
+val knd = parse_int (jsvs[0])
+val-JSONarray(jsvs1) = jsvs[2]
+val () = assertloc (length jsvs1 >= 1)
+val d2cst = parse_d2cst (d2env.d2parsingenv_d2cstmap, jsvs1[0])
+//
+in
+  D2Cdcstdecs (knd, d2cst)
+end
 
 (* ****** ****** *)
 
@@ -237,6 +261,16 @@ val body = parse_d2eclist (d2env, jsvs[1])
 in
   D2Clocal (head, body)
 end // end of [parse_D2Clocal]
+
+(* ****** ****** *)
+
+implement parse_D2Cextcode (d2env, jsv0) = let
+val-JSONarray(jsvs) = jsv0
+val () = assertloc (length(jsvs) >= 3)
+val code = parse_string (jsvs[2])
+in
+  D2Cextcode (code)
+end
 
 (* ****** ****** *)
 

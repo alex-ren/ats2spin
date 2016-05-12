@@ -1,4 +1,9 @@
 
+/*
+* This file is for testing the usage of starting new processes
+* in the init.
+*
+*/
 #include "share/atspre_staload.hats"
 #include "share/atspre_define.hats"
 
@@ -22,7 +27,7 @@ fun pml$init (): void = let
   val x = 1 
   val y = pml$run (lam () => proctype$foo (1, x))
   val _ = pml$run (lam () => proctype$foo1 (1, y))
-in 
+in
 end
 
 

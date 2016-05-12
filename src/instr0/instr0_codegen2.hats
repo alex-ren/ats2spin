@@ -728,6 +728,158 @@ fprint_i0ins$INS0tail_jump$arg2(out, arg0) =
 (* ****** ****** *)
 (* ****** ****** *)
 //
+extern
+fun{}
+fprint_i0decl$DEC0fun: $d2ctype(fprint_i0decl<>)
+extern
+fun{}
+fprint_i0decl$DEC0extcode: $d2ctype(fprint_i0decl<>)
+extern
+fun{}
+fprint_i0decl$DEC0gvar: $d2ctype(fprint_i0decl<>)
+//
+(* ****** ****** *)
+//
+implement{}
+fprint_i0decl
+  (out, arg0) =
+(
+case+ arg0 of
+| DEC0fun _ => fprint_i0decl$DEC0fun<>(out, arg0)
+| DEC0extcode _ => fprint_i0decl$DEC0extcode<>(out, arg0)
+| DEC0gvar _ => fprint_i0decl$DEC0gvar<>(out, arg0)
+)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_i0decl$sep: (FILEref) -> void
+implement{}
+fprint_i0decl$sep(out) = fprint(out, ",")
+//
+extern
+fun{}
+fprint_i0decl$lpar: (FILEref) -> void
+implement{}
+fprint_i0decl$lpar(out) = fprint(out, "(")
+//
+extern
+fun{}
+fprint_i0decl$rpar: (FILEref) -> void
+implement{}
+fprint_i0decl$rpar(out) = fprint(out, ")")
+//
+extern
+fun{a:t0p}
+fprint_i0decl$carg: (FILEref, INV(a)) -> void
+implement{a}
+fprint_i0decl$carg(out, arg) = fprint_val<a>(out, arg)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_i0decl$DEC0fun$con: $d2ctype(fprint_i0decl<>)
+extern
+fun{}
+fprint_i0decl$DEC0fun$lpar: $d2ctype(fprint_i0decl<>)
+extern
+fun{}
+fprint_i0decl$DEC0fun$rpar: $d2ctype(fprint_i0decl<>)
+extern
+fun{}
+fprint_i0decl$DEC0fun$arg1: $d2ctype(fprint_i0decl<>)
+//
+implement{}
+fprint_i0decl$DEC0fun(out, arg0) = 
+{
+//
+val () = fprint_i0decl$DEC0fun$con<>(out, arg0)
+val () = fprint_i0decl$DEC0fun$lpar<>(out, arg0)
+val () = fprint_i0decl$DEC0fun$arg1<>(out, arg0)
+val () = fprint_i0decl$DEC0fun$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_i0decl$DEC0fun$con(out, _) = fprint(out, "DEC0fun")
+implement{}
+fprint_i0decl$DEC0fun$lpar(out, _) = fprint_i0decl$lpar(out)
+implement{}
+fprint_i0decl$DEC0fun$rpar(out, _) = fprint_i0decl$rpar(out)
+implement{}
+fprint_i0decl$DEC0fun$arg1(out, arg0) =
+  let val-DEC0fun(arg1) = arg0 in fprint_i0decl$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_i0decl$DEC0extcode$con: $d2ctype(fprint_i0decl<>)
+extern
+fun{}
+fprint_i0decl$DEC0extcode$lpar: $d2ctype(fprint_i0decl<>)
+extern
+fun{}
+fprint_i0decl$DEC0extcode$rpar: $d2ctype(fprint_i0decl<>)
+extern
+fun{}
+fprint_i0decl$DEC0extcode$arg1: $d2ctype(fprint_i0decl<>)
+//
+implement{}
+fprint_i0decl$DEC0extcode(out, arg0) = 
+{
+//
+val () = fprint_i0decl$DEC0extcode$con<>(out, arg0)
+val () = fprint_i0decl$DEC0extcode$lpar<>(out, arg0)
+val () = fprint_i0decl$DEC0extcode$arg1<>(out, arg0)
+val () = fprint_i0decl$DEC0extcode$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_i0decl$DEC0extcode$con(out, _) = fprint(out, "DEC0extcode")
+implement{}
+fprint_i0decl$DEC0extcode$lpar(out, _) = fprint_i0decl$lpar(out)
+implement{}
+fprint_i0decl$DEC0extcode$rpar(out, _) = fprint_i0decl$rpar(out)
+implement{}
+fprint_i0decl$DEC0extcode$arg1(out, arg0) =
+  let val-DEC0extcode(arg1) = arg0 in fprint_i0decl$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_i0decl$DEC0gvar$con: $d2ctype(fprint_i0decl<>)
+extern
+fun{}
+fprint_i0decl$DEC0gvar$lpar: $d2ctype(fprint_i0decl<>)
+extern
+fun{}
+fprint_i0decl$DEC0gvar$rpar: $d2ctype(fprint_i0decl<>)
+extern
+fun{}
+fprint_i0decl$DEC0gvar$arg1: $d2ctype(fprint_i0decl<>)
+//
+implement{}
+fprint_i0decl$DEC0gvar(out, arg0) = 
+{
+//
+val () = fprint_i0decl$DEC0gvar$con<>(out, arg0)
+val () = fprint_i0decl$DEC0gvar$lpar<>(out, arg0)
+val () = fprint_i0decl$DEC0gvar$arg1<>(out, arg0)
+val () = fprint_i0decl$DEC0gvar$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_i0decl$DEC0gvar$con(out, _) = fprint(out, "DEC0gvar")
+implement{}
+fprint_i0decl$DEC0gvar$lpar(out, _) = fprint_i0decl$lpar(out)
+implement{}
+fprint_i0decl$DEC0gvar$rpar(out, _) = fprint_i0decl$rpar(out)
+implement{}
+fprint_i0decl$DEC0gvar$arg1(out, arg0) =
+  let val-DEC0gvar(arg1) = arg0 in fprint_i0decl$carg(out, arg1) end
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
 implement
 {}(*tmp*)
 datcon_i0exp

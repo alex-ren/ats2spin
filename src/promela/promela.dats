@@ -25,7 +25,7 @@ fun pml_name_make_startwith_prefix (i0id: i0id, pre: string):
   option0 (pml_name) = let
   val fullname_str = tostring_i0id (i0id)
   val opt = fullname_str.removePrefix (pre)
-  val stamp = i0id.i0id_stamp
+  val stamp = i0id_get_stamp i0id
 in
   case+ opt of
   | Some (name_str) => let
@@ -66,10 +66,11 @@ implement pml_varref_make (pml_name) =
 
 implement pmltransform_i0prog (i0prog) = let
   val funmap = i0prog.i0prog_i0funmap
-  val funcs = i0funmap_listize1 (funmap): list0 @(i0id, i0fundef)
-  val modules = list0_foldright (funcs, fopr, nil0) where {
-    fun fopr (x: @(i0id, i0fundef), res: pml_modulelst):<cloref1> pml_modulelst = let
-      val pml_module = pmltransform_i0fundef (x.1)
+  val i0declst = i0prog.i0prog_i0declst
+  
+  val modules = list0_foldright (i0declst, fopr, nil0) where {
+    fun fopr (x: i0decl, res: pml_modulelst):<cloref1> pml_modulelst = let
+      val pml_module = pmltransform_i0decl (x)
     in
       pml_module :: res
     end
@@ -77,6 +78,12 @@ implement pmltransform_i0prog (i0prog) = let
 in
   modules
 end
+
+implement pmltransform_i0decl (i0decl) =
+case+ i0decl of
+| DEC0fun (i0fundef) => pmltransform_i0fundef (i0fundef)
+| DEC0extcode (code) => PMLMODULE_literal_code (code)
+| DEC0gvar _ => exitlocmsg (" DEC0gvar is not supported")
 
 implement pmltransform_i0fundef (i0fundef) = let
   val i0id = i0fundef_get_id (i0fundef)
@@ -131,7 +138,7 @@ end
 
 implement pmltransform_i0id (i0id) = let
   val name = tostring_i0id (i0id)
-  val stamp = i0id.i0id_stamp
+  val stamp = i0id_get_stamp i0id
   val type = pmltransform_i0type ()
 in
   pml_name_make (name, stamp, type)
@@ -235,14 +242,34 @@ in
       | nil0 () => exitlocmsg ("Nullary operator is not supported.")
       )
     )
-  | None0 () => exitlocmsg ("This should not happen: " + tostring_i0id (i0id))
+  | None0 () => if i0id_is_run (i0id) then let
+    val- i0exp :: nil0 = i0explst
+    val- EXP0lambody (proc_call) = i0exp
+    val- EXP0app (proc_id, proc_arglst) = proc_call
+    val- Some0 proc_name = pml_name_make_proctype (proc_id)
+    val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (proc_arglst)
+  in 
+    PMLANYEXP_run (proc_name, pml_anyexplst)
+  end else let // not "run" in promela
+    val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (i0explst)
+    val name_opt = i0id_get_extdef (i0id)
+  in
+    case+ name_opt of
+    | Some0 (name) => PMLANYEXP_fcall (name, pml_anyexplst)
+    | None0 () => let
+      val name = tostring_i0id (i0id)
+    in
+      PMLANYEXP_fcall (name, pml_anyexplst)
+    end
+  end
 end
 | EXP0extfcall (name, i0explst) => let
   val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (i0explst)
 in
   PMLANYEXP_fcall (name, pml_anyexplst)
 end
-| EXP0lambody _ => exitlocmsg ("This should not happen.")
+| EXP0lambody _ => exitlocmsg (
+  "This should not happen. Run should be processed else where")
 
 implement pmltransform_i0explst2pml_anyexplst (i0explst) = let
   val ret = list0_foldright<i0exp> (i0explst, fopr, nil0) where {
@@ -256,7 +283,8 @@ in
   ret
 end
 
-implement pmltransform_i0id2operator (i0id) = let
+implement pmltransform_i0id2operator (i0id) = 
+if i0id_is_sym (i0id) then let
   val opr_str = tostring_i0id_name (i0id)
 in
   case+ opr_str of
@@ -265,9 +293,14 @@ in
   | PML_RUN => Some0 PMLOPR_run
   | _ => exitlocmsg ("operator " + opr_str + " is not supported")
 end
+else None0
 
 
-
+implement i0id_is_run (i0id) = let
+  val opr_str = tostring_i0id_name (i0id)
+in
+  opr_str = PML_RUN
+end
 (* ******************  ****************** *)
 
 // extern fun pml_emit_i0fundef (i0fundef): eu

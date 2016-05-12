@@ -91,15 +91,15 @@ implement main0 (argc, argv) = let
 
   val d2ecs = parse_d2eclist_export (jsv)
   val () = fprint (stdout_ref, 
-    "\n## ======== level postiats ==============================\n\n")
+    "\n\n## ======== level postiats ==============================\n\n")
   val () = fprint_d2eclist (stdout_ref, d2ecs)
 
   val () = fprint (stdout_ref, 
-    "\n## ======== transform postiats to instr0 ================\n\n")
+    "\n\n## ======== transform postiats to instr0 ================\n\n")
   val sa = stamp_allocator_create ()
   val i0prog = i0transform_d2eclst_global (sa, d2ecs)
   val () = fprint (stdout_ref, 
-    "\n## ======== level instr0 ==============================\n\n")
+    "\n\n## ======== level instr0 ==============================\n\n")
   val () = fprint (stdout_ref, i0prog)
 
   (* ************** ************** *)
@@ -107,7 +107,7 @@ implement main0 (argc, argv) = let
   val i0prog = i0optimize_tailcall (sa, i0prog)
 
   val () = fprint (stdout_ref, 
-    "\n## ======== level instr0 after optimization ==============================\n\n")
+    "\n\n## ======== level instr0 after optimization =====================\n\n")
   val () = fprint (stdout_ref, i0prog)
 
   (* ************** ************** *)
@@ -115,7 +115,7 @@ implement main0 (argc, argv) = let
   val pml_prog = pmltransform_i0prog (i0prog)
 
   val () = fprint (stdout_ref, 
-    "\n## ======== level promela AST ==============================\n\n")
+    "\n\n## ======== level promela AST ==============================\n\n")
   val () = fprint (stdout_ref, pml_prog)
 
 
@@ -123,7 +123,7 @@ implement main0 (argc, argv) = let
 
   val eu = emit_pml_program (pml_prog)
   val () = fprint (stdout_ref, 
-    "\n## ======== level promela ==============================\n\n")
+    "\n\n## ======== level promela ==============================\n\n")
   val () = fprint_emit_unit (stdout_ref, eu)
   
   val () = if fopen > 0 then fileref_close (inpref)

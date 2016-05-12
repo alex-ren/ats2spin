@@ -23,4 +23,6 @@ implement fprint_i0name (out, i0name) = let
 in
 end
 
+implement eq_i0name_i0name (n1, n2) = $UTFPL.eq_symbol_symbol (n1, n2)
+
 

@@ -31,26 +31,33 @@ implement i0optimize_tailcall (sa, i0prog) = let
   // create a new map to hold newly generated functions
   val fmap = i0funmap_create (i2sz(2048))
   // 
-  val funlist = 
-    i0funmap_listize1 (i0funmap)
-
-  val () = loop (funlist, fmap) where {
-  fun loop (funlist: list0 (@(i0id, i0fundef))
+  val i0declst = loop (i0prog.i0prog_i0declst, fmap) where {
+  fun loop (i0declst: i0declst
             , fmap: i0funmap
-           ): void = 
-    case+ funlist of
-    | list0_cons (funp, funlist1) => let
-      val fundef = i0optimize_tailcall_fundef (sa, funp.1, i0funmap)
-      val () = i0funmap_insert_any (fmap, funp.0, fundef)
-    in
-      loop (funlist1, fmap)
-    end
-    | list0_nil () => ()
+           ): i0declst = 
+    case+ i0declst of
+    | list0_cons (i0dec, i0declst1) => 
+      (
+      case+ i0dec of
+      | DEC0fun (fundef) => let
+        val fundef' = i0optimize_tailcall_fundef (sa, fundef, i0funmap)
+        val () = i0funmap_insert_any (fmap, i0fundef_get_id (fundef), fundef')
+        val i0declst = loop (i0declst1, fmap)
+      in
+        DEC0fun (fundef') :: i0declst
+      end
+      | _ => let
+        val i0declst1' = loop (i0declst1, fmap)
+      in
+        i0dec :: i0declst1'
+      end
+      )
+    | list0_nil () => nil0
   }
   
   val i0prog1 = '{
     i0prog_i0funmap = fmap
-    , i0prog_i0gvarlst = i0prog.i0prog_i0gvarlst
+    , i0prog_i0declst = i0declst 
   }
 in
   i0prog1

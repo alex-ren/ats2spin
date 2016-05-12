@@ -27,6 +27,7 @@ typedef
 d2cst_struct = @{
   d2cst_name= symbol
 , d2cst_stamp= stamp
+, d2cst_extdef = Option string
 } (* end of [d2cst_struct] *)
 
 (* ****** ****** *)
@@ -40,9 +41,19 @@ assume d2cst_type = ref (d2cst_struct)
 //
 in (* in of [local] *)
 
+implement d2cst_update_extdef_opt (d2cst, extdef_opt) = $effmask_ref
+(
+let
+  val (vbox _ | p) = ref_get_viewptr (d2cst)
+  val () = p->d2cst_extdef := extdef_opt
+in
+end // end of [let]
+) (* end of [d2cst_update_extdef_opt] *)
+
+
 implement
 d2cst_make
-  (name, stamp) = let
+  (name, stamp, extdef_opt) = let
 //
 val (
   pfat, pfgc | p
@@ -50,6 +61,7 @@ val (
 //
 val () = p->d2cst_name := name
 val () = p->d2cst_stamp := stamp
+val () = p->d2cst_extdef := extdef_opt
 //
 in
   $UN.castvwtp0{d2cst}((pfat, pfgc | p))
@@ -65,6 +77,18 @@ in
   p->d2cst_name
 end // end of [let]
 ) (* end of [d2cst_get_name] *)
+
+implement d2cst_get_extdef_opt 
+(d2cst) = $effmask_ref
+(
+let
+  val (vbox _ | p) = ref_get_viewptr (d2cst)
+in
+  p->d2cst_extdef
+end // end of [let]
+) (* end of [d2cst_get_name] *)
+
+
 
 implement
 d2cst_get_stamp

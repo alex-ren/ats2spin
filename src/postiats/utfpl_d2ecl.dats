@@ -147,16 +147,28 @@ case+ d2c0.d2ecl_node of
     val () = fprint! (out, ")")
   }
 //
+| D2Cdcstdecs (knd, d2cst) =>
+  {
+    val () =
+      fprint! (out, "D2Cdcstdecs(\n")
+    val () = fprint_d2cst (out, d2cst)
+    val () = fprint! (out, ")")
+  }
 | D2Clocal
     (head, body) =>
   {
     val () =
       fprint! (out, "D2Clocal(\n")
     val () = fprint_d2eclist (out, head)
-    val () = fprint! (out, "in-of-local\n")
+    val () = fprint! (out, ")in-of-local(\n")
     val () = fprint_d2eclist (out, body)
-    val () = fprint! (out, "end-of-local\n")
+    val () = fprint! (out, ")end-of-local\n")
   }
+| D2Cextcode (code) => let
+    val () = fprint! (out, "D2Cextcode(\n")
+    val () = fprint! (out, code)
+    val () = fprint! (out, ")\n")
+in end
 //
 | D2Cignored((*void*)) => fprint! (out, "D2Cignored(", ")")
 //

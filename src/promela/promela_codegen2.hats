@@ -1839,6 +1839,9 @@ fprint_pml_module$PMLMODULE_never: $d2ctype(fprint_pml_module<>)
 extern
 fun{}
 fprint_pml_module$PMLMODULE_c_code: $d2ctype(fprint_pml_module<>)
+extern
+fun{}
+fprint_pml_module$PMLMODULE_literal_code: $d2ctype(fprint_pml_module<>)
 //
 (* ****** ****** *)
 //
@@ -1855,6 +1858,7 @@ case+ arg0 of
 | PMLMODULE_init _ => fprint_pml_module$PMLMODULE_init<>(out, arg0)
 | PMLMODULE_never _ => fprint_pml_module$PMLMODULE_never<>(out, arg0)
 | PMLMODULE_c_code _ => fprint_pml_module$PMLMODULE_c_code<>(out, arg0)
+| PMLMODULE_literal_code _ => fprint_pml_module$PMLMODULE_literal_code<>(out, arg0)
 )
 //
 (* ****** ****** *)
@@ -2141,6 +2145,39 @@ fprint_pml_module$PMLMODULE_c_code$lpar(out, _) = fprint_pml_module$lpar(out)
 implement{}
 fprint_pml_module$PMLMODULE_c_code$rpar(out, _) = fprint_pml_module$rpar(out)
 //
+extern
+fun{}
+fprint_pml_module$PMLMODULE_literal_code$con: $d2ctype(fprint_pml_module<>)
+extern
+fun{}
+fprint_pml_module$PMLMODULE_literal_code$lpar: $d2ctype(fprint_pml_module<>)
+extern
+fun{}
+fprint_pml_module$PMLMODULE_literal_code$rpar: $d2ctype(fprint_pml_module<>)
+extern
+fun{}
+fprint_pml_module$PMLMODULE_literal_code$arg1: $d2ctype(fprint_pml_module<>)
+//
+implement{}
+fprint_pml_module$PMLMODULE_literal_code(out, arg0) = 
+{
+//
+val () = fprint_pml_module$PMLMODULE_literal_code$con<>(out, arg0)
+val () = fprint_pml_module$PMLMODULE_literal_code$lpar<>(out, arg0)
+val () = fprint_pml_module$PMLMODULE_literal_code$arg1<>(out, arg0)
+val () = fprint_pml_module$PMLMODULE_literal_code$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_pml_module$PMLMODULE_literal_code$con(out, _) = fprint(out, "PMLMODULE_literal_code")
+implement{}
+fprint_pml_module$PMLMODULE_literal_code$lpar(out, _) = fprint_pml_module$lpar(out)
+implement{}
+fprint_pml_module$PMLMODULE_literal_code$rpar(out, _) = fprint_pml_module$rpar(out)
+implement{}
+fprint_pml_module$PMLMODULE_literal_code$arg1(out, arg0) =
+  let val-PMLMODULE_literal_code(arg1) = arg0 in fprint_pml_module$carg(out, arg1) end
+//
 (* ****** ****** *)
 (* ****** ****** *)
 //
@@ -2307,6 +2344,7 @@ case+ arg0 of
 | PMLMODULE_init _ => "PMLMODULE_init"
 | PMLMODULE_never _ => "PMLMODULE_never"
 | PMLMODULE_c_code _ => "PMLMODULE_c_code"
+| PMLMODULE_literal_code _ => "PMLMODULE_literal_code"
 )
 //
 (* ****** ****** *)

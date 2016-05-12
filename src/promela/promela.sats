@@ -258,6 +258,7 @@ datatype pml_module =
 | PMLMODULE_init of pml_steplst
 | PMLMODULE_never
 | PMLMODULE_c_code
+| PMLMODULE_literal_code of string
 
 fun{} datcon_pml_module (pml_module): string
 fun{} fprint_pml_module : (FILEref, pml_module) -> void
@@ -304,6 +305,7 @@ fun pml_varref_make (pml_name): pml_varref
 (* ******** ********* *)
 
 fun pmltransform_i0prog (i0prog: i0prog): pml_modulelst
+fun pmltransform_i0decl (i0decl: i0decl): pml_module
 fun pmltransform_i0fundef (i0fundef: i0fundef): pml_module
 
 (*
@@ -324,6 +326,8 @@ fun pmltransform_i0exp2pml_anyexp (i0exp): pml_anyexp
 fun pmltransform_i0explst2pml_anyexplst (i0explst): pml_anyexplst
 
 fun pmltransform_i0id2operator (i0id): option0 pml_opr
+
+fun i0id_is_run (i0id): bool
 
 (* ******** ********* *)
 

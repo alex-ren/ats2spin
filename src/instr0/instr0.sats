@@ -24,6 +24,7 @@ type0lst = list0 type0
 abstype i0name = ptr
 fun i0name_make (s: symbol): i0name
 fun i0name_get_symbol (n: i0name): symbol
+fun eq_i0name_i0name (n1: i0name, n2: i0name):<fun0> bool
 fun fprint_i0name: (FILEref, i0name) -> void
 overload fprint with fprint_i0name
 
@@ -47,12 +48,24 @@ datatype i0id_cat =
 
 (* ************ ************** *)
 
-typedef i0id = '{
-//  i0id_cat = i0id_cat
-, i0id_name = i0name
-, i0id_stamp = stamp
-// , i0id_type = type0
-}
+// typedef i0id = '{
+// //  i0id_cat = i0id_cat
+// , i0id_name = i0name
+// , i0id_stamp = stamp
+// // , i0id_type = type0
+// }
+
+abstype i0id = ptr
+
+fun i0id_make_sym (i0name, stamp): i0id
+fun i0id_make_cst (i0name, stamp, option0 string): i0id
+fun i0id_make_var (i0name, stamp): i0id
+fun i0id_is_sym (i0id): bool
+fun i0id_is_cst (i0id): bool
+fun i0id_is_var (i0id): bool
+fun i0id_get_name (i0id):<fun> i0name
+fun i0id_get_stamp (i0id):<fun> stamp
+fun i0id_get_extdef (i0id): option0 string
 
 typedef i0idlst = list0 i0id
 
@@ -152,6 +165,9 @@ staload "./../postiats/utfpl.sats"
 typedef i0gvar = (i0id, Option i0exp)
 typedef i0gvarlst = list0 i0gvar
 
+fun fprint_i0gvar: (FILEref, i0gvar) -> void
+overload fprint with fprint_i0gvar
+
 (* ************* *************** *)
 
 // mapping id to function body
@@ -173,9 +189,24 @@ fun i0idmap_search (i0idmap, i0id): Option_vt i0id
 
 (******** ********** *********)
 
+datatype i0decl =
+| DEC0fun of i0fundef
+| DEC0extcode of string
+| DEC0gvar of i0gvar
+
+typedef i0declst = list0 i0decl
+
+fun{} fprint_i0decl : (FILEref, i0decl) -> void // a function template
+fun myfprint_i0decl: (FILEref, i0decl) -> void
+overload fprint with myfprint_i0decl
+
+(******** ********** *********)
+
+
 typedef i0prog = '{
-  i0prog_i0funmap = i0funmap  // all functions
-  , i0prog_i0gvarlst = i0gvarlst  // global variables
+  i0prog_i0funmap = i0funmap  // ease the process for finding a function
+  , i0prog_i0declst = i0declst
+  // , i0prog_i0gvarlst = i0gvarlst  // global variables
   }
 
 fun fprint_i0prog: (FILEref, i0prog) -> void
@@ -208,14 +239,13 @@ fun i0transform_d2eclst_global (
 fun i0transform_d2ecl_global (
   sa: stamp_allocator
   , d2ec: d2ecl
-  , fmap: i0funmap
-  , gvs: &i0gvarlst): void
+  , fmap: i0funmap): i0declst
 
 fun i0transform_D2Cfundecs (
   sa: stamp_allocator
   , f2undeclst: f2undeclst
   , fmap: i0funmap
-  , gvs: &i0gvarlst): void
+  ): i0declst
 
 (* Desc: Create fundef and put it into the fmap
 *    group: Containing the names of the mutually recursive functions.
@@ -226,8 +256,7 @@ fun i0transform_fundec (
   sa: stamp_allocator
   , group: i0idlst
   , f2undec: f2undec
-  , fmap: i0funmap
-  , gvs: &i0gvarlst): void
+  , fmap: i0funmap): i0declst (*inner functions are included*)
                   
 fun i0transform_d2var (
   sa: stamp_allocator
@@ -260,8 +289,7 @@ fun i0transform_p2at2holder (
 fun i0transform_d2exp_fbody (
   sa: stamp_allocator
   , e: d2exp
-  , fmap: i0funmap
-  , gvs: &i0gvarlst): i0inslst
+  , fmap: i0funmap): (i0declst (*inner functions*), i0inslst)
 
 fun i0transform_d2exp_fname (
   sa: stamp_allocator
@@ -287,14 +315,12 @@ fun i0transform_d2explst_expvalue (
 fun i0transform_d2eclist (
   sa: stamp_allocator
   , d2eclist: d2eclist
-  , fmap: i0funmap
-  , gvs: &i0gvarlst): i0inslst
+  , fmap: i0funmap): (i0declst, i0inslst)
 
 fun i0transform_d2ecl (
   sa: stamp_allocator
   , d2ecl: d2ecl
-  , fmap: i0funmap
-  , gvs: &i0gvarlst): i0inslst
+  , fmap: i0funmap): (i0declst (*inner function*), i0inslst)
 
 fun i0transform_D2Cvaldecs (
   sa: stamp_allocator
