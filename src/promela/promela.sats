@@ -243,6 +243,9 @@ pml_inline = '{
   , pml_inline_seq = pml_steplst
 }
 
+fun pml_inline_make (
+  pml_name, list0 pml_name, pml_steplst): pml_inline
+
 fun fprint_pml_inline : (FILEref, pml_inline) -> void
 overload fprint with fprint_pml_inline
 
@@ -316,7 +319,7 @@ fun pmltransform_proctype (pml_name: pml_name, i0fundef: i0fundef): pml_module
 fun pmltransform_init (i0fundef: i0fundef): pml_module
 
 fun pmltransform_i0id (i0id: i0id): pml_name
-fun pmltransform_i0inslst (i0inslst: i0inslst): pml_steplst
+fun pmltransform_i0inslst (is_inline: bool, i0inslst: i0inslst): pml_steplst
 
 fun pmltransform_i0type (): pml_type
 

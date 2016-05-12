@@ -102,7 +102,25 @@ in
 end
 end
 
-implement pmltransform_inline (pml_name, i0fundef) = exitlocmsg ("todo")
+implement pmltransform_inline (pml_name, i0fundef) = let
+  // paralst
+  val i0idlst = i0fundef_get_paralst (i0fundef)
+  val pml_namelst = list0_foldright (i0idlst, fopr, nil0) where {
+    fun fopr (i0id: i0id, res: list0 pml_name):<cloref1> list0 pml_name = let
+      val pml_name = pmltransform_i0id (i0id)
+    in
+      pml_name :: res
+    end
+  }
+
+  val inss = i0fundef_get_instructions (i0fundef)
+  val pml_steplst = pmltransform_i0inslst (true, inss)
+
+  val inline = pml_inline_make (pml_name, pml_namelst, pml_steplst)
+in
+  PMLMODULE_inline (inline)
+end
+
 
 implement pmltransform_proctype (pml_name, i0fundef) = let
   // paralst
@@ -122,7 +140,7 @@ implement pmltransform_proctype (pml_name, i0fundef) = let
   }
 
   val inss = i0fundef_get_instructions (i0fundef)
-  val pml_steplst = pmltransform_i0inslst (inss)
+  val pml_steplst = pmltransform_i0inslst (false, inss)
 
   val proctype = pml_proctype_make (pml_name, pml_declst, pml_steplst)
 in
@@ -131,7 +149,7 @@ end
 
 implement pmltransform_init (i0fundef) = let
   val inss = i0fundef_get_instructions (i0fundef)
-  val pml_steplst = pmltransform_i0inslst (inss)
+  val pml_steplst = pmltransform_i0inslst (false, inss)
 in
   PMLMODULE_init pml_steplst
 end
@@ -145,7 +163,7 @@ in
 end
 
 
-implement pmltransform_i0inslst (i0inslst) = let
+implement pmltransform_i0inslst (is_inline, i0inslst) = let
 fun loop (i0inslst: i0inslst, res: pml_steplst): pml_steplst =
 case+ i0inslst of
 | i0ins :: i0inslst => (
@@ -180,7 +198,9 @@ case+ i0inslst of
   | INS0return i0expopt => 
     (
     case+ i0expopt of
-    | Some0 (i0exp) => exitlocmsg ("function return value not supported")
+    | Some0 (i0exp) => 
+      if ~is_inline then exitlocmsg ("non-inline function cannot return value.")
+      else exitlocmsg ("todo")
     | None0 () => loop (i0inslst, res)
     )
   | _ => exitlocmsg ("todo: " + datcon_i0ins i0ins)

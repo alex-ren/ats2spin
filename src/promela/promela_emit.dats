@@ -18,6 +18,7 @@ staload "./promela.sats"
 extern fun emit_pml_module (pml_module): eu
 extern fun emit_pml_init (pml_steplst): eu
 extern fun emit_pml_proctype (pml_proctype): eu
+extern fun emit_pml_inline (pml_inline): eu
 extern fun emit_pml_decl (pml_decl): eu
 extern fun emit_pml_name (pml_name): eu
 extern fun emit_pml_step (pml_step): eu
@@ -49,6 +50,9 @@ implement emit_val<pml_ivar> (ivar) =
 implement emit_val<pml_anyexp> (anyexp) =
   emit_pml_anyexp (anyexp)
 
+implement emit_val<pml_name> (name) =
+  emit_pml_name (name)
+
 (* ************ ************* *)
 
 implement emit_pml_program (program) = 
@@ -61,7 +65,7 @@ case+ pml_module of
 | PMLMODULE_declst _ => exitlocmsg ("not supported")
 | PMLMODULE_proctype proctype => 
     emit_pml_proctype (proctype)
-| PMLMODULE_inline _ => exitlocmsg ("not supported")
+| PMLMODULE_inline inline => emit_pml_inline (inline)
 | PMLMODULE_init pml_steplst =>
     emit_pml_init (pml_steplst)
 | PMLMODULE_never _ => exitlocmsg ("not supported")
@@ -106,6 +110,27 @@ in
   EUlist (eus)
 end
 
+implement emit_pml_inline (pml_inline) = let
+  #define inline pml_inline
+  val eus = 
+    emit_text ("inline ")
+    :: emit_pml_name (inline.pml_inline_name)
+    :: emit_text ("(")
+    :: EUlist (
+       emit<pml_name> (inline.pml_inline_paralst, emit_text (", ")))
+    :: emit_text (")")
+    :: emit_text (" {")
+    :: emit_indent ()
+    :: emit_newline ()
+    :: EUlist (
+       emit<pml_step> (inline.pml_inline_seq,
+           EUlist ((emit ";") :: (emit_newline ()) :: nil0)))
+    :: emit_unindent ()
+    :: emit_newline ()
+    :: emit_text ("}") :: nil0
+in
+  EUlist (eus)
+end
 implement emit_pml_name (pml_name) = let
   val name = pml_name_get_name (pml_name)
 in

@@ -75,6 +75,7 @@ ATS2PROMELA_dyn := \
     promela/pml_uname.dats \
     promela/pml_decl.dats \
     promela/pml_proctype.dats \
+    promela/pml_inline.dats \
     promela/dynloadall.dats \
 
 
