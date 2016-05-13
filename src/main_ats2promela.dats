@@ -107,7 +107,15 @@ implement main0 (argc, argv) = let
   val i0prog = i0optimize_tailcall (sa, i0prog)
 
   val () = fprint (stdout_ref, 
-    "\n\n## ======== level instr0 after optimization =====================\n\n")
+    "\n\n## ======== level instr0 after tail call optimization =====================\n\n")
+  val () = fprint (stdout_ref, i0prog)
+
+  (* ************** ************** *)
+
+  val i0prog = i0optimize_collect_decs (i0prog)
+
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== level instr0 after declarations movement =====================\n\n")
   val () = fprint (stdout_ref, i0prog)
 
   (* ************** ************** *)
