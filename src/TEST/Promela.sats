@@ -48,19 +48,17 @@ Promela$assert{b:bool}(bool(b)): [b==true] void
 sortdef gname = int
 
 fun
-Promela$wait_until(() -> bool): void
+pml$wait_until(() -> bool): void
+
 fun
-Promela$wait_unless(() -> bool): void
+pml$wait_unless(() -> bool): void
 
 fun
 Promela$atomic {a:viewt@ype} (() -> a): a
 
 fun
-Promela$run (() -> void): void
-abstype process_end
-fun Promela$run2 (process_end): void
+pml$run (() -> void): void
 
-fun Promela$process_end (): process_end
 
 prfun
 Promela$set_tag (tag: string): void
@@ -101,7 +99,6 @@ fun {a:t0ype} promela_gvar_chan_dec (cap: int): gid_t
 fun {a:t0ype} promela_gvar_chan_create (cap: int): gid_t
 
 
-fun pml$run (() -> void): pid
 
 
 (* end of [Promela.sats] *)

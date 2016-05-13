@@ -103,18 +103,19 @@ val opt = the_d2cstmap_find (d2cstmap, stamp)
 in
 //
 case+ opt of
-| ~Some_vt (d2c) => let
-  val jsv2 = jsonval_get_field (jsv0, "d2cst_extdef")
-in
-  case+ jsv2 of
-  | ~Some_vt (jsv3) => let
-    val extdef = parse_d2cst_extdef (jsv3)
-    val () = d2cst_update_extdef_opt (d2c, extdef)
-  in
-      d2c
-  end
-  | ~None_vt () => d2c
-end
+| ~Some_vt (d2c) => d2c
+// let
+//   val jsv2 = jsonval_get_field (jsv0, "d2cst_extdef")
+// in
+//   case+ jsv2 of
+//   | ~Some_vt (jsv3) => let
+//     val extdef = parse_d2cst_extdef (jsv3)
+//     val () = d2cst_update_extdef_opt (d2c, extdef)
+//   in
+//       d2c
+//   end
+//   | ~None_vt () => d2c
+// end
 | ~None_vt ((*void*)) => let
   val-~Some_vt(jsv1) =
     jsonval_get_field (jsv0, "d2cst_sym")
@@ -122,14 +123,14 @@ end
   val jsv2 = jsonval_get_field (jsv0, "d2cst_extdef")
 in
   case+ jsv2 of
-  | ~Some_vt (jsv3) => exitlocmsg ("d2cstmap should have no extdef")
-  // let
-  //   val extdef = parse_d2cst_extdef (jsv3)
-  //   val d2c = d2cst_make (sym, stamp, extdef)
-  //   val ((*void*)) = the_d2cstmap_insert (d2cstmap, d2c)
-  // in
-  //   d2c
-  // end
+  | ~Some_vt (jsv3) =>
+  let
+    val extdef = parse_d2cst_extdef (jsv3)
+    val d2c = d2cst_make (sym, stamp, extdef)
+    val ((*void*)) = the_d2cstmap_insert (d2cstmap, d2c)
+  in
+    d2c
+  end
   | ~None_vt () => let
     val d2c = d2cst_make (sym, stamp, None)
     val ((*void*)) = the_d2cstmap_insert (d2cstmap, d2c)

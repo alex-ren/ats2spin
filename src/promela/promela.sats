@@ -11,13 +11,6 @@ staload "./../postiats/utfpl.sats"
 
 (* ********** ************ *)
 
-#define PML_PROCTYPE "proctype$"
-#define PML_INLINE "inline$"
-#define PML_INIT "pml$init"
-#define PML_RUN "pml$run"
-
-(* ********** ************ *)
-
 abstype pml_name = ptr
 fun fprint_pml_name : (FILEref, pml_name) -> void
 overload fprint with fprint_pml_name
@@ -343,6 +336,7 @@ fun pmltransform_i0id2operator (i0id): option0 pml_opr
 fun pmltransform_i0id2decl (i0id): pml_decl
 
 fun i0id_is_run (i0id): bool
+fun i0id_is_wait_until (i0id): bool
 
 (* ******** ********* *)
 

@@ -19,6 +19,7 @@ staload "./../utils/emiter.sats"
 #define PML_INLINE "inline$"
 #define PML_INIT "pml$init"
 #define PML_RUN "pml$run"
+#define PML_WAIT_UNTIL "pml$wait_until"
 
 (* ********** ************ *)
 

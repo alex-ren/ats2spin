@@ -41,14 +41,15 @@ assume d2cst_type = ref (d2cst_struct)
 //
 in (* in of [local] *)
 
-implement d2cst_update_extdef_opt (d2cst, extdef_opt) = $effmask_ref
-(
-let
-  val (vbox _ | p) = ref_get_viewptr (d2cst)
-  val () = p->d2cst_extdef := extdef_opt
-in
-end // end of [let]
-) (* end of [d2cst_update_extdef_opt] *)
+// Deleted code
+// implement d2cst_update_extdef_opt (d2cst, extdef_opt) = $effmask_ref
+// (
+// let
+//   val (vbox _ | p) = ref_get_viewptr (d2cst)
+//   val () = p->d2cst_extdef := extdef_opt
+// in
+// end // end of [let]
+// ) (* end of [d2cst_update_extdef_opt] *)
 
 
 implement

@@ -214,7 +214,6 @@ fun d2cst_make (symbol, stamp, Option string): d2cst
 fun d2cst_get_name (d2cst):<> symbol
 fun d2cst_get_stamp (d2cst):<> stamp
 fun d2cst_get_extdef_opt (d2cst):<> Option string
-fun d2cst_update_extdef_opt (d2cst, Option string): void
 //
 (* ****** ****** *)
 //

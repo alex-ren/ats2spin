@@ -316,18 +316,6 @@ in
   case+ opr_opt of
   | Some0 (opr) =>
     (
-    case+ opr of
-    // | PMLOPR_run () => let
-    //   val- i0exp :: nil0 = i0explst
-    //   val- EXP0lambody (proc_call) = i0exp
-    //   val- EXP0app (proc_id, proc_arglst) = proc_call
-    //   val- Some0 proc_name = pml_name_make_proctype (proc_id)
-    //   val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (proc_arglst)
-    // in 
-    //   PMLANYEXP_run (proc_name, pml_anyexplst)
-    // end
-    | _ =>
-      (
       case+ i0explst of
       | arg1 :: i0explst1 => let
         val pml_arg1 = pmltransform_i0exp2pml_anyexp (arg1)
@@ -348,7 +336,6 @@ in
         )
       end
       | nil0 () => exitlocmsg ("Nullary operator is not supported.")
-      )
     )
   | None0 () => if i0id_is_run (i0id) then let
     val- i0exp :: nil0 = i0explst
@@ -359,6 +346,14 @@ in
   in 
     PMLANYEXP_run (proc_name, pml_anyexplst)
   end // end of [i0id_is_run]
+  else if i0id_is_wait_until (i0id) then let
+    val- i0exp :: nil0 = i0explst
+    val- EXP0lambody (i0exp_cond) = i0exp
+    val anyexp = pmltransform_i0exp2pml_anyexp (i0exp_cond)
+  in 
+    anyexp
+  end // end of [i0i
+    
   else let // not "run" in promela
     val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (i0explst)
     val name_opt = i0id_get_extdef (i0id)
@@ -423,6 +418,12 @@ implement i0id_is_run (i0id) = let
   val opr_str = tostring_i0id_name (i0id)
 in
   opr_str = PML_RUN
+end
+
+implement i0id_is_wait_until (i0id) = let
+  val opr_str = tostring_i0id_name (i0id)
+in
+  opr_str = PML_WAIT_UNTIL
 end
 
 implement pmltransform_i0id2decl (i0id) = let
