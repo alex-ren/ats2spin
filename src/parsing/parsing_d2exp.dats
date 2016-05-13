@@ -132,6 +132,8 @@ extern
 fun parse_D2Eann_funclo (d2parsingenv, jsonval): d2exp_node
 extern
 fun parse_D2Eextfcall (d2parsingenv, jsonval): d2exp_node
+extern
+fun parse_D2Eassgn (d2parsingenv, jsonval): d2exp_node
 
 extern
 fun parse_D2Eignored (jsonval): d2exp_node
@@ -191,6 +193,7 @@ case+ name of
 | "D2Eann_type" => parse_D2Eann_type (d2env, jsv2)
 | "D2Eann_funclo" => parse_D2Eann_funclo (d2env, jsv2)
 | "D2Eextfcall" => parse_D2Eextfcall (d2env, jsv2)
+| "D2Eassgn" => parse_D2Eassgn (d2env, jsv2)
 //
 | s (*rest*) => let
   val () = print! (s,  " is ignored")
@@ -536,6 +539,17 @@ val fname = parse_string (jsvs[1])
 val d2es = parse_d2explst (d2env, jsvs[2])
 in
   D2Eextfcall (fname, d2es)
+end
+
+implement
+parse_D2Eassgn (d2env, jsv0) = let
+//
+val-JSONarray(jsvs) = jsv0
+val () = assertloc (length(jsvs) >= 2)
+val exp_left = parse_d2exp (d2env, jsvs[0])
+val exp_right = parse_d2exp (d2env, jsvs[1])
+in
+  D2Eassgn (exp_left, exp_right)
 end
 
 (* ****** ****** *)

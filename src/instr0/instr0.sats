@@ -98,7 +98,7 @@ fun tostring_i0id_name (i0id): string
 
 datatype i0ins =
 | INS0decl of (i0id, option0 i0exp)
-| INS0assign of (option0 i0id, i0exp)
+| INS0assign of (option0 i0exp, i0exp)
 | INS0label of (i0id)
 | INS0return of (option0 i0exp)
 | INS0ifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))

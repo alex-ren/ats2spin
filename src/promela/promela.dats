@@ -187,11 +187,11 @@ case+ i0inslst of
   in 
     loop (i0inslst, pml_step :: res)
   end
-  | INS0assign (i0id_opt, i0exp) => (
+  | INS0assign (i0exp_opt, i0exp) => (
     if i0exp_is_inline_call (i0exp) then 
       (
-      case+ i0id_opt of  // handle inline call
-      | Some0 (i0id) => exitlocmsg ("inline function has no return value")
+      case+ i0exp_opt of  // handle inline call
+      | Some0 (i0exp) => exitlocmsg ("inline function has no return value")
       | None0 () => let 
         val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
         val pml_exp = PMLEXP_anyexp (pml_anyexp)
@@ -201,8 +201,10 @@ case+ i0inslst of
         loop (i0inslst, pml_step :: res)
       end
       )
-    else case+ i0id_opt of
-    | Some0 (i0id) => let  // handle normal expression
+    else case+ i0exp_opt of
+    | Some0 (i0exp_name) => let  // handle normal expression
+      // Currently, the left hand side must be a name.
+      val- EXP0var (i0id) = i0exp_name  
       val pml_name = pmltransform_i0id (i0id)
       val pml_varref = PMLVARREF (pml_name, None0, None0)
       val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)

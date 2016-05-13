@@ -49,6 +49,7 @@ case+ arg0 of
 | D2Elam _ => "D2Elam"
 | D2Efix _ => "D2Efix"
 | D2Eextfcall _ => "D2Eextfcall"
+| D2Eassgn _ => "D2Eassgn"
 | D2Eignored _ => "D2Eignored"
 )
 //

@@ -173,7 +173,7 @@ else let
             | ((i0exp :: i0explst1), (para_pair :: para_pair_lst1)) => let
               val (inss1, inss2) = loop (i0explst1, para_pair_lst1)
               val ins1 = INS0decl (para_pair.1, Some0 i0exp)
-              val ins2 = INS0assign (Some0 (para_pair.0), EXP0var (para_pair.1))
+              val ins2 = INS0assign (Some0 (EXP0var para_pair.0), EXP0var (para_pair.1))
               val inss1 = ins1 :: inss1
               val inss2 = ins2 :: inss2
             in (inss1, inss2) end
@@ -270,7 +270,7 @@ implement i0optimize_collect_decs_fundef (i0fundef) = let
       case+ i0expopt of
       | Some0 i0exp => let
         val ins_dec = INS0decl (i0id, None0)
-        val ins_assign = INS0assign (Some0 i0id,  i0exp)
+        val ins_assign = INS0assign (Some0 (EXP0var i0id),  i0exp)
         val res1' = ins_dec :: res1
         val res2' = ins_assign :: res2
       in
@@ -308,7 +308,7 @@ implement i0optimize_collect_decs_fundef (i0fundef) = let
 
       val assign_inss = list0_foldleft (tuplst, res2, fopr) where {
       fun fopr (res: i0inslst, tup: @(i0id, i0id)):<cloref1> i0inslst = let
-        val ins = INS0assign (Some0 tup.0, EXP0var (tup.1))
+        val ins = INS0assign (Some0 (EXP0var tup.0), EXP0var (tup.1))
       in
         ins :: res
       end

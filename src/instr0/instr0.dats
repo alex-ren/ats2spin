@@ -412,15 +412,32 @@ in ret end
 | list_nil () => list0_nil ()
 end
 
+fun try_i0transform_d2exp2ins_assign (
+  sa: stamp_allocator
+  , d2exp: d2exp): option0 i0ins =
+case+ d2exp.d2exp_node of
+| D2Eassgn (exp1, exp2) => let
+  val left = i0transform_d2exp_expvalue (sa, exp1)
+  val right = i0transform_d2exp_expvalue (sa, exp2)
+in
+  Some0 (INS0assign (Some0 left, right))
+end
+| _ => None0 ()
+
 implement i0transform_v2aldec (sa, v2aldec) = let
   val p2at = v2aldec.v2aldec_pat
   val d2exp = v2aldec.v2aldec_def
+in
+case+ try_i0transform_d2exp2ins_assign (sa, d2exp) of
+| Some0 ins => ins
+| None0 () => let
   val i0idopt = i0transform_p2at2holder (sa, p2at)
   val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
 in
   case+ i0idopt of
   | Some0 i0id => INS0decl (i0id, Some0 i0exp)
-  | None0 () => INS0assign (i0idopt, i0exp)
+  | None0 () => INS0assign (None0, i0exp)
+end
 end
 
 implement i0transform_d2exp_expvalue (sa, d2exp) = let
@@ -487,6 +504,8 @@ in
   in
     EXP0lambody i0exp
   end
+  | D2Eassgn (_, _) => exitlocmsg (
+    "This should not happen. D2Eassgn is processed elsewhere")
 //   | D2Eignored of ((*void*)) // HX: error-handling
   | _ => exitlocmsg (datcon_d2exp_node (node) + " not allowed")
 // //
