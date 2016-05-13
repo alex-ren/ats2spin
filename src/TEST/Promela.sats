@@ -38,7 +38,7 @@ overload = with pid_eq
 (* ****** ****** *)
 //
 fun
-Promela$mypid(): pid
+pml$mypid(): pid = "ext#get_pid"
 //
 fun
 Promela$assert{b:bool}(bool(b)): [b==true] void
