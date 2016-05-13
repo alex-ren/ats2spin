@@ -196,27 +196,55 @@ implement emit_pml_stmnt (pml_stmnt) = let
   #define st pml_stmnt
 in
 case+ st of
-| PMLSTMNT_if pml_options => exitlocmsg ("not supported")
+| PMLSTMNT_if pml_options => let
+  val eus = emit ("fi") :: nil0
+  val eus = list0_foldright (pml_options, fopr, eus) where {
+    fun fopr (pml_steplst: pml_steplst, res: eulst):<cloref1> eulst = 
+    case+ pml_steplst of
+    | step1 :: steps => let
+      val eu1 = emit_pml_step (step1)
+      val eus_rest = emit<pml_step> (steps
+                      , EUlist (emit ";" :: emit_newline () :: nil0))
+      val eus_option = emit ":: " :: eu1 :: emit " -> " 
+        :: emit_indent () :: emit_newline ()
+        :: EUlist (eus_rest) :: emit_unindent () :: emit_newline () :: nil0
+      val eu = EUlist (eus_option) 
+    in
+      eu :: res
+    end
+    | nil0 () => EUlist (nil0) :: res
+  }
+  val eus = emit "if " :: emit_newline () :: eus
+in 
+  EUlist eus 
+end
 | PMLSTMNT_do pml_options => exitlocmsg ("not supported")
 | PMLSTMNT_atomic pml_steplst => exitlocmsg ("not supported")
 | PMLSTMNT_dstep pml_steplst => exitlocmsg ("not supported")
 | PMLSTMNT_block pml_steplst  (* { xxx } *) => exitlocmsg ("not supported")
 // | PMLSTMNT_send   // todo
 // | PMLSTMNT_receive
-| PMLSTMNT_assign () => exitlocmsg ("not supported")
-| PMLSTMNT_else () => exitlocmsg ("not supported")
+| PMLSTMNT_assign (pml_varref, pml_anyexp) => let
+  val eus = emit_pml_varref (pml_varref)
+    :: emit " = "
+    :: emit_pml_anyexp (pml_anyexp)
+    :: nil0
+in
+  EUlist (eus)
+end
+| PMLSTMNT_else () => emit "else "
 | PMLSTMNT_break () => exitlocmsg ("not supported")
 | PMLSTMNT_goto pml_name => let
   val eus = emit "goto "
     :: emit_pml_name (pml_name)
-    :: emit "\n"
     :: nil0
 in
   EUlist (eus)
 end
 | PMLSTMNT_name (pml_name, pml_stmnt) => let
   val eus = emit_pml_name (pml_name)
-    :: emit ":\n"
+    :: emit ":"
+    :: emit_newline ()
     :: emit_pml_stmnt (pml_stmnt)
     :: nil0
 in
@@ -291,6 +319,12 @@ implement emit_pml_opr (pml_opr) =
 case+ pml_opr of
 | PMLOPR_plus () => emit_text ("+")
 | PMLOPR_minus () => emit_text ("-")
+| PMLOPR_mul () => emit_text ("*")
+| PMLOPR_div () => emit_text ("/")
+| PMLOPR_gt () => emit_text (">")
+| PMLOPR_gte () => emit_text (">=")
+| PMLOPR_lt () => emit_text ("<")
+| PMLOPR_lte () => emit_text ("<=")
 | PMLOPR_and () => emit_text ("&&")
 | PMLOPR_or () => emit_text ("||")
 | PMLOPR_neg () => emit_text ("~")

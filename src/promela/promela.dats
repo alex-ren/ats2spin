@@ -167,7 +167,26 @@ fun loop (i0inslst: i0inslst, res: pml_steplst): pml_steplst =
 case+ i0inslst of
 | i0ins :: i0inslst => (
   case+ i0ins of
-  | INS0decl (i0id, i0expopt) => exitlocmsg ("todo: " + datcon_i0ins i0ins)
+  | INS0decl (i0id, i0expopt) => let
+    val pml_name = pmltransform_i0id (i0id)
+    val pml_type = pml_name_get_type (pml_name)
+
+    val pml_ivar = (case+ i0expopt of
+      | Some0 i0exp => let
+        val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
+        val pml_exp = PMLEXP_anyexp (pml_anyexp)
+      in
+        PMLIVAR_exp (pml_name, pml_exp)
+      end
+      | None0 () => PMLIVAR_name (pml_name)
+    )
+    val pml_ivarlst = pml_ivar :: nil0
+    val pml_decl = pml_decl_make (false (*visible*), pml_type, pml_ivarlst)
+    val pml_declst = pml_decl :: nil0
+    val pml_step = PMLSTEP_declst pml_declst
+  in 
+    loop (i0inslst, pml_step :: res)
+  end
   | INS0assign (i0id_opt, i0exp) => (
     if i0exp_is_inline_call (i0exp) then 
       (
@@ -183,16 +202,12 @@ case+ i0inslst of
       end
       )
     else case+ i0id_opt of
-    | Some0 (i0id) => let  // handle normal function call with return value
+    | Some0 (i0id) => let  // handle normal expression
       val pml_name = pmltransform_i0id (i0id)
-      val pml_type = pml_name_get_type (pml_name)
+      val pml_varref = PMLVARREF (pml_name, None0, None0)
       val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
-      val pml_exp = PMLEXP_anyexp (pml_anyexp)
-      val pml_ivar = PMLIVAR_exp (pml_name, pml_exp)
-      val pml_ivarlst = pml_ivar :: nil0
-      val pml_decl = pml_decl_make (false (*visible*), pml_type, pml_ivarlst)
-      val pml_declst = pml_decl :: nil0
-      val pml_step = PMLSTEP_declst pml_declst
+      val pml_stmnt = PMLSTMNT_assign (pml_varref, pml_anyexp)
+      val pml_step = PMLSTEP_stmnt pml_stmnt
     in
       loop (i0inslst, pml_step :: res)
     end
@@ -251,6 +266,24 @@ INS0init_loop is replaced by dec and assign")
     val res = list0_reverse_append (epiloge_steps, res)
     val pml_name = pmltransform_i0id (i0id)
     val pml_stmnt = PMLSTMNT_goto (pml_name)
+    val pml_step = PMLSTEP_stmnt (pml_stmnt)
+    val res = pml_step :: res
+  in
+    loop (i0inslst, res)
+  end
+  | INS0ifbranch (i0exp, inss_if, inss_else) => let
+    val guard_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
+    val guard_exp = PMLEXP_anyexp (guard_anyexp)
+
+    val guard_step = PMLSTEP_stmnt (PMLSTMNT_exp (guard_exp))
+    val pml_inss_if = pmltransform_i0inslst (false, inss_if)
+    val pml_inss_if = guard_step :: pml_inss_if
+
+    val else_step = PMLSTEP_stmnt (PMLSTMNT_else)
+    val pml_inss_else = pmltransform_i0inslst (false, inss_else)
+    val pml_inss_else = else_step :: pml_inss_else
+
+    val pml_stmnt = PMLSTMNT_if (pml_inss_if :: pml_inss_else :: nil0)
     val pml_step = PMLSTEP_stmnt (pml_stmnt)
     val res = pml_step :: res
   in
@@ -370,6 +403,14 @@ in
   case+ opr_str of
   | "+" => Some0 PMLOPR_plus
   | "-" => Some0 PMLOPR_minus
+  | "*" => Some0 PMLOPR_mul
+  | "/" => Some0 PMLOPR_div
+  | ">" => Some0 PMLOPR_gt
+  | ">=" => Some0 PMLOPR_gte
+  | "<" => Some0 PMLOPR_lt
+  | "<=" => Some0 PMLOPR_lte
+  | "&&" => Some0 PMLOPR_and
+  | "||" => Some0 PMLOPR_or
 //  | PML_RUN => Some0 PMLOPR_run
   | _ => exitlocmsg ("operator " + opr_str + " is not supported")
 end

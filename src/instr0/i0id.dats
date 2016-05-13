@@ -68,6 +68,42 @@ in
   ID0var (name, stamp)  // , type0)
 end
 
+fun i0name_copy_remove_prefix_inline (
+  i0name: i0name) = let
+  val str = tostring_i0name i0name
+  val nstr_opt = str.removePrefix (PML_INLINE)
+in
+  case+ nstr_opt of
+  | Some nstr => let
+    val symbol = symbol_make (nstr)
+    val ni0name = i0name_make (symbol)
+  in
+    ni0name
+  end
+  | None () => i0name
+end
+
+implement i0id_copy_remove_prefix_inline (i0id, sa) =
+case+ i0id of
+| ID0sym (i0name, _) => let
+  val ni0name = i0name_copy_remove_prefix_inline (i0name)
+  val nstamp = stamp_allocate (sa)
+in
+  ID0sym (ni0name, nstamp)
+end
+| ID0cst (i0name, _, extdef_opt) => let
+  val ni0name = i0name_copy_remove_prefix_inline (i0name)
+  val nstamp = stamp_allocate (sa)
+in
+  ID0cst (ni0name, nstamp, extdef_opt)
+end
+| ID0var (i0name, _) => let
+  val ni0name = i0name_copy_remove_prefix_inline (i0name)
+  val nstamp = stamp_allocate (sa)
+in
+  ID0var (ni0name, nstamp)
+end
+
 implement fprint_i0id (out, i0id) = 
 case+ i0id of
 | ID0sym (i0name, stamp) => fprint (out, i0name)

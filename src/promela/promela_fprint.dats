@@ -125,6 +125,12 @@ implement fprint_pml_opr (out, opr) =
 case+ opr of
 | PMLOPR_plus ()  => fprint (out, "+")
 | PMLOPR_minus () => fprint (out, "-")
+| PMLOPR_mul () => fprint (out, "*")
+| PMLOPR_div () => fprint (out, "/")
+| PMLOPR_gt () => fprint (out, ">")
+| PMLOPR_gte () => fprint (out, ">=")
+| PMLOPR_lt () => fprint (out, "<")
+| PMLOPR_lte () => fprint (out, "<=")
 | PMLOPR_and ()   => fprint (out, "*")
 | PMLOPR_or ()    => fprint (out, "/")
 | PMLOPR_neg ()   => fprint (out, "~")

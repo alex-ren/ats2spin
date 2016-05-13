@@ -13,6 +13,14 @@ staload "./../postiats/utfpl.sats"
 
 staload "./../utils/emiter.sats"
 
+(* ********** ************ *)
+
+#define PML_PROCTYPE "proctype$"
+#define PML_INLINE "inline$"
+#define PML_INIT "pml$init"
+#define PML_RUN "pml$run"
+
+(* ********** ************ *)
 
 datatype type0 =
 | TYPE0_int
@@ -73,6 +81,7 @@ fun fprint_i0id: (FILEref, i0id) -> void
 overload fprint with fprint_i0id
 
 fun i0id_copy (i0id: i0id, sa: stamp_allocator): i0id
+fun i0id_copy_remove_prefix_inline (i0id: i0id, sa: stamp_allocator): i0id
 
 fun eq_i0id_i0id (x: i0id, y: i0id):<fun0> bool
 overload = with eq_i0id_i0id
@@ -94,10 +103,12 @@ datatype i0ins =
 | INS0return of (option0 i0exp)
 | INS0ifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))
 | INS0goto of (i0id)
+//
 // Added for recursive functions
 | INS0init_loop of (
   i0idlst (*all variables*)
   , list0 (@(i0id, i0id)) (*variabe and initial value from para*))
+//
 // Added for recursive functions
 | INS0tail_jump of (i0inslst (*calc arg*), i0id (*jump tag*))
 

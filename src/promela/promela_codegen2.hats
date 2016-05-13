@@ -1602,6 +1602,15 @@ fprint_pml_stmnt$PMLSTMNT_assign$lpar: $d2ctype(fprint_pml_stmnt<>)
 extern
 fun{}
 fprint_pml_stmnt$PMLSTMNT_assign$rpar: $d2ctype(fprint_pml_stmnt<>)
+extern
+fun{}
+fprint_pml_stmnt$PMLSTMNT_assign$sep1: $d2ctype(fprint_pml_stmnt<>)
+extern
+fun{}
+fprint_pml_stmnt$PMLSTMNT_assign$arg1: $d2ctype(fprint_pml_stmnt<>)
+extern
+fun{}
+fprint_pml_stmnt$PMLSTMNT_assign$arg2: $d2ctype(fprint_pml_stmnt<>)
 //
 implement{}
 fprint_pml_stmnt$PMLSTMNT_assign(out, arg0) = 
@@ -1609,6 +1618,9 @@ fprint_pml_stmnt$PMLSTMNT_assign(out, arg0) =
 //
 val () = fprint_pml_stmnt$PMLSTMNT_assign$con<>(out, arg0)
 val () = fprint_pml_stmnt$PMLSTMNT_assign$lpar<>(out, arg0)
+val () = fprint_pml_stmnt$PMLSTMNT_assign$arg1<>(out, arg0)
+val () = fprint_pml_stmnt$PMLSTMNT_assign$sep1<>(out, arg0)
+val () = fprint_pml_stmnt$PMLSTMNT_assign$arg2<>(out, arg0)
 val () = fprint_pml_stmnt$PMLSTMNT_assign$rpar<>(out, arg0)
 //
 }
@@ -1618,6 +1630,14 @@ implement{}
 fprint_pml_stmnt$PMLSTMNT_assign$lpar(out, _) = fprint_pml_stmnt$lpar(out)
 implement{}
 fprint_pml_stmnt$PMLSTMNT_assign$rpar(out, _) = fprint_pml_stmnt$rpar(out)
+implement{}
+fprint_pml_stmnt$PMLSTMNT_assign$sep1(out, _) = fprint_pml_stmnt$sep<>(out)
+implement{}
+fprint_pml_stmnt$PMLSTMNT_assign$arg1(out, arg0) =
+  let val-PMLSTMNT_assign(arg1, _) = arg0 in fprint_pml_stmnt$carg(out, arg1) end
+implement{}
+fprint_pml_stmnt$PMLSTMNT_assign$arg2(out, arg0) =
+  let val-PMLSTMNT_assign(_, arg2) = arg0 in fprint_pml_stmnt$carg(out, arg2) end
 //
 extern
 fun{}
@@ -2275,6 +2295,12 @@ datcon_pml_opr
 case+ arg0 of
 | PMLOPR_plus _ => "PMLOPR_plus"
 | PMLOPR_minus _ => "PMLOPR_minus"
+| PMLOPR_mul _ => "PMLOPR_mul"
+| PMLOPR_div _ => "PMLOPR_div"
+| PMLOPR_gt _ => "PMLOPR_gt"
+| PMLOPR_gte _ => "PMLOPR_gte"
+| PMLOPR_lt _ => "PMLOPR_lt"
+| PMLOPR_lte _ => "PMLOPR_lte"
 | PMLOPR_and _ => "PMLOPR_and"
 | PMLOPR_or _ => "PMLOPR_or"
 | PMLOPR_neg _ => "PMLOPR_neg"

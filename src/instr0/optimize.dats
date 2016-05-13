@@ -101,7 +101,7 @@ else let
   val map_fname_tag = i0idmap_create (i2sz(1024))
   val () = list0_foreach (fnames, fopr) where {
   fun fopr (i0id: i0id):<cloref1> void = let
-    val new_id = i0id_copy (i0id, sa)
+    val new_id = i0id_copy_remove_prefix_inline (i0id, sa)
     val () = i0idmap_insert_any (map_fname_tag, i0id, new_id)
   in end
   }
@@ -172,7 +172,7 @@ else let
             case+ (i0explst, para_pair_lst) of
             | ((i0exp :: i0explst1), (para_pair :: para_pair_lst1)) => let
               val (inss1, inss2) = loop (i0explst1, para_pair_lst1)
-              val ins1 = INS0assign (Some0 (para_pair.1), i0exp)
+              val ins1 = INS0decl (para_pair.1, Some0 i0exp)
               val ins2 = INS0assign (Some0 (para_pair.0), EXP0var (para_pair.1))
               val inss1 = ins1 :: inss1
               val inss2 = ins2 :: inss2
@@ -260,7 +260,7 @@ implement i0optimize_collect_decs_fundef (i0fundef) = let
   fun loop (i0inslst: i0inslst
             , res1: i0inslst (* ins list for INS0decl *)
             , res2: i0inslst (* new instruction list *)
-           ): (i0inslst, i0inslst) =
+           ): (i0inslst (*res1'*), i0inslst(*res2'*)) =
   case+ i0inslst of
   | i0ins :: i0inslst1 =>
     (
@@ -316,9 +316,12 @@ implement i0optimize_collect_decs_fundef (i0fundef) = let
     in
       loop (i0inslst1, dec_inss, assign_inss)
     end
-    | INS0tail_jump (inss (*calc arg*), i0id (*jump tag*)) => 
-      // Since there are only assignments in inss, no need to do anything.
-      loop (i0inslst1, res1, i0ins :: res2)
+    | INS0tail_jump (inss (*calc arg*), i0id (*jump tag*)) => let
+      val (res1', ninss) = loop (inss, res1, nil0)
+      val ni0ins = INS0tail_jump (ninss, i0id)
+    in
+      loop (i0inslst1, res1', ni0ins :: res2)
+    end
     )
   | nil0 () => (res1, list0_reverse res2)  // end of [loop]
 

@@ -76,6 +76,12 @@ datatype
 pml_opr =
 | PMLOPR_plus
 | PMLOPR_minus
+| PMLOPR_mul
+| PMLOPR_div
+| PMLOPR_gt
+| PMLOPR_gte
+| PMLOPR_lt
+| PMLOPR_lte
 | PMLOPR_and
 | PMLOPR_or
 | PMLOPR_neg   (* ~ *)
@@ -188,7 +194,7 @@ pml_stmnt =
 | PMLSTMNT_block of pml_steplst  (* { xxx } *)
 // | PMLSTMNT_send   // todo
 // | PMLSTMNT_receive
-| PMLSTMNT_assign
+| PMLSTMNT_assign of (pml_varref, pml_anyexp)
 | PMLSTMNT_else
 | PMLSTMNT_break
 | PMLSTMNT_goto of pml_name

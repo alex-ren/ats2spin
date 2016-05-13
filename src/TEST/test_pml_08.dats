@@ -11,6 +11,11 @@ staload "./Promela.sats"
 
 fun inline$foo (x: int, y: int): void = let
   val y = x + 1
+  val () = $extfcall (void
+             , "printf"
+             , "y is %d"
+             , y
+             )
 in
   inline$foo (y, x)
 end
