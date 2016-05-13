@@ -417,10 +417,10 @@ implement i0transform_v2aldec (sa, v2aldec) = let
   val d2exp = v2aldec.v2aldec_def
   val i0idopt = i0transform_p2at2holder (sa, p2at)
   val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
-  val ins = INS0assign (i0idopt, i0exp)
-
 in
-  ins
+  case+ i0idopt of
+  | Some0 i0id => INS0decl (i0id, Some0 i0exp)
+  | None0 () => INS0assign (i0idopt, i0exp)
 end
 
 implement i0transform_d2exp_expvalue (sa, d2exp) = let

@@ -167,7 +167,7 @@ fun loop (i0inslst: i0inslst, res: pml_steplst): pml_steplst =
 case+ i0inslst of
 | i0ins :: i0inslst => (
   case+ i0ins of
-  | INS0decl (i0id) => exitlocmsg ("todo: " + datcon_i0ins i0ins)
+  | INS0decl (i0id, i0expopt) => exitlocmsg ("todo: " + datcon_i0ins i0ins)
   | INS0assign (i0id_opt, i0exp) => (
     if i0exp_is_inline_call (i0exp) then 
       (
@@ -213,31 +213,38 @@ case+ i0inslst of
       else exitlocmsg ("todo")
     | None0 () => loop (i0inslst, res)
     )
-  | INS0init_loop (local_vars, assignments) => let
-    val res = list0_foldleft (local_vars, res, fopr) where {
-      fun fopr (pml_steplst: pml_steplst
-                , i0id: i0id):<cloref1> pml_steplst = let
-        val pml_dec = pmltransform_i0id2decl (i0id)
-        val pml_declst = pml_dec :: nil0
-        val pml_step = PMLSTEP_declst pml_declst
-      in
-        pml_step :: res
-      end
-    }
-    // todo
-  in
-    loop (i0inslst, res)
-  end
+  | INS0init_loop (local_vars, assignments) => 
+    exitlocmsg ("This should not happen. \
+INS0init_loop is replaced by dec and assign")
+  // let
+  //   val res = list0_foldleft (local_vars, res, fopr) where {
+  //     fun fopr (pml_steplst: pml_steplst
+  //               , i0id: i0id):<cloref1> pml_steplst = let
+  //       val pml_dec = pmltransform_i0id2decl (i0id)
+  //       val pml_declst = pml_dec :: nil0
+  //       val pml_step = PMLSTEP_declst pml_declst
+  //     in
+  //       pml_step :: res
+  //     end
+  //   }
+  //   // todo
+  // in
+  //   loop (i0inslst, res)
+  // end
   | INS0label (i0id) => let
     val pml_name = pmltransform_i0id (i0id)
     val- ins1 :: inss1 = i0inslst
-    val steps = pmltransform_i0inslst (ins1 :: nil0)
+    val steps = pmltransform_i0inslst (false, ins1 :: nil0)
     val- step1 :: steps1 = steps
 
-    val pml_stmnt = PMLSTMNT_name (pml_name)
+    // consume the next stmnt
+    val- PMLSTEP_stmnt (stmnt) = step1  // It should be a statement.
+    val pml_stmnt = PMLSTMNT_name (pml_name, stmnt)
     val pml_step = PMLSTEP_stmnt (pml_stmnt)
+    val res = pml_step :: res
+    val res = list0_reverse_append (steps1, res)
   in
-    loop (i0inslst, pml_step :: res)
+    loop (inss1, res)
   end
   | INS0tail_jump (epiloge_inss, i0id) => let
     val epiloge_steps = pmltransform_i0inslst (false, epiloge_inss)

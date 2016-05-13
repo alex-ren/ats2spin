@@ -214,15 +214,14 @@ case+ st of
 in
   EUlist (eus)
 end
-
-| PMLSTMNT_label (pml_name) => let
+| PMLSTMNT_name (pml_name, pml_stmnt) => let
   val eus = emit_pml_name (pml_name)
     :: emit ":\n"
+    :: emit_pml_stmnt (pml_stmnt)
     :: nil0
 in
   EUlist (eus)
 end
-| PMLSTMNT_name (pml_name, pml_stmnt) => exitlocmsg ("not supported")
 // | PMLSTMNT_print
 | PMLSTMNT_assert pml_exp => exitlocmsg ("not supported")
 | PMLSTMNT_exp pml_exp => emit_pml_exp (pml_exp)

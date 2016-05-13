@@ -407,7 +407,13 @@ fun{}
 fprint_i0ins$INS0decl$rpar: $d2ctype(fprint_i0ins<>)
 extern
 fun{}
+fprint_i0ins$INS0decl$sep1: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
 fprint_i0ins$INS0decl$arg1: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0decl$arg2: $d2ctype(fprint_i0ins<>)
 //
 implement{}
 fprint_i0ins$INS0decl(out, arg0) = 
@@ -416,6 +422,8 @@ fprint_i0ins$INS0decl(out, arg0) =
 val () = fprint_i0ins$INS0decl$con<>(out, arg0)
 val () = fprint_i0ins$INS0decl$lpar<>(out, arg0)
 val () = fprint_i0ins$INS0decl$arg1<>(out, arg0)
+val () = fprint_i0ins$INS0decl$sep1<>(out, arg0)
+val () = fprint_i0ins$INS0decl$arg2<>(out, arg0)
 val () = fprint_i0ins$INS0decl$rpar<>(out, arg0)
 //
 }
@@ -426,8 +434,13 @@ fprint_i0ins$INS0decl$lpar(out, _) = fprint_i0ins$lpar(out)
 implement{}
 fprint_i0ins$INS0decl$rpar(out, _) = fprint_i0ins$rpar(out)
 implement{}
+fprint_i0ins$INS0decl$sep1(out, _) = fprint_i0ins$sep<>(out)
+implement{}
 fprint_i0ins$INS0decl$arg1(out, arg0) =
-  let val-INS0decl(arg1) = arg0 in fprint_i0ins$carg(out, arg1) end
+  let val-INS0decl(arg1, _) = arg0 in fprint_i0ins$carg(out, arg1) end
+implement{}
+fprint_i0ins$INS0decl$arg2(out, arg0) =
+  let val-INS0decl(_, arg2) = arg0 in fprint_i0ins$carg(out, arg2) end
 //
 extern
 fun{}

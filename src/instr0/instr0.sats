@@ -88,7 +88,7 @@ fun tostring_i0id_name (i0id): string
 (* ************* *************** *)
 
 datatype i0ins =
-| INS0decl of (i0id)
+| INS0decl of (i0id, option0 i0exp)
 | INS0assign of (option0 i0id, i0exp)
 | INS0label of (i0id)
 | INS0return of (option0 i0exp)
@@ -331,11 +331,30 @@ fun i0transform_v2aldec (
   sa: stamp_allocator
   , v2aldec: v2aldec): i0ins (* INS0assign *)
 
+(* ********** *********** *)
+
 fun i0optimize_tailcall (
   sa: stamp_allocator
   , i0prog: i0prog
 ): i0prog
 
+// Note: It's possible that i0fundef is not tail-recursive.
+//       Then we simply return the i0fundef.
+fun i0optimize_tailcall_fundef (
+  sa: stamp_allocator
+  , i0fundef: i0fundef
+  , funmap: i0funmap
+): i0fundef
+
+(* ********** *********** *)
+
+(*
+* Turn "int x = 3" into "int x; x = 3;" 
+* and move all declarations to the beginning.
+*)
+fun i0optimize_collect_decs (i0prog: i0prog): i0prog
+
+fun i0optimize_collect_decs_fundef (i0fundef: i0fundef): i0fundef
 
 
 
