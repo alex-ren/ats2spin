@@ -77,6 +77,7 @@ pml_opr =
 | PMLOPR_lte
 | PMLOPR_and
 | PMLOPR_or
+| PMLOPR_eq
 | PMLOPR_neg   (* ~ *)
 | PMLOPR_ban   (* ! *)
 // | PMLOPR_run

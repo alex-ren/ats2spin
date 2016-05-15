@@ -27,6 +27,7 @@ all::
 
 ######
 
+all:: test_scratch_dats.json
 all:: test01_dats.json
 all:: test02_dats.json
 all:: test_pml_01_dats.json
@@ -42,6 +43,7 @@ all:: test_pml_10_dats.json
 all:: test_pml_11_dats.json
 all:: test_pml_12_dats.json
 all:: test_pml_13_dats.json
+all:: test_pml_14_dats.json
 
 ######
 #
@@ -57,6 +59,7 @@ RMF=rm -f
 clean:: ; $(RMF) *~
 
 cleanall:: clean
+cleanall:: ; $(RMF) test_scratch_dats.json
 cleanall:: ; $(RMF) test01_dats.json
 cleanall:: ; $(RMF) test02_dats.json
 cleanall:: ; $(RMF) test_pml_01_dats.json
@@ -72,5 +75,6 @@ cleanall:: ; $(RMF) test_pml_10_dats.json
 cleanall:: ; $(RMF) test_pml_11_dats.json
 cleanall:: ; $(RMF) test_pml_12_dats.json
 cleanall:: ; $(RMF) test_pml_13_dats.json
+cleanall:: ; $(RMF) test_pml_14_dats.json
 
 ###### end of [Makefile] ######

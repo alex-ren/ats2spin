@@ -408,6 +408,8 @@ in
   | "<=" => Some0 PMLOPR_lte
   | "&&" => Some0 PMLOPR_and
   | "||" => Some0 PMLOPR_or
+  | "=" => Some0 PMLOPR_eq
+  | "~" => Some0 PMLOPR_neg
 //  | PML_RUN => Some0 PMLOPR_run
   | _ => exitlocmsg ("operator " + opr_str + " is not supported")
 end

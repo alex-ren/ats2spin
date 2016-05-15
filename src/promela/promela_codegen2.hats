@@ -2303,6 +2303,7 @@ case+ arg0 of
 | PMLOPR_lte _ => "PMLOPR_lte"
 | PMLOPR_and _ => "PMLOPR_and"
 | PMLOPR_or _ => "PMLOPR_or"
+| PMLOPR_eq _ => "PMLOPR_eq"
 | PMLOPR_neg _ => "PMLOPR_neg"
 | PMLOPR_ban _ => "PMLOPR_ban"
 )

@@ -133,6 +133,7 @@ case+ opr of
 | PMLOPR_lte () => fprint (out, "<=")
 | PMLOPR_and ()   => fprint (out, "*")
 | PMLOPR_or ()    => fprint (out, "/")
+| PMLOPR_eq ()    => fprint (out, "==")
 | PMLOPR_neg ()   => fprint (out, "~")
 | PMLOPR_ban ()   => fprint (out, "!")
 

@@ -281,8 +281,15 @@ case+ pml_anyexp of
 in
   EUlist (eus)
 end
-| PMLANYEXP_unarop (pml_opr, pml_anyexp)
-  => exitlocmsg ("not supported")
+| PMLANYEXP_unarop (pml_opr, pml_anyexp) => let
+  val eus = emit_pml_opr (pml_opr)
+    :: emit_text ("(")
+    :: emit_pml_anyexp (pml_anyexp)
+    :: emit_text (")")
+    :: nil0
+in
+  EUlist (eus)
+end
 // x -> a : b
 | PMLANYEXP_select (pml_anyexp, pml_anyexp, pml_anyexp)
   => exitlocmsg ("not supported")
@@ -327,6 +334,7 @@ case+ pml_opr of
 | PMLOPR_lte () => emit_text ("<=")
 | PMLOPR_and () => emit_text ("&&")
 | PMLOPR_or () => emit_text ("||")
+| PMLOPR_eq () => emit_text ("==")
 | PMLOPR_neg () => emit_text ("~")
 | PMLOPR_ban () => emit_text ("!")
 
