@@ -8,21 +8,22 @@
 
 staload "./Promela.sats"
 
-fun inline$foo {x:int} (x: &int x >> int 1): void = let
+fun inline$foo {x:int} (x: (&(int x) >> (int y))): #[y:int] void = let
   val y = x + 1
-  val () = x := 1
+  val () = x := y * y + 1
 in
   
 end
 
 fun pml$init (): void = let
   var y: int?
-  var x = 1
+  var x:int = 2
   val () = $extfcall (void, "printf", "old x is %d", x)
   val _  = inline$foo (x)
   val () = $extfcall (void, "printf", "new x is %d", x)
 in 
 end
+
 
 
 

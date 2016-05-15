@@ -471,13 +471,13 @@ and f2undeclst = List0 (f2undec)
 and v2aldec = '{
   v2aldec_loc= loc_t
 , v2aldec_pat= p2at
-, v2aldec_def= Option d2exp
+, v2aldec_def= d2exp
 } (* end of [v2aldec] *)
 
 and v2ardec = '{
   v2ardec_loc= loc_t
 , v2ardec_name= d2var
-, v2ardec_init= d2exp
+, v2ardec_init= d2expopt
 } (* end of [v2ardec] *)
 
 and v2aldeclst = List0 (v2aldec)
@@ -652,7 +652,7 @@ fun v2aldec_make (loc_t, p2t0: p2at, def: d2exp): v2aldec
 
 (* ****** ****** *)
 
-fun v2ardec_make (loc_t, name: d2var, init: d2exp): v2ardec
+fun v2ardec_make (loc_t, name: d2var, init: d2expopt): v2ardec
 
 (* ****** ****** *)
 //

@@ -91,6 +91,8 @@ in
 
   | D2Cvaldecs (valkind, v2aldeclst) => exitlocmsg (
           datcon_d2ecl_node (node) + " not supported")
+  | D2Cvardecs (v2aldeclst) => exitlocmsg (
+          datcon_d2ecl_node (node) + " not supported")
   | D2Cdcstdecs (knd, d2cst) => nil0
   | D2Clocal (d2eclist(*head*), d2eclist(*body*)) => exitlocmsg (
           datcon_d2ecl_node (node) + " not supported")
@@ -393,6 +395,9 @@ in
   | D2Cvaldecs (valkind, v2aldeclst) => let
     val inss = i0transform_D2Cvaldecs (sa, v2aldeclst)
   in (nil0, inss) end
+  | D2Cvardecs (v2ardeclst) => let
+    val inss = i0transform_D2Cvardecs (sa, v2ardeclst)
+  in (nil0, inss) end
   | D2Cdcstdecs (knd, d2cst) => (nil0, nil0)
   | D2Clocal (d2eclist(*head*), d2eclist(*body*)) => exitlocmsg (
           datcon_d2ecl_node (node) + " not supported")
@@ -407,6 +412,17 @@ case+ v2aldeclst of
 | list_cons (v2aldec, v2aldeclst1) => let
   val ins = i0transform_v2aldec (sa, v2aldec)
   val inss1 = i0transform_D2Cvaldecs (sa, v2aldeclst1)
+  val ret = list0_cons (ins, inss1)
+in ret end
+| list_nil () => list0_nil ()
+end
+
+implement i0transform_D2Cvardecs (sa, v2ardeclst) = let
+in
+case+ v2ardeclst of
+| list_cons (v2ardec, v2ardeclst1) => let
+  val ins = i0transform_v2ardec (sa, v2ardec)
+  val inss1 = i0transform_D2Cvardecs (sa, v2ardeclst1)
   val ret = list0_cons (ins, inss1)
 in ret end
 | list_nil () => list0_nil ()
@@ -438,6 +454,20 @@ in
   | Some0 i0id => INS0decl (i0id, Some0 i0exp)
   | None0 () => INS0assign (None0, i0exp)
 end
+end
+
+implement i0transform_v2ardec (sa, v2ardec) = let
+  val name = v2ardec.v2ardec_name: d2var
+  val d2expopt = v2ardec.v2ardec_init
+  val i0id = i0transform_d2var (sa, name)
+in
+case+ d2expopt of
+| Some d2exp => let
+  val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
+in
+  INS0decl (i0id, Some0 i0exp)
+end
+| None () => INS0decl (i0id, None0)
 end
 
 implement i0transform_d2exp_expvalue (sa, d2exp) = let

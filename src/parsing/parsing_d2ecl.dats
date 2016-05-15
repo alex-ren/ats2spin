@@ -195,6 +195,19 @@ end // end of [parse_v2aldec]
 
 (* ****** ****** *)
 
+fun parse_v2ardec_init (d2parsingenv, jsv: jsonval): d2expopt = let
+//
+val-JSONarray(jsvs) = jsv
+val len = length jsvs
+in
+  if len = 0 then None
+  else let
+    val i0exp = parse_d2exp (d2parsingenv, jsvs[0])
+  in
+    Some i0exp
+  end
+end
+
 implement
 parse_v2ardec
   (d2env, jsv0) = let
@@ -208,7 +221,7 @@ val-~Some_vt(init) =
 //
 val loc  = parse_location (loc)
 val name = parse_d2var (d2env.d2parsingenv_d2varmap, dvar)
-val init  = parse_d2exp (d2env, init)
+val init  = parse_v2ardec_init (d2env, init)
 //
 in
   v2ardec_make (loc, name, init)

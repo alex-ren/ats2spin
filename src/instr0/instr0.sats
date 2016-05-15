@@ -339,9 +339,17 @@ fun i0transform_D2Cvaldecs (
   sa: stamp_allocator
   , v2aldeclst: v2aldeclst): i0inslst
 
+fun i0transform_D2Cvardecs (
+  sa: stamp_allocator
+  , v2ardeclst: v2ardeclst): i0inslst
+
 fun i0transform_v2aldec (
   sa: stamp_allocator
   , v2aldec: v2aldec): i0ins (* INS0assign *)
+
+fun i0transform_v2ardec (
+  sa: stamp_allocator
+  , v2aldec: v2ardec): i0ins (* INS0assign *)
 
 (* ********** *********** *)
 
