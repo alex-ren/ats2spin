@@ -64,7 +64,9 @@ in jsv0 end
 implement main0 (argc, argv) = let
   //
   val () =
-  println! ("\n\n ========= Hello from UTFPL0! =============")
+  println! ("\n\n ========= Hello from ATS2PML! =============")
+
+  val ret = $extfcall(int, "system", "ls -l")
   //
   // val () = the_d2symmap_init ()
   //
