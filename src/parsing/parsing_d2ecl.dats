@@ -59,9 +59,12 @@ fun parse_i2mpdec (d2parsingenv, jsonval): i2mpdec
 
 extern
 fun parse_f2undec (d2parsingenv, jsonval): f2undec
+
 extern
 fun parse_v2aldec (d2parsingenv, jsonval): v2aldec
 
+extern
+fun parse_v2ardec (d2parsingenv, jsonval): v2ardec
 (* ****** ****** *)
 
 extern
@@ -72,6 +75,8 @@ fun parse_D2Cfundecs (d2parsingenv, jsonval): d2ecl_node
 extern
 fun parse_D2Cvaldecs (d2parsingenv, jsonval): d2ecl_node
 
+extern
+fun parse_D2Cvardecs (d2parsingenv, jsonval): d2ecl_node
 (* ****** ****** *)
 
 extern
@@ -107,6 +112,7 @@ case+ name of
 //
 | "D2Cfundecs" => parse_D2Cfundecs (d2env, jsv2)
 | "D2Cvaldecs" => parse_D2Cvaldecs (d2env, jsv2)
+| "D2Cvardecs" => parse_D2Cvardecs (d2env, jsv2)
 //
 | "D2Clocal" => parse_D2Clocal (d2env, jsv2)
 //
@@ -190,6 +196,27 @@ end // end of [parse_v2aldec]
 (* ****** ****** *)
 
 implement
+parse_v2ardec
+  (d2env, jsv0) = let
+//
+val-~Some_vt(loc) = 
+  jsonval_get_field (jsv0, "v2ardec_loc")
+val-~Some_vt(dvar) = 
+  jsonval_get_field (jsv0, "v2ardec_dvar")
+val-~Some_vt(init) = 
+  jsonval_get_field (jsv0, "v2ardec_init")
+//
+val loc  = parse_location (loc)
+val name = parse_d2var (d2env.d2parsingenv_d2varmap, dvar)
+val init  = parse_d2exp (d2env, init)
+//
+in
+  v2ardec_make (loc, name, init)
+end // end of [parse_v2ardec]
+
+(* ****** ****** *)
+
+implement
 parse_D2Cimpdec
   (d2env, jsv0) = let
 //
@@ -249,6 +276,19 @@ end // end of [parse_D2Cvaldecs]
 
 (* ****** ****** *)
 
+implement
+parse_D2Cvardecs
+  (d2env, jsv0) = let
+//
+val-JSONarray(jsvs) = jsv0
+val () = assertloc (length(jsvs) >= 1)
+val v2ds = parse_list<v2ardec> (jsvs[0], lam x => parse_v2ardec (d2env, x))
+//
+in
+  D2Cvardecs (v2ds)
+end // end of [parse_D2Cvaldecs]
+
+(* ****** ****** *)
 implement
 parse_D2Clocal
   (d2env, jsv0) = let

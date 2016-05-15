@@ -368,6 +368,7 @@ d2ecl_node =
 //
   | D2Cfundecs of (funkind, f2undeclst)
   | D2Cvaldecs of (valkind, v2aldeclst)
+  | D2Cvardecs of (v2ardeclst)
 //
   | D2Cdcstdecs of (int, d2cst)
 //
@@ -470,10 +471,17 @@ and f2undeclst = List0 (f2undec)
 and v2aldec = '{
   v2aldec_loc= loc_t
 , v2aldec_pat= p2at
-, v2aldec_def= d2exp
+, v2aldec_def= Option d2exp
 } (* end of [v2aldec] *)
 
+and v2ardec = '{
+  v2ardec_loc= loc_t
+, v2ardec_name= d2var
+, v2ardec_init= d2exp
+} (* end of [v2ardec] *)
+
 and v2aldeclst = List0 (v2aldec)
+and v2ardeclst = List0 (v2ardec)
 
 (* ****** ****** *)
 //
@@ -641,6 +649,10 @@ fun f2undec_make (loc_t, d2var, def: d2exp): f2undec
 (* ****** ****** *)
 
 fun v2aldec_make (loc_t, p2t0: p2at, def: d2exp): v2aldec
+
+(* ****** ****** *)
+
+fun v2ardec_make (loc_t, name: d2var, init: d2exp): v2ardec
 
 (* ****** ****** *)
 //

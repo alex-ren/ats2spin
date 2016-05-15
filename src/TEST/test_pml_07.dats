@@ -16,10 +16,13 @@ in
 end
 
 fun pml$init (): void = let
-  var x
+  var y: int?
+  var x = 1
   val () = $extfcall (void, "printf", "old x is %d", x)
   val _  = inline$foo (x)
   val () = $extfcall (void, "printf", "new x is %d", x)
 in 
 end
+
+
 
