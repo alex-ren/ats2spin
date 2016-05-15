@@ -1,3 +1,11 @@
+
+// Header in Promela
+
+#define get_pid() _pid
+
+// End of header
+
+
 int g = 0;
 
 #define g_get() g

@@ -193,6 +193,14 @@ depend:: ; $(PATSOPT) --output-a .depend --depgen -d $(ATS2PROMELA_dyn)
 # depend:: ; $(PATSOPT) --output-a .depend --depgen -d utfpleval.dats
 
 ######
+
+test_%: TEST/test_%_dats.json
+	./ats2promela $< > $(patsubst %.json, %.pml, $<)
+	cat $(patsubst %.json, %.pml, $<)
+	spin $(patsubst %.json, %.pml, $<)
+
+
+# ######
 #
 testall:: all
 #
@@ -200,22 +208,20 @@ testall:: ; $(MAKE) -C TEST
 #
 testall:: test_pml_01
 testall:: test_pml_02
+testall:: test_pml_03
+testall:: test_pml_04
+testall:: test_pml_05
+testall:: test_pml_06
+testall:: test_pml_07
+testall:: test_pml_08
+testall:: test_pml_09
+testall:: test_pml_10
+testall:: test_pml_11
+testall:: test_pml_12
+testall:: test_pml_13
 
-# testall:: ; ./ats2promela TEST/test_pml_01_dats.json
-# testall:: ; ./ats2promela TEST/test01_dats.json
-# testall:: ; ./utfpleval TEST/test02_utfpl.json
-# testall:: ; ./utfpleval TEST/test03_utfpl.json
-# testall:: ; ./utfpleval TEST/test04_utfpl.json
-# testall:: ; ./utfpleval TEST/test05_utfpl.json
-# testall:: ; ./utfpleval TEST/test06_utfpl.json < TEST/test06_utfpl.json
-# testall:: ; ./utfpleval TEST/queens_utfpl.json
-# #
-# testall:: cleanall
-# #
 # ######
 
-test_%: TEST/test_%_dats.json
-	./ats2promela $< 
 
 cleanats:: ; $(RMF) postiats/*_?ats.c
 cleanats:: ; $(RMF) utils/*_?ats.c

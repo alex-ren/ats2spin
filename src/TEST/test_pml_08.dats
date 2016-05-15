@@ -13,11 +13,11 @@ fun inline$foo (x: int, y: int): void = let
   val y = x + 1
   val () = $extfcall (void
              , "printf"
-             , "y is %d"
+             , "y is %d "
              , y
              )
 in
-  inline$foo (y, x)
+  if y < 4 then inline$foo (y, x)
 end
 
 fun pml$init (): void = let

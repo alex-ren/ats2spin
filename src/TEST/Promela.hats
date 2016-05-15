@@ -1,8 +1,1 @@
-
-%{
-
-#define get_pid() _pid
-
-%}
-
-
+../../config/Promela.hats

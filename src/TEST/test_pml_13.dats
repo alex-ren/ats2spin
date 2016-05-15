@@ -1,23 +1,20 @@
+
+
 /*
-* This file is for testing the inclusion of Promela
-* code in ATS.
+* This file is for testing the usage of assert
 *
 */
 #include "share/atspre_staload.hats"
 #include "share/atspre_define.hats"
 
+#include "./Promela.hats"
 staload "./Promela.sats"
 
-%{
-int g = 3;
-int g2 = 4;
-%}
 
 fun pml$init (): void = let
-  val () = pml$assert (3 > 2)
-in 
-end
-
+  val x = 2
+  val () = pml$assert (x > 1)
+in end
 
 
 

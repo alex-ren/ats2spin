@@ -5,11 +5,9 @@
 
 // End of header
 
-
-int g = 3;
-int g2 = 4;
-
 init {
-  assert((3) > (2))
+  int x_1;
+  x_1 = 2;
+  assert((x_1) > (1))
 }
 

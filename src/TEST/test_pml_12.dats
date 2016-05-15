@@ -9,12 +9,6 @@
 #include "./Promela.hats"
 staload "./Promela.sats"
 
-%{
-
-#define get_pid() _pid
-
-%}
-
 fun proctype$foo1 (x: int): void = let
   val () = $extfcall (void
             , "printf", "pid is %d in foo1", pml$mypid ())

@@ -55,7 +55,7 @@ end
 (* ********** ************ *)
 
 implement i0transform_d2eclst_global (sa, d2ecs) = let
-  val () = print ("======== i0transform_d2eclst_global\n")
+  // val () = print ("======== i0transform_d2eclst_global\n")
   fun loop (
     d2ecs: d2eclist
     , fmap: i0funmap
@@ -81,7 +81,7 @@ in
 end
 
 implement i0transform_d2ecl_global (sa, d2ec, fmap) = let
-  val () = print ("======== i0transform_d2ecl_global\n")
+  // val () = print ("======== i0transform_d2ecl_global\n")
   val node = d2ec.d2ecl_node
 in
   case+ node of
@@ -147,7 +147,7 @@ end
 
 implement 
 i0transform_D2Cfundecs (sa, f2undeclst, fmap) = let
-  val () = print ("======== i0transform_D2Cfundecs\n")
+  // val () = print ("======== i0transform_D2Cfundecs\n")
   val len = list_length (f2undeclst)
   val is_recursive = (if (len > 1) then true
       else if (len = 1) then let
@@ -222,8 +222,8 @@ end
 
 
 implement i0transform_fundec (sa, group, f2undec, fmap) = let
-  val () = fprint! (stdout_ref, 
-    "======== i0transform_fundec: ", f2undec.f2undec_var, "\n")
+  // val () = fprint! (stdout_ref, 
+  //   "======== i0transform_fundec: ", f2undec.f2undec_var, "\n")
 
   val name = i0transform_d2var (sa, f2undec.f2undec_var)
   val (p2atlst, body) = d2exp_node_get_lambda (f2undec.f2undec_def.d2exp_node)
@@ -253,8 +253,8 @@ in
 end
 
 implement i0transform_p2at2para (sa, p2at) = let
-  val () = fprint! (stdout_ref, 
-    "======== i0transform_p2at2para: ", p2at.p2at_loc, "\n")
+  // val () = fprint! (stdout_ref, 
+  //   "======== i0transform_p2at2para: ", p2at.p2at_loc, "\n")
 in
 case+ p2at.p2at_node of
 | P2Tany () => exitlocmsg ("Shall not happen")
@@ -266,8 +266,8 @@ case+ p2at.p2at_node of
 end
 
 implement i0transform_p2at2holder (sa, p2at) = let
-  val () = fprint! (stdout_ref, 
-    "======== i0transform_p2at2holder: ", p2at.p2at_loc, "\n")
+  // val () = fprint! (stdout_ref, 
+  //   "======== i0transform_p2at2holder: ", p2at.p2at_loc, "\n")
 in
 case+ p2at.p2at_node of
 | P2Tany () => None0 ()
@@ -281,8 +281,8 @@ end
 
 implement i0transform_d2exp_fbody (sa, body, fmap) = let
   val node = body.d2exp_node
-  val () = fprint! (stdout_ref, 
-    "======== i0transform_d2exp_fbody: ", body.d2exp_loc, "\n")
+  // val () = fprint! (stdout_ref, 
+  //   "======== i0transform_d2exp_fbody: ", body.d2exp_loc, "\n")
 in
 case+ node of
 | D2Ecst (d2cst) => let
@@ -544,8 +544,8 @@ end  // end of [i0transform_d2exp_expvalue]
 
 implement i0transform_d2exp_fname (sa, d2exp) = let
   val node = d2exp.d2exp_node
-  val () = fprint! (stdout_ref, 
-    "======== i0transform_d2exp_fname: ", d2exp.d2exp_loc, "\n")
+  // val () = fprint! (stdout_ref, 
+  //   "======== i0transform_d2exp_fname: ", d2exp.d2exp_loc, "\n")
 in
   case+ node of
   | D2Evar (d2var) => i0transform_d2var (sa, d2var)

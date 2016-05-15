@@ -1,3 +1,10 @@
+
+// Header in Promela
+
+#define get_pid() _pid
+
+// End of header
+
 inline fact_0(x_9, res_8) {
   int x_1;
   int res_2;

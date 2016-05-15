@@ -26,7 +26,7 @@ and inline$foo2 (x: int, y: int): void = let
              , y
              )
 in
-  inline$foo1 (x, y)
+  if y < 100 then inline$foo1 (x, y)
 end
 
 

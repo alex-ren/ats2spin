@@ -1,6 +1,9 @@
 
+// Header in Promela
+
 #define get_pid() _pid
 
+// End of header
 
 proctype foo1_0(int x_1) {
   printf("pid is %d in foo1", get_pid())
