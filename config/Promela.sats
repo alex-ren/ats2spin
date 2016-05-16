@@ -13,6 +13,7 @@
 // Email: aren@bu.edu
 //
 (* ****** ****** *)
+stacst curpid: int
 //
 abstype
 pid_type(i:int)
@@ -34,11 +35,15 @@ fun
 pid_eq{i1,i2:nat}(pid(i1), pid(i2)): bool(i1 == i2)
 
 overload = with pid_eq
+
+castfn int2pid {i:nat} (i: int i): pid i
+castfn pid2int {i:nat} (p: pid i): int i
+
 //
 (* ****** ****** *)
 //
 fun
-pml$mypid(): pid = "ext#get_pid"
+pml$mypid(): [curpid >= 0] pid curpid = "ext#get_pid"
 //
 fun
 pml$assert{b:bool}(bool(b)): [b==true] void = "ext#assert"

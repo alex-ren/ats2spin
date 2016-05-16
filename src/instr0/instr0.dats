@@ -511,7 +511,8 @@ in
   | D2Eifopt (
       d2exp(*test*), d2exp(*then*), d2expopt(*else*)
     ) => exitlocmsg (
-         datcon_d2exp_node (node) + " not allowed in simple expression")
+         datcon_d2exp_node (node) + 
+         " not allowed in simple expression")
 // //
   | D2Esing (d2exp) => i0transform_d2exp_expvalue (sa, d2exp)
 //   | D2Elist of (d2explst)
@@ -534,6 +535,8 @@ in
   in
     EXP0lambody i0exp
   end
+  | D2Ecst (d2cst) => EXP0var (i0transform_d2cst (sa, d2cst))
+  | D2Eexp (d2exp) => i0transform_d2exp_expvalue (sa, d2exp)
   | D2Eassgn (_, _) => exitlocmsg (
     "This should not happen. D2Eassgn is processed elsewhere")
 //   | D2Eignored of ((*void*)) // HX: error-handling

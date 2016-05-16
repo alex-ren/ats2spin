@@ -63,7 +63,7 @@ in jsv0 end
 
 implement main0 (argc, argv) = let
   //
-  val is_test = false
+  val is_test = true
 
   val () = if is_test then {
   val () =

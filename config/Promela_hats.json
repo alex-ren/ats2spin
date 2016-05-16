@@ -15,5 +15,5 @@
 []
 ,
 "d2eclist":
-[{"d2ecl_loc": "/home/grad2/aren/workspace/ats2spin/src/config/Promela.hats: 2(line=2, offs=1) -- 70(line=8, offs=3)", "d2ecl_node": {"D2Cextcode": [1, 10, "\n// Header in Promela\n\n#define get_pid() _pid\n\n// End of header\n"]}}]
+[{"d2ecl_loc": "/home/grad2/aren/workspace/ats2spin/src/config/Promela.hats: 2(line=2, offs=1) -- 114(line=12, offs=3)", "d2ecl_node": {"D2Cextcode": [1, 10, "\n// Header in Promela\n\n#define get_pid() _pid\n\n#define int2pid(x) x\n#define pid2int(x) x\n\n\n// End of header\n"]}}]
 }

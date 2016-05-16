@@ -45,6 +45,8 @@ all:: test_pml_12_dats.json
 all:: test_pml_13_dats.json
 all:: test_pml_14_dats.json
 
+all:: test_example_01_peterson_dats.json
+
 ######
 #
 %_dats.json: %.dats ; \
@@ -76,5 +78,7 @@ cleanall:: ; $(RMF) test_pml_11_dats.json
 cleanall:: ; $(RMF) test_pml_12_dats.json
 cleanall:: ; $(RMF) test_pml_13_dats.json
 cleanall:: ; $(RMF) test_pml_14_dats.json
+
+cleanall:: ; $(RMF) test_example_01_peterson_dats.json
 
 ###### end of [Makefile] ######
