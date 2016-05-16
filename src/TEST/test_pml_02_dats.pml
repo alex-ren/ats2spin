@@ -1,7 +1,14 @@
 
 // Header in Promela
 
-#define get_pid() _pid
+#define get_pid() (_pid - 1)
+
+#define int2pid(x) x
+#define pid2int(x) x
+
+#define atsbool_true true
+#define atsbool_false false
+
 
 // End of header
 
@@ -20,10 +27,12 @@ proctype foo1_7(int x_8; int y_9) {
   printf("v1 is %d", v1_10)
 }
 init {
+atomic {
   int x_13;
   int y_14;
   x_13 = 1;
   y_14 = run foo_0(1, x_13);
   run foo1_7(1, y_14)
+}
 }
 

@@ -134,7 +134,13 @@ end
 implement tostring_i0id (id) = 
 case+ id of
 | ID0sym (i0name, _) => tostring_i0name (i0name)
-| ID0cst (i0name, stamp, _) => tostring_i0name (i0name)
+| ID0cst (i0name, stamp, extdef_opt) =>
+  (
+  case+ extdef_opt of
+  | Some0 extname => extname
+  | None0 () => tostring_i0name (i0name)
+  )
+// Only var would use stamp as part of the name.
 | ID0var (i0name, stamp) => let
   val name = tostring_i0name (i0name)
   val stamp = tostring_stamp (stamp)

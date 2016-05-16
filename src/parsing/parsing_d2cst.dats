@@ -85,7 +85,20 @@ in
   in
     Some (extdef)
   end
-  | ~None_vt () => None ()
+  | ~None_vt () => let
+    val jsv0 = jsonval_get_field (jsv, "DCSTEXTDEFsome_mac")
+  in
+    case+ jsv0 of
+    | ~Some_vt (jsv1) => let
+      val-JSONarray(jsvs) = jsv1
+      val () = assertloc (length(jsvs) >= 1)
+      val jsv2 = jsvs[0]
+      val extdef = parse_string (jsv2)
+    in
+      Some (extdef)
+    end
+    | ~None_vt () => None ()
+  end
 end
 
 
@@ -104,18 +117,6 @@ in
 //
 case+ opt of
 | ~Some_vt (d2c) => d2c
-// let
-//   val jsv2 = jsonval_get_field (jsv0, "d2cst_extdef")
-// in
-//   case+ jsv2 of
-//   | ~Some_vt (jsv3) => let
-//     val extdef = parse_d2cst_extdef (jsv3)
-//     val () = d2cst_update_extdef_opt (d2c, extdef)
-//   in
-//       d2c
-//   end
-//   | ~None_vt () => d2c
-// end
 | ~None_vt ((*void*)) => let
   val-~Some_vt(jsv1) =
     jsonval_get_field (jsv0, "d2cst_sym")

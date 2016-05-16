@@ -59,19 +59,21 @@ fun
 pml$wait_unless(() -> bool): void
 
 fun
-Promela$atomic {a:viewt@ype} (() -> a): a
-
-fun
 pml$run (() -> void): void
 
+(* ****** ****** *)
 
 prfun
 Promela$set_tag (tag: string): void
 
+fun
+Promela$atomic {a:viewt@ype} (() -> a): a
+
 (* ****** ****** *)
 
-// absview atomic_view
-// viewdef atom_v = atomic_view
+absview atomic_view
+viewdef atom_v = atomic_view
+
 // 
 // prfun Promela$begin_atomic (): (atomic_view | void)
 // prfun Promela$end_atomic(atomic_view): void

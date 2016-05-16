@@ -76,12 +76,16 @@ case+ pml_module of
 implement emit_pml_init (pml_steplst) = let
   #define steps pml_steplst
   val eus = emit ("init {")
+  :: emit_newline ()
+  :: emit ("atomic {")
   :: emit_indent ()
   :: emit_newline ()
   :: EUlist (
      emit<pml_step> (pml_steplst,
          EUlist ((emit ";") :: (emit_newline ()) :: nil0)))
   :: emit_unindent ()
+  :: emit_newline ()
+  :: emit ("}")
   :: emit_newline ()
   :: emit ("}")
   :: nil0

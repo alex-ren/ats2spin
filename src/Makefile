@@ -197,7 +197,7 @@ depend:: ; $(PATSOPT) --output-a .depend --depgen -d $(ATS2PROMELA_dyn)
 test_%: TEST/test_%_dats.json
 	./ats2promela $< > $(patsubst %.json, %.pml, $<)
 	cat $(patsubst %.json, %.pml, $<)
-	spin $(patsubst %.json, %.pml, $<)
+	spin -u1000 $(patsubst %.json, %.pml, $<)
 
 
 # ######
@@ -219,6 +219,8 @@ testall:: test_pml_10
 testall:: test_pml_11
 testall:: test_pml_12
 testall:: test_pml_13
+
+testall:: test_example_01_peterson
 
 # ######
 

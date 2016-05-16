@@ -63,9 +63,14 @@ in jsv0 end
 
 implement main0 (argc, argv) = let
   //
-  val is_test = true
+  var is_debug: bool = false
+  val () = if argc >= 3 then let
+    val option1 = argv[2]
+  in
+    if option1 = "--debug" then is_debug := true
+  end
 
-  val () = if is_test then {
+  val () = if is_debug then {
   val () =
   println! ("\n\n ========= Hello from ATS2PML! =============")
   }
@@ -76,7 +81,7 @@ implement main0 (argc, argv) = let
 in
 if ret <> 0 then let
 
-  val () = if is_test then {
+  val () = if is_debug then {
   val () = fprintln! (stderr_ref, "Failed in processing configuration files.")
   }
 in end
@@ -98,7 +103,7 @@ in end
   //
 
   val d2ecs_json = parse_d2eclist_export (jsv)
-  val () = if is_test then {
+  val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== preprocessed content ==============================\n\n")
   val () = fprint_d2eclist (stdout_ref, d2ecs_json)
@@ -129,13 +134,13 @@ in end
 
   val d2ecs = list_append (d2ecs_json, d2ecs_model)
 
-  val () = if is_test then {
+  val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== level postiats ==============================\n\n")
   val () = fprint_d2eclist (stdout_ref, d2ecs)
   }
 
-  val () = if is_test then {
+  val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== transform postiats to instr0 ================\n\n")
   }
@@ -144,7 +149,7 @@ in end
   val i0prog = i0transform_d2eclst_global (sa, d2ecs)
 
 
-  val () = if is_test then {
+  val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== level instr0 ==============================\n\n")
   val () = fprint (stdout_ref, i0prog)
@@ -154,7 +159,7 @@ in end
 
   val i0prog = i0optimize_tailcall (sa, i0prog)
 
-  val () = if is_test then {
+  val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== level instr0 after tail call optimization =====================\n\n")
   val () = fprint (stdout_ref, i0prog)
@@ -164,7 +169,7 @@ in end
 
   val i0prog = i0optimize_collect_decs (i0prog)
 
-  val () = if is_test then {
+  val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== level instr0 after declarations movement =====================\n\n")
   val () = fprint (stdout_ref, i0prog)
@@ -174,7 +179,7 @@ in end
 
   val pml_prog = pmltransform_i0prog (i0prog)
 
-  val () = if is_test then {
+  val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== level promela AST ==============================\n\n")
   val () = fprint (stdout_ref, pml_prog)
@@ -185,7 +190,7 @@ in end
 
   val eu = emit_pml_program (pml_prog)
   
-  val () = if is_test then {
+  val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== level promela ==============================\n\n")
   }

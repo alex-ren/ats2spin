@@ -225,9 +225,14 @@ case+ i0inslst of
   | INS0return i0expopt => 
     (
     case+ i0expopt of
-    | Some0 (i0exp) => 
-      if ~is_inline then exitlocmsg ("non-inline function cannot return value.")
-      else exitlocmsg ("todo")
+    | Some0 (i0exp) => let // hande normal function call without return value
+      val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
+      val pml_exp = PMLEXP_anyexp (pml_anyexp)
+      val pml_stmnt = PMLSTMNT_exp (pml_exp)
+      val pml_step = PMLSTEP_stmnt (pml_stmnt)
+    in
+      loop (i0inslst, pml_step :: res)
+    end
     | None0 () => loop (i0inslst, res)
     )
   | INS0init_loop (local_vars, assignments) => 
@@ -251,7 +256,7 @@ INS0init_loop is replaced by dec and assign")
   | INS0label (i0id) => let
     val pml_name = pmltransform_i0id (i0id)
     val- ins1 :: inss1 = i0inslst
-    val steps = pmltransform_i0inslst (false, ins1 :: nil0)
+    val steps = pmltransform_i0inslst (is_inline, ins1 :: nil0)
     val- step1 :: steps1 = steps
 
     // consume the next stmnt
@@ -264,7 +269,7 @@ INS0init_loop is replaced by dec and assign")
     loop (inss1, res)
   end
   | INS0tail_jump (epiloge_inss, i0id) => let
-    val epiloge_steps = pmltransform_i0inslst (false, epiloge_inss)
+    val epiloge_steps = pmltransform_i0inslst (is_inline, epiloge_inss)
     val res = list0_reverse_append (epiloge_steps, res)
     val pml_name = pmltransform_i0id (i0id)
     val pml_stmnt = PMLSTMNT_goto (pml_name)
@@ -278,11 +283,11 @@ INS0init_loop is replaced by dec and assign")
     val guard_exp = PMLEXP_anyexp (guard_anyexp)
 
     val guard_step = PMLSTEP_stmnt (PMLSTMNT_exp (guard_exp))
-    val pml_inss_if = pmltransform_i0inslst (false, inss_if)
+    val pml_inss_if = pmltransform_i0inslst (is_inline, inss_if)
     val pml_inss_if = guard_step :: pml_inss_if
 
     val else_step = PMLSTEP_stmnt (PMLSTMNT_else)
-    val pml_inss_else = pmltransform_i0inslst (false, inss_else)
+    val pml_inss_else = pmltransform_i0inslst (is_inline, inss_else)
     val pml_inss_else = else_step :: pml_inss_else
 
     val pml_stmnt = PMLSTMNT_if (pml_inss_if :: pml_inss_else :: nil0)
@@ -352,25 +357,31 @@ in
     val anyexp = pmltransform_i0exp2pml_anyexp (i0exp_cond)
   in 
     anyexp
-  end // end of [i0i
+  end
     
   else let // not "run" in promela
+    val name_opt = pml_name_make_inline (i0id)
     val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (i0explst)
-    val name_opt = i0id_get_extdef (i0id)
   in
-    case+ name_opt of  // check whether has external name
-    | Some0 (name) => PMLANYEXP_fcall (name, pml_anyexplst)
-    | None0 () => let
-      val name_opt = pml_name_make_inline (i0id)
-    in
-      case+ name_opt of  // check whether is inline
-      | Some0 (name) => PMLANYEXP_inline (name, pml_anyexplst)
-      | None0 () => let
-        val name = tostring_i0id (i0id)
-      in
-        PMLANYEXP_fcall (name, pml_anyexplst)
-      end
-    end
+  case+ name_opt of  // check whether is inline
+  // is inline function (named by inline$xxx)
+  | Some0 (name) => let
+    val extname_opt = i0id_get_extdef (i0id)
+  in
+    (
+    case+ extname_opt of
+    | Some0 extname => PMLANYEXP_inline (
+                     pmltransform_i0id (i0id), pml_anyexplst)
+    | None0 () => PMLANYEXP_inline (name, pml_anyexplst)
+    )
+  end
+  // is not inline function
+  | None0 () => let
+    val name = tostring_i0id (i0id)
+  in
+    PMLANYEXP_fcall (name, pml_anyexplst)
+  end
+  
   end
 end
 | EXP0extfcall (name, i0explst) => let

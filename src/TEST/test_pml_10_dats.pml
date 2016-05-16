@@ -1,7 +1,14 @@
 
 // Header in Promela
 
-#define get_pid() _pid
+#define get_pid() (_pid - 1)
+
+#define int2pid(x) x
+#define pid2int(x) x
+
+#define atsbool_true true
+#define atsbool_false false
+
 
 // End of header
 
@@ -25,8 +32,10 @@ inline fact_0(x_9, res_8) {
   fi
 }
 init {
+atomic {
   int x_7;
   x_7 = 5;
   fact_0(x_7, 1)
+}
 }
 

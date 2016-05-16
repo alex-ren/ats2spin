@@ -274,7 +274,7 @@ case+ p2at.p2at_node of
 | P2Tvar (d2var) => Some0 (i0transform_d2var (sa, d2var))
 | P2Tempty () => None0 ()
 | P2Tpat (p2at) => i0transform_p2at2holder (sa, p2at)
-| P2Trec (labp2atlst) => exitlocmsg ("Shall not happen")
+| P2Trec (labp2atlst) => exitlocmsg ("P2Trec is not supported yet.")
 | P2Tignored () => exitlocmsg ("Shall not happen")
 end
 
@@ -474,12 +474,8 @@ implement i0transform_d2exp_expvalue (sa, d2exp) = let
   val node = d2exp.d2exp_node
 in
   case+ node of
-//   | D2Ecst of (d2cst)
-  | D2Evar (d2var) => let
-    val i0id = i0transform_d2var (sa, d2var)
-  in
-    EXP0var (i0id)
-  end
+  | D2Ecst (d2cst) => EXP0var (i0transform_d2cst (sa, d2cst))
+  | D2Evar (d2var) => EXP0var (i0transform_d2var (sa, d2var))
 //   | D2Esym of (d2sym)
 // //
 //   | D2Eint of (int)
@@ -535,7 +531,6 @@ in
   in
     EXP0lambody i0exp
   end
-  | D2Ecst (d2cst) => EXP0var (i0transform_d2cst (sa, d2cst))
   | D2Eexp (d2exp) => i0transform_d2exp_expvalue (sa, d2exp)
   | D2Eassgn (_, _) => exitlocmsg (
     "This should not happen. D2Eassgn is processed elsewhere")
