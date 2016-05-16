@@ -219,6 +219,7 @@ testall:: test_pml_10
 testall:: test_pml_11
 testall:: test_pml_12
 testall:: test_pml_13
+testall:: test_pml_14
 
 testall:: test_example_01_peterson
 

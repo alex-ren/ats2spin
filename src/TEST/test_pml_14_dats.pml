@@ -1,11 +1,19 @@
 
 // Header in Promela
 
-#define get_pid() _pid
+#define get_pid() (_pid - 1)
+
+#define int2pid(x) x
+#define pid2int(x) x
+
+#define atsbool_true true
+#define atsbool_false false
+
 
 // End of header
 
 init {
+atomic {
   int x_1;
   int x_3;
   int x_5;
@@ -24,5 +32,6 @@ init {
   assert(((2) > (1)) + ((3) > (2)));
   assert((3) == (3));
   assert(~((3) == (3)))
+}
 }
 
