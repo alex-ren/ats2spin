@@ -22,6 +22,7 @@ Chapter 15, Sample SPIN Models.
 * client_server.dats
 
     My first tempt to write the model in Promela.
+    client_server_v2.dats and client_server_v3.dats are basically the same.
 
 
 

@@ -29,7 +29,6 @@ all::
 
 all:: test_scratch_dats.json
 all:: test01_dats.json
-all:: test02_dats.json
 all:: test_pml_01_dats.json
 all:: test_pml_02_dats.json
 all:: test_pml_03_dats.json

@@ -50,7 +50,7 @@ pml$assert{b:bool}(bool(b)): [b==true] void = "ext#assert"
 //
 (* ****** ****** *)
 //
-#define RANDOM 1
+#define RANDOM 0
 
 (* ****** ****** *)
 

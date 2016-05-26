@@ -6,3 +6,20 @@ fun pml$init (): void = let
   val () = pml$assert (x = 1)
 in end
 
+datatype FOO =
+| AA of (int, char)
+| BB of ()
+
+fun foo (x: FOO): void = let
+  val y = 1
+  var z = 3
+in
+  case+ x of
+  | AA (z, 'c') => ()
+  | BB () => ()
+end
+
+
+
+
+
