@@ -106,6 +106,9 @@ extern
 fun parse_D2Eifhead (d2parsingenv, jsonval): d2exp_node
 
 extern
+fun parse_D2Ecasehead (d2parsingenv, jsonval): d2exp_node
+
+extern
 fun parse_D2Esing (d2parsingenv, jsonval): d2exp_node
 extern
 fun parse_D2Elist (d2parsingenv, jsonval): d2exp_node
@@ -177,6 +180,7 @@ case+ name of
 | "D2Eapplst" => parse_D2Eapplst (d2env, jsv2)
 //
 | "D2Eifhead" => parse_D2Eifhead (d2env, jsv2)
+| "D2Ecasehead" => parse_D2Ecasehead (d2env, jsv2)
 //
 | "D2Esing" => parse_D2Esing (d2env, jsv2)
 | "D2Elist" => parse_D2Elist (d2env, jsv2)
@@ -196,7 +200,7 @@ case+ name of
 | "D2Eassgn" => parse_D2Eassgn (d2env, jsv2)
 //
 | s (*rest*) => let
-  val () = print! (s,  " is ignored")
+  val () = print! (s,  " is ignored in parsing/parsing_d2exp.dats")
 in
   parse_D2Eignored (jsv2)
 end
@@ -384,6 +388,23 @@ val _else = parse_d2expopt (d2env, jsvs[3])
 //
 in
   D2Eifopt (_test, _then, _else)
+end // end of [parse_D2Eifhead]
+
+(* ****** ****** *)
+
+implement
+parse_D2Ecasehead
+  (d2env, jsv0) = let
+//
+val-JSONarray(jsvs) = jsv0
+val () = assertloc (length(jsvs) >= 4)
+//
+val casekind = parse_casekind (d2env, jsvs[0])
+val _test = parse_d2exp (d2env, jsvs[2])
+val c2laulst = parse_c2laulst (d2env, jsvs[3])
+//
+in
+  D2Ecase (casekind, _test, c2laulst)
 end // end of [parse_D2Eifhead]
 
 (* ****** ****** *)

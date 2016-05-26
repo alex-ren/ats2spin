@@ -11,6 +11,10 @@
 //
 (* ****** ****** *)
 
+staload "./../utils/utils.dats"
+
+(* ****** ****** *)
+
 staload UN = $UNSAFE
 
 (* ****** ****** *)
@@ -131,6 +135,23 @@ case+ knd of
 //
 end // end of [parse_valkind]
 
+(* ****** ****** *)
+
+implement
+parse_casekind
+  (jsv0) = let
+//
+val-JSONstring(knd) = jsv0
+//
+in
+//
+case+ knd of
+//
+| "CK_case_pos" => CK_case_pos ()
+//
+| x => exitlocmsg (x + " is not supported")
+//
+end // end of [parse_valkind]
 (* ****** ****** *)
 
 implement

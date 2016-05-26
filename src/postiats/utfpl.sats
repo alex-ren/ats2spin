@@ -189,6 +189,13 @@ valkind =
 // end of [valkind]
 
 (* ****** ****** *)
+datatype
+casekind =
+| CK_case_pos 
+| CK_case_minus 
+| CK_case_none
+
+(* ****** ****** *)
 
 abstype d2cst_type = ptr
 typedef d2cst = d2cst_type
@@ -406,6 +413,12 @@ and d2exp_node =
   | D2Eifopt of (
       d2exp(*test*), d2exp(*then*), d2expopt(*else*)
     ) (* end of [D2Eifopt] *)
+
+  | D2Ecase of (
+      casekind
+      , d2exp(*test*)
+      , c2laulst
+    ) (* end of [D2Ecase] *)
 //
   | D2Esing of (d2exp)
   | D2Elist of (d2explst)
@@ -482,6 +495,14 @@ and v2ardec = '{
 
 and v2aldeclst = List0 (v2aldec)
 and v2ardeclst = List0 (v2ardec)
+
+and c2lau = '{
+  c2lau_loc = loc_t
+  , c2lau_pat = p2at
+  , c2lau_body = d2exp
+} (* end of [c2lau] *)
+
+and c2laulst = List0 (c2lau)
 
 (* ****** ****** *)
 //

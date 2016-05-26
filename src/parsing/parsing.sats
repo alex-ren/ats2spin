@@ -65,6 +65,7 @@ fun parse_label (jsv: jsonval): label
 
 fun parse_funkind: jsonval -> funkind
 fun parse_valkind: jsonval -> valkind
+fun parse_casekind: jsonval -> casekind
 
 (* ****** ****** *)
 

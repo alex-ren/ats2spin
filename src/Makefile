@@ -199,6 +199,9 @@ test_%: TEST/test_%_dats.json
 	cat $(patsubst %.json, %.pml, $<)
 	spin -u1000 $(patsubst %.json, %.pml, $<)
 
+debug_%: TEST/test_%_dats.json
+	./ats2promela $< --debug
+#	cat $(patsubst %.json, %.pml, $<)
 
 # ######
 #
@@ -221,7 +224,7 @@ testall:: test_pml_12
 testall:: test_pml_13
 testall:: test_pml_14
 testall:: test_pml_15
-# testall:: test_pml_16
+testall:: test_pml_16
 
 testall:: test_example_01_peterson
 

@@ -29,7 +29,7 @@ in
   in end
 end
 
-fun pml$init
+// fun pml$init
 
 
 //// extern fun check {x,y:int} (x: int x, y: int y): bool (x <> y)
