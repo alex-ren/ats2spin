@@ -42,6 +42,7 @@ case+ arg0 of
 | D2Elet _ => "D2Elet"
 | D2Eapplst _ => "D2Eapplst"
 | D2Eifopt _ => "D2Eifopt"
+| D2Ecase _ => "D2Ecase"
 | D2Esing _ => "D2Esing"
 | D2Elist _ => "D2Elist"
 | D2Etup _ => "D2Etup"

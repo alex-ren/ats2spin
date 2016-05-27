@@ -219,7 +219,7 @@ case+ d2c0.d2ecl_node of
     val () = fprint! (out, ")\n")
 in end
 //
-| D2Cignored((*void*)) => fprint! (out, "D2Cignored(", ")")
+| D2Cignored((*void*)) => fprint! (out, "D2Cignored(", ")\n")
 //
 (*
 | _ (*temporary*) => fprint! (out, "D2C...(", "...", ")")

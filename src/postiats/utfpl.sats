@@ -498,7 +498,7 @@ and v2ardeclst = List0 (v2ardec)
 
 and c2lau = '{
   c2lau_loc = loc_t
-  , c2lau_pat = p2at
+  , c2lau_patlst = p2atlst
   , c2lau_body = d2exp
 } (* end of [c2lau] *)
 
@@ -506,6 +506,13 @@ and c2laulst = List0 (c2lau)
 
 (* ****** ****** *)
 //
+
+(* For code generation *)
+fun{} datcon_d2exp_node : (d2exp_node) -> string
+fun{} fprint_d2exp_node: (FILEref, d2exp_node) -> void
+//
+fun myfprint_d2exp_node: fprint_type(d2exp_node)
+
 fun fprint_d2exp: fprint_type (d2exp)
 fun fprint_d2explst: fprint_type (d2explst)
 fun fprint_d2expopt: fprint_type (d2expopt)
@@ -514,11 +521,9 @@ overload fprint with fprint_d2exp
 overload fprint with fprint_d2explst of 10
 overload fprint with fprint_d2expopt of 10
 
-fun
-emit_d2exp: emit_type (d2exp)
-
-fun
-emit_d2explst: emit_type (d2explst)
+//
+fun emit_d2exp: emit_type (d2exp)
+fun emit_d2explst: emit_type (d2explst)
 //
 (* ****** ****** *)
 //
@@ -549,7 +554,12 @@ fun
 emit_d2lablst: emit_type (d2lablst)
 //
 (* ****** ****** *)
+(* For code generation *)
+fun{} datcon_d2ecl_node : (d2ecl_node) -> string
+fun{} fprint_d2ecl_node: fprint_type (d2ecl_node)
 //
+fun myfprint_d2ecl_node: fprint_type (d2ecl_node)
+
 fun fprint_d2ecl: fprint_type (d2ecl)
 fun fprint_d2eclist: fprint_type (d2eclist)
 //
@@ -710,11 +720,6 @@ overload .stamp with d2cst_get_stamp
 overload .stamp with d2var_get_stamp
 //
 (* ****** ****** *)
-(* Generated *)
-
-fun{} datcon_d2ecl_node : (d2ecl_node) -> string
-fun{} datcon_d2exp_node : (d2exp_node) -> string
-
 (* ****** ****** *)
 
 (* end of [utfpl.sats] *)

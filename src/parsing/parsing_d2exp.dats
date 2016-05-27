@@ -139,6 +139,11 @@ extern
 fun parse_D2Eassgn (d2parsingenv, jsonval): d2exp_node
 
 extern
+fun parse_c2lau (d2parsingenv, jsonval): c2lau
+extern
+fun parse_c2laulst (d2parsingenv, jsonval): c2laulst
+
+extern
 fun parse_D2Eignored (jsonval): d2exp_node
 
 (* ****** ****** *)
@@ -399,13 +404,41 @@ parse_D2Ecasehead
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 4)
 //
-val casekind = parse_casekind (d2env, jsvs[0])
-val _test = parse_d2exp (d2env, jsvs[2])
+val casekind = parse_casekind (jsvs[0])
+val- JSONarray (jsv2_arr) = jsvs[2]
+val () = assertloc (length (jsv2_arr) >= 1)
+val _test = parse_d2exp (d2env, jsv2_arr[0])
 val c2laulst = parse_c2laulst (d2env, jsvs[3])
 //
 in
   D2Ecase (casekind, _test, c2laulst)
 end // end of [parse_D2Eifhead]
+
+
+implement parse_c2laulst (d2env, jsv0) = let
+in
+  parse_list<c2lau> (jsv0, lam x => parse_c2lau (d2env, x))
+end
+
+implement parse_c2lau (d2env, jsv0) = let
+  val-~Some_vt(jsv_loc) = jsonval_get_field (jsv0, "c2lau_loc") 
+  val c2lau_loc = parse_location (jsv_loc)
+
+
+  val-~Some_vt(jsv_patlst) = jsonval_get_field (jsv0, "c2lau_pat") 
+  val c2lau_patlst = parse_p2atlst (d2env.d2parsingenv_d2varmap, jsv_patlst)
+
+
+  val-~Some_vt(jsv_body) = jsonval_get_field (jsv0, "c2lau_body") 
+  val c2lau_body = parse_d2exp (d2env, jsv_body)
+
+  val c2lau = '{
+    c2lau_loc = c2lau_loc
+    , c2lau_patlst = c2lau_patlst
+    , c2lau_body = c2lau_body
+  }
+in c2lau end
+
 
 (* ****** ****** *)
 
