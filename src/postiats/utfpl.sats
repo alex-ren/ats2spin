@@ -176,6 +176,9 @@ funkind =
   | FK_ignored // error-handling
 // end of [funkind]
 
+fun{} datcon_funkind : (funkind) -> string
+fun fprint_funkind: fprint_type (funkind)
+
 (* ****** ****** *)
 
 datatype
@@ -188,12 +191,18 @@ valkind =
   | VK_ignored // error-handling
 // end of [valkind]
 
+fun{} datcon_valkind : (valkind) -> string
+fun fprint_valkind: fprint_type (valkind)
+
 (* ****** ****** *)
 datatype
 casekind =
 | CK_case_pos 
 | CK_case_minus 
 | CK_case_none
+
+fun{} datcon_casekind : (casekind) -> string
+fun fprint_casekind: fprint_type (casekind)
 
 (* ****** ****** *)
 

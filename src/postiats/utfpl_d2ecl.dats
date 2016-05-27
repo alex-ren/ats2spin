@@ -5,14 +5,19 @@
 
 (* ****** ****** *)
 //
-#include
-"share/atspre_staload.hats"
+#include "share/atspre_staload.hats"
+#include "share/atspre_define.hats"
 //
 (* ****** ****** *)
 
 staload "./utfpl.sats"
 
 (* ****** ****** *)
+
+#include "./postiats_codegen2.hats"
+
+(* ****** ****** *)
+
 
 extern
 fun fprint_i2mpdec (FILEref, i2mpdec): void
@@ -33,6 +38,15 @@ fun fprint_v2aldeclst (FILEref, v2aldeclst): void
 
 extern
 fun fprint_v2ardeclst (FILEref, v2ardeclst): void
+
+(* ****** ****** *)
+
+implement fprint_val<d2ecl> = fprint_d2ecl
+implement fprint_val<i2mpdec> = fprint_i2mpdec
+implement fprint_val<funkind> = fprint_funkind
+implement fprint_val<valkind> = fprint_funkind
+implement fprint_val<casekind> = fprint_funkind
+
 (* ****** ****** *)
 
 implement
@@ -157,75 +171,78 @@ implement
 fprint_d2ecl
   (out, d2c0) = let
 in
-//
-case+ d2c0.d2ecl_node of
-//
-| D2Cimpdec
-    (knd, imp) =>
-  {
-    val () =
-      fprint! (out, "D2Cimpdec(\n")
-    val () = fprint_i2mpdec (out, imp)
-    val () = fprint! (out, "\n)")
-  }
-//
-| D2Cfundecs
-    (knd, f2ds) =>
-  {
-    val () =
-      fprint! (out, "D2Cfundecs(\n")
-    val () = fprint_f2undeclst (out, f2ds)
-    val () = fprint! (out, ")")
-  }
-//
-| D2Cvaldecs
-    (knd, v2ds) =>
-  {
-    val () =
-      fprint! (out, "D2Cvaldecs(\n")
-    val () = fprint_v2aldeclst (out, v2ds)
-    val () = fprint! (out, ")")
-  }
-//
-| D2Cvardecs
-    (v2ds) =>
-  {
-    val () =
-      fprint! (out, "D2Cvardecs(\n")
-    val () = fprint_v2ardeclst (out, v2ds)
-    val () = fprint! (out, ")")
-  }
-//
-| D2Cdcstdecs (knd, d2cst) =>
-  {
-    val () =
-      fprint! (out, "D2Cdcstdecs(\n")
-    val () = fprint_d2cst (out, d2cst)
-    val () = fprint! (out, ")")
-  }
-| D2Clocal
-    (head, body) =>
-  {
-    val () =
-      fprint! (out, "D2Clocal(\n")
-    val () = fprint_d2eclist (out, head)
-    val () = fprint! (out, ")in-of-local(\n")
-    val () = fprint_d2eclist (out, body)
-    val () = fprint! (out, ")end-of-local\n")
-  }
-| D2Cextcode (code) => let
-    val () = fprint! (out, "D2Cextcode(\n")
-    val () = fprint! (out, code)
-    val () = fprint! (out, ")\n")
-in end
-//
-| D2Cignored((*void*)) => fprint! (out, "D2Cignored(", ")\n")
-//
-(*
-| _ (*temporary*) => fprint! (out, "D2C...(", "...", ")")
-*)
-//
-end // end of [fprint_d2ecl]
+  myfprint_d2ecl_node (out, d2c0.d2ecl_node)
+end
+
+// //
+// case+ d2c0.d2ecl_node of
+// //
+// | D2Cimpdec
+//     (knd, imp) =>
+//   {
+//     val () =
+//       fprint! (out, "D2Cimpdec(\n")
+//     val () = fprint_i2mpdec (out, imp)
+//     val () = fprint! (out, "\n)")
+//   }
+// //
+// | D2Cfundecs
+//     (knd, f2ds) =>
+//   {
+//     val () =
+//       fprint! (out, "D2Cfundecs(\n")
+//     val () = fprint_f2undeclst (out, f2ds)
+//     val () = fprint! (out, ")")
+//   }
+// //
+// | D2Cvaldecs
+//     (knd, v2ds) =>
+//   {
+//     val () =
+//       fprint! (out, "D2Cvaldecs(\n")
+//     val () = fprint_v2aldeclst (out, v2ds)
+//     val () = fprint! (out, ")")
+//   }
+// //
+// | D2Cvardecs
+//     (v2ds) =>
+//   {
+//     val () =
+//       fprint! (out, "D2Cvardecs(\n")
+//     val () = fprint_v2ardeclst (out, v2ds)
+//     val () = fprint! (out, ")")
+//   }
+// //
+// | D2Cdcstdecs (knd, d2cst) =>
+//   {
+//     val () =
+//       fprint! (out, "D2Cdcstdecs(\n")
+//     val () = fprint_d2cst (out, d2cst)
+//     val () = fprint! (out, ")")
+//   }
+// | D2Clocal
+//     (head, body) =>
+//   {
+//     val () =
+//       fprint! (out, "D2Clocal(\n")
+//     val () = fprint_d2eclist (out, head)
+//     val () = fprint! (out, ")in-of-local(\n")
+//     val () = fprint_d2eclist (out, body)
+//     val () = fprint! (out, ")end-of-local\n")
+//   }
+// | D2Cextcode (code) => let
+//     val () = fprint! (out, "D2Cextcode(\n")
+//     val () = fprint! (out, code)
+//     val () = fprint! (out, ")\n")
+// in end
+// //
+// | D2Cignored((*void*)) => fprint! (out, "D2Cignored(", ")\n")
+// //
+// (*
+// | _ (*temporary*) => fprint! (out, "D2C...(", "...", ")")
+// *)
+// //
+// end // end of [fprint_d2ecl]
 
 (* ****** ****** *)
 
@@ -233,8 +250,6 @@ implement
 fprint_d2eclist
   (out, d2cs) = let
 //
-implement
-fprint_val<d2ecl> = fprint_d2ecl
 implement
 fprint_list$sep<> (out) = fprint_string (out, ", ")
 //
@@ -317,6 +332,11 @@ d2ecl_local
 
 implement
 d2ecl_ignored (loc) = d2ecl_make_node (loc, D2Cignored())
+
+(* ****** ****** *)
+
+implement
+myfprint_d2ecl_node (out, node) = fprint_d2ecl_node<> (out, node)
 
 (* ****** ****** *)
 
