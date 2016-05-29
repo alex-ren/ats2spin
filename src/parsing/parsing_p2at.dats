@@ -81,6 +81,9 @@ extern
 fun parse_P2Tann (d2varmap, jsonval): p2at_node
 
 extern
+fun parse_P2Ti0nt (jsonval): p2at_node
+
+extern
 fun parse_P2Tignored (jsonval): p2at_node
 
 (* ****** ****** *)
@@ -106,6 +109,7 @@ case+ name of
 | "P2Trec" => parse_P2Trec (d2varmap, jsv2)
 //
 | "P2Tann" => parse_P2Tann (d2varmap, jsv2)
+| "P2Ti0nt" => parse_P2Ti0nt (jsv2)
 //
 | _(*rest*) => parse_P2Tignored (jsv2)
 //
@@ -215,6 +219,19 @@ val p2t = parse_p2at (d2varmap, jsvs[0])
 in
   P2Tpat (p2t)
 end // end of [parse_P2Tann]
+
+(* ****** ****** *)
+implement
+parse_P2Ti0nt
+  (jsv0) = let
+val-JSONarray(jsvs) = jsv0
+val () = assertloc (length(jsvs) >= 1)
+val rep = parse_string (jsvs[0])
+//
+in
+  P2Ti0nt (rep)
+end // end of [parse_P2Ti0nt]
+
 
 (* ****** ****** *)
 

@@ -5,8 +5,8 @@
 
 (* ****** ****** *)
 //
-#include
-"share/atspre_staload.hats"
+#include "share/atspre_staload.hats"
+#include "share/atspre_define.hats"
 //
 (* ****** ****** *)
 
@@ -14,25 +14,31 @@ staload "./utfpl.sats"
 
 (* ****** ****** *)
 
+#include "./postiats_codegen2.hats"
+
+(* ****** ****** *)
+
+implement fprint_val<d2var> = fprint_d2var
+
+implement fprint_val<labp2atlst> = fprint_labp2atlst
+implement fprint_val<p2at> = fprint_p2at
+
+implement{}
+fprint_p2at_node$P2Trec$arg1(out, arg0) =
+  let val-P2Trec(arg1) = arg0 
+in fprint_p2at_node$carg<labp2atlst>(out, arg1) end
+
+(* ****** ****** *)
+
+implement
+myfprint_p2at_node (out, node) = fprint_p2at_node<> (out, node)
+
 implement
 fprint_p2at
   (out, p2t0) = let
 in
-//
-case+ p2t0.p2at_node of
-//
-| P2Tany () => fprint! (out, "P2Tany(", ")")
-| P2Tvar (d2v) => fprint! (out, "P2Tvar(", d2v, ")")
-//
-| P2Tempty () => fprint! (out, "P2Tempty(", ")")
-//
-| P2Tpat (p2t) => fprint! (out, "P2Tpat(", p2t, ")")
-//
-| P2Trec (lp2ts) => fprint! (out, "P2Trec(", lp2ts, ")")
-//
-| P2Tignored ((*void*)) => fprint! (out, "P2Tignored(", ")")
-//
-end // end of [fprint_p2at]
+  myfprint_p2at_node (out, p2t0.p2at_node)
+end
 
 (* ****** ****** *)
 

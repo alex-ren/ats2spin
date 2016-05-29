@@ -60,6 +60,24 @@ case+ arg0 of
 //
 implement
 {}(*tmp*)
+datcon_p2at_node
+  (arg0) =
+(
+case+ arg0 of
+| P2Tany _ => "P2Tany"
+| P2Tvar _ => "P2Tvar"
+| P2Tempty _ => "P2Tempty"
+| P2Tpat _ => "P2Tpat"
+| P2Trec _ => "P2Trec"
+| P2Ti0nt _ => "P2Ti0nt"
+| P2Tignored _ => "P2Tignored"
+)
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
 datcon_funkind
   (arg0) =
 (
@@ -1712,5 +1730,284 @@ implement{}
 fprint_d2ecl_node$D2Cignored$lpar(out, _) = fprint_d2ecl_node$lpar(out)
 implement{}
 fprint_d2ecl_node$D2Cignored$rpar(out, _) = fprint_d2ecl_node$rpar(out)
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_p2at_node$P2Tany: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tvar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tempty: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tpat: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Trec: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Ti0nt: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tignored: $d2ctype(fprint_p2at_node<>)
+//
+(* ****** ****** *)
+//
+implement{}
+fprint_p2at_node
+  (out, arg0) =
+(
+case+ arg0 of
+| P2Tany _ => fprint_p2at_node$P2Tany<>(out, arg0)
+| P2Tvar _ => fprint_p2at_node$P2Tvar<>(out, arg0)
+| P2Tempty _ => fprint_p2at_node$P2Tempty<>(out, arg0)
+| P2Tpat _ => fprint_p2at_node$P2Tpat<>(out, arg0)
+| P2Trec _ => fprint_p2at_node$P2Trec<>(out, arg0)
+| P2Ti0nt _ => fprint_p2at_node$P2Ti0nt<>(out, arg0)
+| P2Tignored _ => fprint_p2at_node$P2Tignored<>(out, arg0)
+)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_p2at_node$sep: (FILEref) -> void
+implement{}
+fprint_p2at_node$sep(out) = fprint(out, ",")
+//
+extern
+fun{}
+fprint_p2at_node$lpar: (FILEref) -> void
+implement{}
+fprint_p2at_node$lpar(out) = fprint(out, "(")
+//
+extern
+fun{}
+fprint_p2at_node$rpar: (FILEref) -> void
+implement{}
+fprint_p2at_node$rpar(out) = fprint(out, ")")
+//
+extern
+fun{a:t0p}
+fprint_p2at_node$carg: (FILEref, INV(a)) -> void
+implement{a}
+fprint_p2at_node$carg(out, arg) = fprint_val<a>(out, arg)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_p2at_node$P2Tany$con: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tany$lpar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tany$rpar: $d2ctype(fprint_p2at_node<>)
+//
+implement{}
+fprint_p2at_node$P2Tany(out, arg0) = 
+{
+//
+val () = fprint_p2at_node$P2Tany$con<>(out, arg0)
+val () = fprint_p2at_node$P2Tany$lpar<>(out, arg0)
+val () = fprint_p2at_node$P2Tany$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_p2at_node$P2Tany$con(out, _) = fprint(out, "P2Tany")
+implement{}
+fprint_p2at_node$P2Tany$lpar(out, _) = fprint_p2at_node$lpar(out)
+implement{}
+fprint_p2at_node$P2Tany$rpar(out, _) = fprint_p2at_node$rpar(out)
+//
+extern
+fun{}
+fprint_p2at_node$P2Tvar$con: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tvar$lpar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tvar$rpar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tvar$arg1: $d2ctype(fprint_p2at_node<>)
+//
+implement{}
+fprint_p2at_node$P2Tvar(out, arg0) = 
+{
+//
+val () = fprint_p2at_node$P2Tvar$con<>(out, arg0)
+val () = fprint_p2at_node$P2Tvar$lpar<>(out, arg0)
+val () = fprint_p2at_node$P2Tvar$arg1<>(out, arg0)
+val () = fprint_p2at_node$P2Tvar$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_p2at_node$P2Tvar$con(out, _) = fprint(out, "P2Tvar")
+implement{}
+fprint_p2at_node$P2Tvar$lpar(out, _) = fprint_p2at_node$lpar(out)
+implement{}
+fprint_p2at_node$P2Tvar$rpar(out, _) = fprint_p2at_node$rpar(out)
+implement{}
+fprint_p2at_node$P2Tvar$arg1(out, arg0) =
+  let val-P2Tvar(arg1) = arg0 in fprint_p2at_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_p2at_node$P2Tempty$con: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tempty$lpar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tempty$rpar: $d2ctype(fprint_p2at_node<>)
+//
+implement{}
+fprint_p2at_node$P2Tempty(out, arg0) = 
+{
+//
+val () = fprint_p2at_node$P2Tempty$con<>(out, arg0)
+val () = fprint_p2at_node$P2Tempty$lpar<>(out, arg0)
+val () = fprint_p2at_node$P2Tempty$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_p2at_node$P2Tempty$con(out, _) = fprint(out, "P2Tempty")
+implement{}
+fprint_p2at_node$P2Tempty$lpar(out, _) = fprint_p2at_node$lpar(out)
+implement{}
+fprint_p2at_node$P2Tempty$rpar(out, _) = fprint_p2at_node$rpar(out)
+//
+extern
+fun{}
+fprint_p2at_node$P2Tpat$con: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tpat$lpar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tpat$rpar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tpat$arg1: $d2ctype(fprint_p2at_node<>)
+//
+implement{}
+fprint_p2at_node$P2Tpat(out, arg0) = 
+{
+//
+val () = fprint_p2at_node$P2Tpat$con<>(out, arg0)
+val () = fprint_p2at_node$P2Tpat$lpar<>(out, arg0)
+val () = fprint_p2at_node$P2Tpat$arg1<>(out, arg0)
+val () = fprint_p2at_node$P2Tpat$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_p2at_node$P2Tpat$con(out, _) = fprint(out, "P2Tpat")
+implement{}
+fprint_p2at_node$P2Tpat$lpar(out, _) = fprint_p2at_node$lpar(out)
+implement{}
+fprint_p2at_node$P2Tpat$rpar(out, _) = fprint_p2at_node$rpar(out)
+implement{}
+fprint_p2at_node$P2Tpat$arg1(out, arg0) =
+  let val-P2Tpat(arg1) = arg0 in fprint_p2at_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_p2at_node$P2Trec$con: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Trec$lpar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Trec$rpar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Trec$arg1: $d2ctype(fprint_p2at_node<>)
+//
+implement{}
+fprint_p2at_node$P2Trec(out, arg0) = 
+{
+//
+val () = fprint_p2at_node$P2Trec$con<>(out, arg0)
+val () = fprint_p2at_node$P2Trec$lpar<>(out, arg0)
+val () = fprint_p2at_node$P2Trec$arg1<>(out, arg0)
+val () = fprint_p2at_node$P2Trec$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_p2at_node$P2Trec$con(out, _) = fprint(out, "P2Trec")
+implement{}
+fprint_p2at_node$P2Trec$lpar(out, _) = fprint_p2at_node$lpar(out)
+implement{}
+fprint_p2at_node$P2Trec$rpar(out, _) = fprint_p2at_node$rpar(out)
+implement{}
+fprint_p2at_node$P2Trec$arg1(out, arg0) =
+  let val-P2Trec(arg1) = arg0 in fprint_p2at_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_p2at_node$P2Ti0nt$con: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Ti0nt$lpar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Ti0nt$rpar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Ti0nt$arg1: $d2ctype(fprint_p2at_node<>)
+//
+implement{}
+fprint_p2at_node$P2Ti0nt(out, arg0) = 
+{
+//
+val () = fprint_p2at_node$P2Ti0nt$con<>(out, arg0)
+val () = fprint_p2at_node$P2Ti0nt$lpar<>(out, arg0)
+val () = fprint_p2at_node$P2Ti0nt$arg1<>(out, arg0)
+val () = fprint_p2at_node$P2Ti0nt$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_p2at_node$P2Ti0nt$con(out, _) = fprint(out, "P2Ti0nt")
+implement{}
+fprint_p2at_node$P2Ti0nt$lpar(out, _) = fprint_p2at_node$lpar(out)
+implement{}
+fprint_p2at_node$P2Ti0nt$rpar(out, _) = fprint_p2at_node$rpar(out)
+implement{}
+fprint_p2at_node$P2Ti0nt$arg1(out, arg0) =
+  let val-P2Ti0nt(arg1) = arg0 in fprint_p2at_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_p2at_node$P2Tignored$con: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tignored$lpar: $d2ctype(fprint_p2at_node<>)
+extern
+fun{}
+fprint_p2at_node$P2Tignored$rpar: $d2ctype(fprint_p2at_node<>)
+//
+implement{}
+fprint_p2at_node$P2Tignored(out, arg0) = 
+{
+//
+val () = fprint_p2at_node$P2Tignored$con<>(out, arg0)
+val () = fprint_p2at_node$P2Tignored$lpar<>(out, arg0)
+val () = fprint_p2at_node$P2Tignored$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_p2at_node$P2Tignored$con(out, _) = fprint(out, "P2Tignored")
+implement{}
+fprint_p2at_node$P2Tignored$lpar(out, _) = fprint_p2at_node$lpar(out)
+implement{}
+fprint_p2at_node$P2Tignored$rpar(out, _) = fprint_p2at_node$rpar(out)
 //
 (* ****** ****** *)

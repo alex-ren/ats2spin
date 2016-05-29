@@ -38,12 +38,22 @@ MALLOCFLAG=-DATS_MEMALLOC_GCBDW
 ######
 
 ATS2PROMELA_sta := \
+    parsing/parsing.sats \
     postiats/utfpl.sats \
     instr0/instr0.sats \
     promela/promela.sats
 
 ATS2PROMELA_dyn := \
     utils/emiter.dats \
+    parsing/parsing.dats \
+    parsing/parsing_d2cst.dats \
+    parsing/parsing_d2ecl.dats \
+    parsing/parsing_d2exp.dats \
+    parsing/parsing_d2sym.dats \
+    parsing/parsing_d2var.dats \
+    parsing/parsing_export.dats \
+    parsing/parsing_p2at.dats \
+    parsing/dynloadall.dats \
     postiats/utfpl.dats \
     postiats/utfpl_stamp.dats \
     postiats/utfpl_symbol.dats \
@@ -77,12 +87,12 @@ ATS2PROMELA_dyn := \
     promela/pml_decl.dats \
     promela/pml_proctype.dats \
     promela/pml_inline.dats \
-    promela/dynloadall.dats \
+    promela/dynloadall.dats
 
 
 ATS2PROMELASRC := \
     $(ATS2PROMELA_sta) \
-    $(ATS2PROMELA_dyn) \
+    $(ATS2PROMELA_dyn)
 
 ######
 
@@ -100,8 +110,6 @@ all::
 #
 ats2promela.o: $(ATS2PROMELAOBJ) ; ld -r -o $@ $^
 #
-parsing/parsing.o: ; make -C parsing parsing.o
-#
 # evaluating/evaluating.o: ; make -C evaluating evaluating.o
 #
 ######
@@ -110,22 +118,18 @@ MAKE=make
 
 ######
 #
-ATS2PROMELA:: ; \
-  $(MAKE) -C parsing
-
+#
 ATS2PROMELA:: ats2promela
 
 ats2promela: ats2promela.o \
-  main_ats2promela_dats.o \
-  parsing/parsing.o; \
+  main_ats2promela_dats.o; \
   $(CC) -o $@ $^ $(LDFLAGS)
 
 ######
 
 unittest:: ATS2PROMELA
 unittest:: ats2promela.o \
-  test_ats2promela_dats.o \
-  parsing/parsing.o; \
+  test_ats2promela_dats.o; \
   $(CC) -o test_ats2promela $^ $(LDFLAGS)
 
 # PATSCC2= $(PATSCC) -atsccomp "$(CCOPT)" $(MALLOCFLAG) $(CFLAGS)
@@ -251,7 +255,6 @@ cleanall:: ; $(RMF) ats2promela.o
 cleanall:: ; $(RMF) ats2promela
 cleanall:: ; $(RMF) test_ats2promela
 
-cleanall:: ; make -C parsing cleanall
 
 # cleanall:: ; make -C TEST cleanall
 

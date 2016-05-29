@@ -262,6 +262,7 @@ case+ p2at.p2at_node of
 | P2Tempty () => exitlocmsg ("Shall not happen")
 | P2Tpat (p2at) => i0transform_p2at2para (sa, p2at)
 | P2Trec (labp2atlst) => exitlocmsg ("Shall not happen")
+| P2Ti0nt (intrep) => exitlocmsg ("Shall not happen")
 | P2Tignored () => exitlocmsg ("Shall not happen")
 end
 
@@ -275,6 +276,7 @@ case+ p2at.p2at_node of
 | P2Tempty () => None0 ()
 | P2Tpat (p2at) => i0transform_p2at2holder (sa, p2at)
 | P2Trec (labp2atlst) => exitlocmsg ("P2Trec is not supported yet.")
+| P2Ti0nt (intrep) => exitlocmsg ("Shall not happen")
 | P2Tignored () => exitlocmsg ("Shall not happen")
 end
 

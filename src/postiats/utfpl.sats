@@ -310,6 +310,7 @@ p2at_node =
   | P2Tpat of (p2at)
 //
   | P2Trec of (labp2atlst)
+  | P2Ti0nt of (string)
 //
   | P2Tignored of ((*void*))
 // end of [p2at_node]
@@ -329,8 +330,12 @@ p2atlst = List0 (p2at)
 and
 labp2atlst = List0 (labp2at)
 
+
 (* ****** ****** *)
+fun{} datcon_p2at_node : (p2at_node) -> string
+fun{} fprint_p2at_node: (FILEref, p2at_node) -> void
 //
+fun myfprint_p2at_node: fprint_type(p2at_node)
 fun fprint_p2at: fprint_type (p2at)
 fun fprint_p2atlst: fprint_type (p2atlst)
 //
