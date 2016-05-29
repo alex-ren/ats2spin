@@ -53,10 +53,11 @@ ATS2PROMELA_dyn := \
     postiats/utfpl_d2var.dats \
     postiats/utfpl_d2sym.dats \
     postiats/utfpl_p2at.dats \
+    postiats/utfpl_c2lau.dats \
     postiats/utfpl_d2exp.dats \
-    postiats/utfpl_d2ecl.dats \
     postiats/utfpleval_mylib.dats \
     postiats/utfpl_dynloadall.dats \
+    postiats/utfpl_d2ecl.dats \
     instr0/instr0.dats \
     instr0/i0exp.dats \
     instr0/i0name.dats \

@@ -5,79 +5,114 @@
 
 (* ****** ****** *)
 //
-#include
-"share/atspre_staload.hats"
+#include "share/atspre_staload.hats"
+#include "share/atspre_define.hats"
 //
 (* ****** ****** *)
 
 staload "./utfpl.sats"
 
+#include "./postiats_codegen2.hats"
+
 (* ****** ****** *)
+
+implement fprint_val<d2cst> = fprint_d2cst
+implement fprint_val<d2var> = fprint_d2var
+implement fprint_val<d2sym> = fprint_d2sym
+implement fprint_val<d2exp> = fprint_d2exp
+implement fprint_val<casekind> = fprint_casekind
+
+implement fprint_val<d2eclist> = fprint_d2eclist
+implement fprint_val<d2exparglst> = fprint_d2exparglst
+implement fprint_val<d2expopt> = fprint_d2expopt
+implement fprint_val<c2laulst> = fprint_c2laulst
+implement fprint_val<d2explst> = fprint_d2explst
+implement fprint_val<d2lablst> = fprint_d2lablst
+implement fprint_val<p2atlst> = fprint_p2atlst
+
+implement{}
+fprint_d2exp_node$D2Elet$arg1(out, arg0) =
+  let val-D2Elet(arg1, _) = arg0 
+in fprint_d2exp_node$carg<d2eclist>(out, arg1) end
+
+implement{}
+fprint_d2exp_node$D2Eapplst$arg2(out, arg0) =
+  let val-D2Eapplst(_, arg2) = arg0 
+in fprint_d2exp_node$carg<d2exparglst>(out, arg2) end
+
+implement{}
+fprint_d2exp_node$D2Eifopt$arg3(out, arg0) =
+  let val-D2Eifopt(_, _, arg3) = arg0 
+in fprint_d2exp_node$carg<d2expopt>(out, arg3) end
+
+implement{}
+fprint_d2exp_node$D2Ecase$arg3(out, arg0) =
+  let val-D2Ecase(_, _, arg3) = arg0 
+in fprint_d2exp_node$carg<c2laulst>(out, arg3) end
+
+implement{}
+fprint_d2exp_node$D2Elist$arg1(out, arg0) =
+  let val-D2Elist(arg1) = arg0 
+in fprint_d2exp_node$carg<d2explst>(out, arg1) end
+
+
+implement{}
+fprint_d2exp_node$D2Etup$arg1(out, arg0) =
+  let val-D2Etup(arg1) = arg0 
+in fprint_d2exp_node$carg<d2explst>(out, arg1) end
+
+implement{}
+fprint_d2exp_node$D2Eseq$arg1(out, arg0) =
+  let val-D2Eseq(arg1) = arg0 
+in fprint_d2exp_node$carg<d2explst>(out, arg1) end
+
+implement{}
+fprint_d2exp_node$D2Eselab$arg2(out, arg0) =
+  let val-D2Eselab(_, arg2) = arg0 
+in fprint_d2exp_node$carg<d2lablst>(out, arg2) end
+
+implement{}
+fprint_d2exp_node$D2Elam$arg1(out, arg0) =
+  let val-D2Elam(arg1, _) = arg0 
+in fprint_d2exp_node$carg<p2atlst>(out, arg1) end
+
+implement{}
+fprint_d2exp_node$D2Efix$arg2(out, arg0) =
+  let val-D2Efix(_, arg2, _) = arg0 
+in fprint_d2exp_node$carg<p2atlst>(out, arg2) end
+
+implement{}
+fprint_d2exp_node$D2Eextfcall$arg2(out, arg0) =
+  let val-D2Eextfcall(_, arg2) = arg0 
+in fprint_d2exp_node$carg<d2explst>(out, arg2) end
+
+(* ****** ****** *)
+// for pretty print
+implement{}
+fprint_d2exp_node$D2Ecase$lpar(out, _) = fprint (out, "(\n")
+implement{}
+fprint_d2exp_node$D2Ecase$rpar(out, _) = fprint (out, "\n)")
+implement{}
+fprint_d2exp_node$D2Ecase$sep1(out, _) = fprint (out, ",\n")
+implement{}
+fprint_d2exp_node$D2Ecase$sep2(out, _) = fprint (out, ",\n")
+
+implement{}
+fprint_d2exp_node$D2Elet$lpar(out, _) = fprint (out, "(\n")
+implement{}
+fprint_d2exp_node$D2Elet$sep1(out, _) = fprint (out, "\nin\n")
+
+(* ****** ****** *)
+
+implement
+myfprint_d2exp_node (out, node) = fprint_d2exp_node<> (out, node)
 
 implement
 fprint_d2exp
   (out, d2e0) = let
 in
-//
-case+ d2e0.d2exp_node of
-//
-| D2Ecst (d2c) =>
-    fprint! (out, "D2Ecst(", d2c, ")")
-| D2Evar (d2v) =>
-    fprint! (out, "D2Evar(", d2v, ")")
-| D2Esym (d2s) =>
-    fprint! (out, "D2Esym(", d2s, ")")
-//
-| D2Eint (int) =>
-    fprint! (out, "D2Eint(", int, ")")
-| D2Eintrep (rep) =>
-    fprint! (out, "D2Eintrep(", rep, ")")
-| D2Efloat (dbl) =>
-    fprint! (out, "D2Efloat(", dbl, ")")
-| D2Estring (str) =>
-    fprint! (out, "D2Estring(", str, ")")
-//
-| D2Ei0nt (rep) =>
-    fprint! (out, "D2Ei0nt(", rep, ")")
-| D2Ec0har (char) =>
-    fprint! (out, "D2Ec0har(", char, ")")
-| D2Ef0loat (rep) =>
-    fprint! (out, "D2Ef0loat(", rep, ")")
-| D2Es0tring (rep) =>
-    fprint! (out, "D2Es0tring(", rep, ")")
-//
-| D2Eempty () =>
-    fprint! (out, "D2Eempty(", ")")
-//
-| D2Eexp (d2e) =>
-    fprint! (out, "D2Eexp(", d2e, ")")
-//
-| D2Elet (d2cs, d2e) =>
-    fprint! (out, "D2Elet(", d2cs, "; ", d2e, ")")
-//
-| D2Eapplst (d2e, d2as) =>
-    fprint! (out, "D2Eapplst(", d2e, "; ", d2as, ")")
-//
-| D2Eifopt
-    (d2e1, d2e2, d2eopt3) =>
-    fprint! (out, "D2Eifopt(", d2e1, "; ", d2e2, "; ", d2eopt3, ")")
-//
-| D2Elist (d2es) => fprint! (out, "D2Elist(", d2es, ")")
-//
-| D2Etup (d2es) => fprint! (out, "D2Etup(", d2es, ")")
-| D2Eseq (d2es) => fprint! (out, "D2Eseq(", d2es, ")")
-//
-| D2Eselab (d2e, d2ls) =>
-    fprint! (out, "D2Eselab(", d2e, "; ", d2ls, ")")
-//
-| D2Elam (p2ts, d2e_body) =>
-    fprint! (out, "D2Elam(", p2ts, "; ", d2e_body)
-//
-| D2Eignored ((*void*)) => fprint! (out, "D2Eignored(", ")")
-//
-| _ (*temporary*) => fprint! (out, "D2E...(", "...", ")")
-//
-end // end of [fprint_d2exp]
+  myfprint_d2exp_node (out, d2e0.d2exp_node)
+end
 
 (* ****** ****** *)
 
@@ -287,4 +322,7 @@ d2exp_ignored (loc) = d2exp_make_node (loc, D2Eignored())
 
 (* ****** ****** *)
 
+(* ****** ****** *)
+
 (* end of [utfpl_d2exp.dats] *)
+

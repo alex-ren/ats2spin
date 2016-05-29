@@ -44,8 +44,53 @@ fun fprint_v2ardeclst (FILEref, v2ardeclst): void
 implement fprint_val<d2ecl> = fprint_d2ecl
 implement fprint_val<i2mpdec> = fprint_i2mpdec
 implement fprint_val<funkind> = fprint_funkind
-implement fprint_val<valkind> = fprint_funkind
-implement fprint_val<casekind> = fprint_funkind
+implement fprint_val<valkind> = fprint_valkind
+implement fprint_val<casekind> = fprint_casekind
+implement fprint_val<d2cst> = fprint_d2cst
+
+implement fprint_val<f2undec> = fprint_f2undec
+implement fprint_val<v2aldec> = fprint_v2aldec
+implement fprint_val<v2ardec> = fprint_v2ardec
+
+implement fprint_val<f2undeclst> = fprint_f2undeclst
+implement fprint_val<v2aldeclst> = fprint_v2aldeclst
+implement fprint_val<v2ardeclst> (out, xs) = fprint_v2ardeclst (out, xs)
+implement fprint_val<d2eclist> = fprint_d2eclist
+
+// todo
+// Has to overload the implementation to 
+// add the annotation for template argument, e.g.
+// f2undeclst in this example.
+implement{}
+fprint_d2ecl_node$D2Cfundecs$arg2(out, arg0) =
+  let val-D2Cfundecs(_, arg2) = arg0 in fprint_d2ecl_node$carg<f2undeclst>(out, arg2) end
+
+
+implement{}
+fprint_d2ecl_node$D2Cvaldecs$arg2(out, arg0) =
+  let val-D2Cvaldecs(_, arg2) = arg0 in fprint_d2ecl_node$carg<v2aldeclst>(out, arg2) end
+
+implement{}
+fprint_d2ecl_node$D2Cvardecs$arg1(out, arg0) =
+  let val-D2Cvardecs(arg1) = arg0 in fprint_d2ecl_node$carg<v2ardeclst>(out, arg1) end
+
+implement{}
+fprint_d2ecl_node$D2Clocal$arg1(out, arg0) =
+  let val-D2Clocal(arg1, _) = arg0 in fprint_d2ecl_node$carg<d2eclist>(out, arg1) end
+
+implement{}
+fprint_d2ecl_node$D2Clocal$arg2(out, arg0) =
+  let val-D2Clocal(_, arg2) = arg0 in fprint_d2ecl_node$carg<d2eclist>(out, arg2) end
+
+(* ****** ****** *)
+
+// for pretty print
+
+implement{}
+fprint_d2ecl_node$D2Cfundecs$lpar(out, _) = fprint (out, "(\n")
+
+implement{}
+fprint_d2ecl_node$D2Cfundecs$rpar(out, _) = fprint (out, "\n)")
 
 (* ****** ****** *)
 
@@ -80,19 +125,11 @@ fprint_f2undec
 implement
 fprint_f2undeclst
   (out, f2ds) = let
+implement
+fprint_list$sep<> (out) = fprint_string (out, ",\n")
+//
 in
-//
-case+ f2ds of
-| list_cons
-    (f2d, f2ds) => let
-    val () =
-      fprint_f2undec (out, f2d)
-    val () = fprint_newline (out)
-  in
-    fprint_f2undeclst (out, f2ds)
-  end // end of [list_cons]
-| list_nil ((*void*)) => ()
-//
+  fprint_list<f2undec> (out, f2ds)
 end // end of [fprint_f2undeclst]
 
 (* ****** ****** *)
@@ -131,118 +168,39 @@ fprint_v2ardec
 implement
 fprint_v2aldeclst
   (out, v2ds) = let
+implement
+fprint_list$sep<> (out) = fprint_string (out, ",\n")
+//
 in
-//
-case+ v2ds of
-| list_cons
-    (v2d, v2ds) => let
-    val () =
-      fprint_v2aldec (out, v2d)
-    val () = fprint_newline (out)
-  in
-    fprint_v2aldeclst (out, v2ds)
-  end // end of [list_cons]
-| list_nil ((*void*)) => ()
-//
+  fprint_list<v2aldec> (out, v2ds)
 end // end of [fprint_v2aldeclst]
+
 
 (* ****** ****** *)
 
 implement
 fprint_v2ardeclst
   (out, v2ds) = let
+implement
+fprint_list$sep<> (out) = fprint_string (out, ",\n")
+//
 in
-//
-case+ v2ds of
-| list_cons
-    (v2d, v2ds) => let
-    val () =
-      fprint_v2ardec (out, v2d)
-    val () = fprint_newline (out)
-  in
-    fprint_v2ardeclst (out, v2ds)
-  end // end of [list_cons]
-| list_nil ((*void*)) => ()
-//
+  fprint_list<v2ardec> (out, v2ds)
 end // end of [fprint_v2ardeclst]
 
 (* ****** ****** *)
+
+implement
+myfprint_d2ecl_node (out, node) = fprint_d2ecl_node<> (out, node)
+
+(* ****** ****** *)
+
 implement
 fprint_d2ecl
   (out, d2c0) = let
 in
   myfprint_d2ecl_node (out, d2c0.d2ecl_node)
 end
-
-// //
-// case+ d2c0.d2ecl_node of
-// //
-// | D2Cimpdec
-//     (knd, imp) =>
-//   {
-//     val () =
-//       fprint! (out, "D2Cimpdec(\n")
-//     val () = fprint_i2mpdec (out, imp)
-//     val () = fprint! (out, "\n)")
-//   }
-// //
-// | D2Cfundecs
-//     (knd, f2ds) =>
-//   {
-//     val () =
-//       fprint! (out, "D2Cfundecs(\n")
-//     val () = fprint_f2undeclst (out, f2ds)
-//     val () = fprint! (out, ")")
-//   }
-// //
-// | D2Cvaldecs
-//     (knd, v2ds) =>
-//   {
-//     val () =
-//       fprint! (out, "D2Cvaldecs(\n")
-//     val () = fprint_v2aldeclst (out, v2ds)
-//     val () = fprint! (out, ")")
-//   }
-// //
-// | D2Cvardecs
-//     (v2ds) =>
-//   {
-//     val () =
-//       fprint! (out, "D2Cvardecs(\n")
-//     val () = fprint_v2ardeclst (out, v2ds)
-//     val () = fprint! (out, ")")
-//   }
-// //
-// | D2Cdcstdecs (knd, d2cst) =>
-//   {
-//     val () =
-//       fprint! (out, "D2Cdcstdecs(\n")
-//     val () = fprint_d2cst (out, d2cst)
-//     val () = fprint! (out, ")")
-//   }
-// | D2Clocal
-//     (head, body) =>
-//   {
-//     val () =
-//       fprint! (out, "D2Clocal(\n")
-//     val () = fprint_d2eclist (out, head)
-//     val () = fprint! (out, ")in-of-local(\n")
-//     val () = fprint_d2eclist (out, body)
-//     val () = fprint! (out, ")end-of-local\n")
-//   }
-// | D2Cextcode (code) => let
-//     val () = fprint! (out, "D2Cextcode(\n")
-//     val () = fprint! (out, code)
-//     val () = fprint! (out, ")\n")
-// in end
-// //
-// | D2Cignored((*void*)) => fprint! (out, "D2Cignored(", ")\n")
-// //
-// (*
-// | _ (*temporary*) => fprint! (out, "D2C...(", "...", ")")
-// *)
-// //
-// end // end of [fprint_d2ecl]
 
 (* ****** ****** *)
 
@@ -251,13 +209,15 @@ fprint_d2eclist
   (out, d2cs) = let
 //
 implement
-fprint_list$sep<> (out) = fprint_string (out, ", ")
+fprint_list$sep<> (out) = fprint_string (out, ",\n")
 //
 in
   fprint_list<d2ecl> (out, d2cs)
 end // end of [fprint_d2eclist]
 
+
 (* ****** ****** *)
+
 
 implement
 i2mpdec_make
@@ -335,9 +295,7 @@ d2ecl_ignored (loc) = d2ecl_make_node (loc, D2Cignored())
 
 (* ****** ****** *)
 
-implement
-myfprint_d2ecl_node (out, node) = fprint_d2ecl_node<> (out, node)
-
-(* ****** ****** *)
-
 (* end of [utfpl_d2ecl.dats] *)
+
+
+

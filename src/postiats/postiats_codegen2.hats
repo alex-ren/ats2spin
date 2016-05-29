@@ -58,6 +58,50 @@ case+ arg0 of
 (* ****** ****** *)
 (* ****** ****** *)
 //
+implement
+{}(*tmp*)
+datcon_funkind
+  (arg0) =
+(
+case+ arg0 of
+| FK_fn _ => "FK_fn"
+| FK_fnx _ => "FK_fnx"
+| FK_fun _ => "FK_fun"
+| FK_ignored _ => "FK_ignored"
+)
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+datcon_valkind
+  (arg0) =
+(
+case+ arg0 of
+| VK_val _ => "VK_val"
+| VK_val_pos _ => "VK_val_pos"
+| VK_val_neg _ => "VK_val_neg"
+| VK_ignored _ => "VK_ignored"
+)
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+datcon_casekind
+  (arg0) =
+(
+case+ arg0 of
+| CK_case_pos _ => "CK_case_pos"
+| CK_case_minus _ => "CK_case_minus"
+| CK_case_none _ => "CK_case_none"
+)
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
 extern
 fun{}
 fprint_d2exp_node$D2Ecst: $d2ctype(fprint_d2exp_node<>)

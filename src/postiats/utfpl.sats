@@ -165,8 +165,6 @@ fun location_make (rep: string): loc_t
 (* ****** ****** *)
 
 datatype
-funkind = 
-datatype
 funkind =
 //
   | FK_fn // nonrec fun
@@ -512,6 +510,12 @@ and c2lau = '{
 } (* end of [c2lau] *)
 
 and c2laulst = List0 (c2lau)
+
+(* ****** ****** *)
+
+fun fprint_c2laulst (FILEref, c2laulst): void
+
+fun fprint_c2lau (FILEref, c2lau): void
 
 (* ****** ****** *)
 //
