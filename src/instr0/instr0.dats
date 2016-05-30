@@ -23,9 +23,9 @@ implement fprint_val<i0fundef> = fprint_i0fundef
 
 implement fprint_val<i0gvar> = fprint_i0gvar
 
+implement fprint_val<i0id> = fprint_i0id
+
 (* ************** ************* *)
-
-
 
 implement myfprint_i0decl (out, i0decl) = fprint_i0decl<> (out, i0decl)
 
@@ -36,7 +36,7 @@ in
   case+ i0gvar.1 of
   | Some i0exp => let
     val () = fprint (out, " = ")
-    val () = fprint (out, i0exp)
+    val () = myfprint_i0exp (out, i0exp)
   in end
   | None () => ()
 end
@@ -46,11 +46,18 @@ implement fprint_i0prog (out, i0prog) = let
   val declst = i0prog.i0prog_i0declst
 
   implement 
-  fprint_val<i0decl> (out, decl) = fprint (out, decl)
+  fprint_val<i0decl> (out, decl) = myfprint_i0decl (out, decl)
   val () = fprint_list0_sep<i0decl> (out, i0prog.i0prog_i0declst, "\n\n")
   val () = fprint (out, "\n\n")
 in
 end
+
+(* ********** ************ *)
+
+implement i0gbranch_make (i0exp, i0inslst) =
+'{ i0gbranch_guard = i0exp
+ , i0gbranch_inss = i0inslst
+}
 
 (* ********** ************ *)
 
@@ -342,17 +349,61 @@ end
 | D2Eifopt (
     d2exp1(*test*), d2exp2(*then*), d2expopt(*else*)
   ) => let
-    val i0exp = i0transform_d2exp_expvalue (sa, d2exp1)
-    val (i0declst1, inss1) = i0transform_d2exp_fbody (sa, d2exp2, fmap)
-    val (i0declst2, inss2) = (case+ d2expopt of
-                 | Some (d2exp) => 
-                     i0transform_d2exp_fbody (sa, d2exp, fmap)
-                 | None () => (nil0, list0_sing (INS0return (None0)))
-    ): (i0declst, i0inslst)
- in
-   (list0_append (i0declst1, i0declst2)
-   , list0_sing (INS0ifbranch (i0exp, inss1, inss2)))
- end
+  val i0exp = i0transform_d2exp_expvalue (sa, d2exp1)
+  val (i0declst1, inss1) = i0transform_d2exp_fbody (sa, d2exp2, fmap)
+  val (i0declst2, inss2) = (case+ d2expopt of
+               | Some (d2exp) => 
+                   i0transform_d2exp_fbody (sa, d2exp, fmap)
+               | None () => (nil0, list0_sing (INS0return (None0)))
+  ): (i0declst, i0inslst)
+in
+  (list0_append (i0declst1, i0declst2)
+  , list0_sing (INS0ifbranch (i0exp, inss1, inss2)))
+end
+| D2Ecase (casekind, d2exp, c2laulst) => let
+  implement 
+  list_foldright$fopr<c2lau><'(i0declst, i0gbranchlst, i0gbranchopt)> (
+    c2lau, res) = let
+    val- list_cons (pat, list_nil) = c2lau.c2lau_patlst
+    val d2exp = c2lau.c2lau_body
+    // must be a "let" expression
+    val- D2Elet (d2eclist, d2exp) = d2exp.d2exp_node
+    // The first dec must be guard
+    val- cons (d2ec, d2eclst1) = d2eclist
+
+    // turn d2ec into i0exp
+    val i0exp = EXP0int (1) // todo
+
+    val (i0declst1, inss1) = i0transform_d2eclist (sa, d2eclst1, fmap)
+    val (i0declst2, inss2) = i0transform_d2exp_fbody (sa, d2exp, fmap)
+    val i0declst = list0_append (i0declst1, i0declst2)
+    val inss = list0_append (inss1, inss2)
+
+    val res_i0declst = list0_append (i0declst, res.0)
+    val gbranch = i0gbranch_make (i0exp, inss)
+  in
+    case+ pat.p2at_node of
+    | P2Tany () => let
+      val gbranchopt = Some0 gbranch
+    in
+      '(res_i0declst, res.1, gbranchopt)
+    end
+    | _ => let
+      val res_gbranchlst = gbranch :: res.1
+    in
+      '(res_i0declst, res_gbranchlst, res.2)
+    end
+  end
+
+  val '(i0declst, gbranchlst, gbranchopt) = 
+    list_foldright<c2lau><'(i0declst, i0gbranchlst, i0gbranchopt)> (
+      c2laulst, '(nil0, nil0, None0))
+
+  val ins = INS0random (gbranchlst, gbranchopt)
+in
+  (i0declst, list0_sing ins)
+end  // end of [D2Ecase]
+
 // //
 //   | D2Esing of (d2exp)
 //   | D2Elist of (d2explst)
@@ -589,8 +640,6 @@ end
 
 
 (* ************* ************** *)
-
-implement fprint_val<i0id> = fprint_i0id
 
 
 

@@ -343,6 +343,9 @@ fun{}
 fprint_i0ins$INS0ifbranch: $d2ctype(fprint_i0ins<>)
 extern
 fun{}
+fprint_i0ins$INS0random: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
 fprint_i0ins$INS0goto: $d2ctype(fprint_i0ins<>)
 extern
 fun{}
@@ -363,6 +366,7 @@ case+ arg0 of
 | INS0label _ => fprint_i0ins$INS0label<>(out, arg0)
 | INS0return _ => fprint_i0ins$INS0return<>(out, arg0)
 | INS0ifbranch _ => fprint_i0ins$INS0ifbranch<>(out, arg0)
+| INS0random _ => fprint_i0ins$INS0random<>(out, arg0)
 | INS0goto _ => fprint_i0ins$INS0goto<>(out, arg0)
 | INS0init_loop _ => fprint_i0ins$INS0init_loop<>(out, arg0)
 | INS0tail_jump _ => fprint_i0ins$INS0tail_jump<>(out, arg0)
@@ -612,6 +616,52 @@ fprint_i0ins$INS0ifbranch$arg2(out, arg0) =
 implement{}
 fprint_i0ins$INS0ifbranch$arg3(out, arg0) =
   let val-INS0ifbranch(_, _, arg3) = arg0 in fprint_i0ins$carg(out, arg3) end
+//
+extern
+fun{}
+fprint_i0ins$INS0random$con: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0random$lpar: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0random$rpar: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0random$sep1: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0random$arg1: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0random$arg2: $d2ctype(fprint_i0ins<>)
+//
+implement{}
+fprint_i0ins$INS0random(out, arg0) = 
+{
+//
+val () = fprint_i0ins$INS0random$con<>(out, arg0)
+val () = fprint_i0ins$INS0random$lpar<>(out, arg0)
+val () = fprint_i0ins$INS0random$arg1<>(out, arg0)
+val () = fprint_i0ins$INS0random$sep1<>(out, arg0)
+val () = fprint_i0ins$INS0random$arg2<>(out, arg0)
+val () = fprint_i0ins$INS0random$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_i0ins$INS0random$con(out, _) = fprint(out, "INS0random")
+implement{}
+fprint_i0ins$INS0random$lpar(out, _) = fprint_i0ins$lpar(out)
+implement{}
+fprint_i0ins$INS0random$rpar(out, _) = fprint_i0ins$rpar(out)
+implement{}
+fprint_i0ins$INS0random$sep1(out, _) = fprint_i0ins$sep<>(out)
+implement{}
+fprint_i0ins$INS0random$arg1(out, arg0) =
+  let val-INS0random(arg1, _) = arg0 in fprint_i0ins$carg(out, arg1) end
+implement{}
+fprint_i0ins$INS0random$arg2(out, arg0) =
+  let val-INS0random(_, arg2) = arg0 in fprint_i0ins$carg(out, arg2) end
 //
 extern
 fun{}
@@ -922,6 +972,7 @@ case+ arg0 of
 | INS0label _ => "INS0label"
 | INS0return _ => "INS0return"
 | INS0ifbranch _ => "INS0ifbranch"
+| INS0random _ => "INS0random"
 | INS0goto _ => "INS0goto"
 | INS0init_loop _ => "INS0init_loop"
 | INS0tail_jump _ => "INS0tail_jump"

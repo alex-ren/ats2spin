@@ -12,30 +12,38 @@
 
 // End of header
 
-inline fact_0(x_9, res_8) {
+inline fact_0(x_12, res_11) {
   int x_1;
   int res_2;
-  int x_11;
-  int res_12;
-  x_1 = x_9;
-  res_2 = res_8;
-  fact_10:
+  int x_14;
+  int res_15;
+  x_1 = x_12;
+  res_2 = res_11;
+  fact_13:
   if 
   :: (x_1) > (0) -> 
-    x_11 = (x_1) - (1);
-    res_12 = (x_1) * (res_2);
-    x_1 = x_11;
-    res_2 = res_12;
-    goto fact_10
+    x_14 = (x_1) - (1);
+    res_15 = (x_1) * (res_2);
+    x_1 = x_14;
+    res_2 = res_15;
+    goto fact_13
   :: else  -> 
     printf("ans = %d", res_2)
   fi
 }
+inline fact2_6(x_7, res_8) {
+  if 
+  :: (x_7) > (0) -> 
+    fact_0((x_7) - (1), (x_7) * (res_8))
+  :: else  -> 
+    
+  fi
+}
 init {
 atomic {
-  int x_7;
-  x_7 = 5;
-  fact_0(x_7, 1)
+  int x_10;
+  x_10 = 5;
+  fact2_6(x_10, 1)
 }
 }
 

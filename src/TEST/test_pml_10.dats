@@ -14,9 +14,13 @@ else let
      void, "printf", "ans = %d", res)
 in end
 
+
+fun inline$fact2 (x: int, res: int): void = 
+if x > 0 then inline$fact (x - 1, x * res)
+
 fun pml$init (): void = let
   val x = 5
-  val () = inline$fact (x, 1)
+  val () = inline$fact2 (x, 1)
 in end
 
 

@@ -103,6 +103,7 @@ datatype i0ins =
 | INS0label of (i0id)
 | INS0return of (option0 i0exp)
 | INS0ifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))
+| INS0random of (i0gbranchlst, i0gbranchopt) 
 | INS0goto of (i0id)
 //
 // Added for recursive functions
@@ -126,6 +127,19 @@ where
 i0inslst = list0 i0ins
 and
 i0explst = list0 i0exp
+and
+i0gbranch = '{
+  i0gbranch_guard = i0exp
+  , i0gbranch_inss = i0inslst
+}
+and
+i0gbranchopt = option0 i0gbranch
+and
+i0gbranchlst = list0 i0gbranch
+
+fun fprint_i0gbranch (FILEref, i0gbranch): void
+
+fun i0gbranch_make (i0exp, i0inslst): i0gbranch
 
 fun{} fprint_i0exp : (FILEref, i0exp) -> void // a function template
 fun{} fprint_i0ins : (FILEref, i0ins) -> void // a function template

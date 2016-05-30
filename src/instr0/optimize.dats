@@ -196,6 +196,7 @@ else let
     in
       INS0ifbranch (i0exp, i0inss3, i0inss4)
     end
+    | INS0random (_, _) => exitlocmsg ("todo")
     | INS0goto (_) => ins
     | INS0init_loop (_, _) => exitlocmsg ("Impossible.")
     | INS0tail_jump (_, _) => exitlocmsg ("Impossible.")
@@ -293,6 +294,7 @@ implement i0optimize_collect_decs_fundef (i0fundef) = let
     in
       loop (i0inslst1, res1'', res2')
     end
+    | INS0random (_, _) => exitlocmsg ("todo")
     | INS0goto (i0id) => loop (i0inslst1, res1, i0ins :: res2)
     | INS0init_loop (
       i0idlst (*all variables*)
