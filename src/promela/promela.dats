@@ -296,6 +296,46 @@ INS0init_loop is replaced by dec and assign")
   in
     loop (i0inslst, res)
   end
+  | INS0random (i0gbranchlst, inssopt) => let
+      val branches = list0_foldright<i0gbranch><pml_options> (
+          i0gbranchlst, fopr, nil0) where {
+      fun fopr (i0gbranch: i0gbranch, res: pml_options):<cloref1> pml_options = let
+        val guard_anyexp = 
+          pmltransform_i0exp2pml_anyexp (i0gbranch.i0gbranch_guard)
+        val guard_exp = PMLEXP_anyexp (guard_anyexp)
+        val guard_step = PMLSTEP_stmnt (PMLSTMNT_exp (guard_exp))
+
+        val pml_inss = pmltransform_i0inslst (is_inline, i0gbranch.i0gbranch_inss)
+        val pml_inss = guard_step :: pml_inss
+
+        val res = pml_inss :: res
+      in
+        res
+      end
+      }
+    in
+      case+ inssopt of
+      | Some0 inss_else => let
+        val else_step = PMLSTEP_stmnt (PMLSTMNT_else)
+        val pml_inss_else = pmltransform_i0inslst (is_inline, inss_else)
+        val pml_inss_else = else_step :: pml_inss_else
+
+        val pml_stmnt = 
+          PMLSTMNT_if (list0_append (branches, pml_inss_else :: nil0))
+        val pml_step = PMLSTEP_stmnt (pml_stmnt)
+        val res = pml_step :: res
+      in
+        loop (i0inslst, res)
+      end
+      | None0 () => let
+        val pml_stmnt = 
+          PMLSTMNT_if (branches)
+        val pml_step = PMLSTEP_stmnt (pml_stmnt)
+        val res = pml_step :: res
+      in
+        loop (i0inslst, res)
+      end
+    end  // end of [INS0randome]
   | _ => exitlocmsg ("todo: " + datcon_i0ins i0ins)
 )  // end of [i0ins :: i0inslst]
 | nil0 () => res

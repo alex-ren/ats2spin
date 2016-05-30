@@ -63,7 +63,7 @@ fun
 pml$wait_unless(() -> bool): void
 
 fun
-pml$run (() -> void): void
+pml$run (() -> void): pid
 
 (* ****** ****** *)
 

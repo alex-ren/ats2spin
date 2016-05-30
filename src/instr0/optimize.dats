@@ -196,7 +196,32 @@ else let
     in
       INS0ifbranch (i0exp, i0inss3, i0inss4)
     end
-    | INS0random (_, _) => exitlocmsg ("todo")
+    | INS0random (i0gbranchlst, inssopt) => let
+      val i0gbranchlst' = 
+        list0_foldright<i0gbranch><i0gbranchlst> (
+          i0gbranchlst, fopr, nil0) where {
+      fun fopr (i0gbranch: i0gbranch, res: i0gbranchlst):<cloref1> i0gbranchlst = let
+        val i0inss = optimize_tailcall_return2jump (
+                    i0gbranch.i0gbranch_inss, map_fname_tag, i0funmap)
+        val i0gbranch' = i0gbranch_make (i0gbranch.i0gbranch_guard, i0inss)
+      in
+        cons0 (i0gbranch', res)
+      end
+      }
+    in
+      case+ inssopt of
+      | Some0 inss => let
+        val inss_in_else = optimize_tailcall_return2jump (inss, map_fname_tag, i0funmap)
+        val ins = INS0random (i0gbranchlst', Some0 inss_in_else)
+      in
+        ins
+      end
+      | None0 () => let
+        val ins = INS0random (i0gbranchlst', None0 ())
+      in
+        ins
+      end
+    end  // end of [INS0randome]
     | INS0goto (_) => ins
     | INS0init_loop (_, _) => exitlocmsg ("Impossible.")
     | INS0tail_jump (_, _) => exitlocmsg ("Impossible.")
@@ -294,7 +319,36 @@ implement i0optimize_collect_decs_fundef (i0fundef) = let
     in
       loop (i0inslst1, res1'', res2')
     end
-    | INS0random (_, _) => exitlocmsg ("todo")
+    | INS0random (i0gbranchlst, inssopt) => let
+      typedef accu_t = 
+        '(i0inslst (*for INS0decl*), i0gbranchlst (*for i0gbranch list*))
+      val '(res1', i0gbranchlst') = 
+        list0_foldright<i0gbranch><accu_t> (
+          i0gbranchlst, fopr, '(res1, nil0 ())) where {
+      fun fopr (i0gbranch: i0gbranch
+                , '(res1, res2): accu_t):<cloref1> accu_t = let
+        val (res1', inss_in_branch) = loop (i0gbranch.i0gbranch_inss, res1, nil0)
+        val i0gbranch' = i0gbranch_make (i0gbranch.i0gbranch_guard, inss_in_branch)
+      in
+        '(res1', cons0 (i0gbranch', res2))
+      end
+      }
+    in
+      case+ inssopt of
+      | Some0 inss => let
+        val (res1'', inss_in_else) = loop (inss, res1', nil0)
+        val ins = INS0random (i0gbranchlst', Some0 inss_in_else)
+        val res2' = ins :: res2
+      in
+        loop (i0inslst1, res1'', res2')
+      end
+      | None0 () => let
+        val ins = INS0random (i0gbranchlst', None0 ())
+        val res2' = ins :: res2
+      in
+        loop (i0inslst1, res1', res2')
+      end
+    end  // end of [INS0randome]
     | INS0goto (i0id) => loop (i0inslst1, res1, i0ins :: res2)
     | INS0init_loop (
       i0idlst (*all variables*)

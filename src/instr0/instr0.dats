@@ -127,6 +127,7 @@ fun f2undec_is_recursive (f: f2undec): bool = let
   // val () = fprint (stdout_ref, "xxx " + datcon_d2exp_node f.f2undec_def.d2exp_node + "\n")
   val (_, fbody) = d2exp_node_get_lambda (f.f2undec_def.d2exp_node)
 
+  // check whether fexp is a function name represented by fvar
   fun d2exp_is_fun (fexp: d2exp, fvar: d2var): bool =
     case+ fexp.d2exp_node of
     | D2Evar (name) => fvar = name
@@ -134,8 +135,11 @@ fun f2undec_is_recursive (f: f2undec): bool = let
 
   (* Desc:
   *    e: Body of a function.
+  *    fvar: d2var
   *)
-  fun d2exp_has_tailcall (e: d2exp, fvar: d2var): bool =
+  fun d2exp_has_tailcall (e: d2exp, fvar: d2var): bool = let
+    val node = e.d2exp_node
+  in
     case+ e.d2exp_node of
     | D2Eexp (e1) => d2exp_has_tailcall (e1, fvar)
     | D2Elet (_, e1) => d2exp_has_tailcall (e1, fvar)
@@ -147,7 +151,19 @@ fun f2undec_is_recursive (f: f2undec): bool = let
              | None () => false
              )
     | D2Esing (e1) => exitlocmsg ("D2Esing hit")
-    | _ => false
+    | D2Ecase (knd, d2exp, c2laulst) => let
+       fun loop (c2laulst: c2laulst): bool =
+       case+ c2laulst of
+       | list_cons (c2lau, c2laulst1) =>
+         if d2exp_has_tailcall (c2lau.c2lau_body, fvar) then true
+         else loop (c2laulst1)
+       | list_nil () => false
+     in
+       loop (c2laulst)
+     end
+    | D2Eempty () => false
+    | _ => exitlocmsg (datcon_d2exp_node node + " is not supported")
+  end
 in
   d2exp_has_tailcall (fbody, fvar)
 end
@@ -362,44 +378,52 @@ in
 end
 | D2Ecase (casekind, d2exp, c2laulst) => let
   implement 
-  list_foldright$fopr<c2lau><'(i0declst, i0gbranchlst, i0gbranchopt)> (
+  list_foldright$fopr<c2lau><'(i0declst, i0gbranchlst, option0 i0inslst)> (
     c2lau, res) = let
-    val- list_cons (pat, list_nil) = c2lau.c2lau_patlst
+    val- list_cons (pat, list_nil ()) = c2lau.c2lau_patlst
     val d2exp = c2lau.c2lau_body
     // must be a "let" expression
     val- D2Elet (d2eclist, d2exp) = d2exp.d2exp_node
-    // The first dec must be guard
-    val- cons (d2ec, d2eclst1) = d2eclist
-
-    // turn d2ec into i0exp
-    val i0exp = EXP0int (1) // todo
-
-    val (i0declst1, inss1) = i0transform_d2eclist (sa, d2eclst1, fmap)
-    val (i0declst2, inss2) = i0transform_d2exp_fbody (sa, d2exp, fmap)
-    val i0declst = list0_append (i0declst1, i0declst2)
-    val inss = list0_append (inss1, inss2)
-
-    val res_i0declst = list0_append (i0declst, res.0)
-    val gbranch = i0gbranch_make (i0exp, inss)
   in
     case+ pat.p2at_node of
+    // else branch
     | P2Tany () => let
-      val gbranchopt = Some0 gbranch
+      val (i0declst1, inss1) = i0transform_d2eclist (sa, d2eclist, fmap)
+      val (i0declst2, inss2) = i0transform_d2exp_fbody (sa, d2exp, fmap)
+      val i0declst = list0_append (i0declst1, i0declst2)
+      val inss = list0_append (inss1, inss2)
+      val res_i0declst = list0_append (i0declst, res.0)
     in
-      '(res_i0declst, res.1, gbranchopt)
+      '(res_i0declst, res.1, Some0 inss)
     end
     | _ => let
+      // The first dec must be guard
+      val- cons (d2ec, d2eclst1) = d2eclist
+      // turn d2ec into i0exp
+      val- D2Cvaldecs (
+        valkind, list_cons (v2aldec, list_nil ())) = d2ec.d2ecl_node
+      val i0exp = i0transform_v2aldec2guardexp (sa, v2aldec)
+
+      // val inss = i0transform_D2Cvaldecs (sa, v2aldeclst)
+
+
+      val (i0declst1, inss1) = i0transform_d2eclist (sa, d2eclst1, fmap)
+      val (i0declst2, inss2) = i0transform_d2exp_fbody (sa, d2exp, fmap)
+      val i0declst = list0_append (i0declst1, i0declst2)
+      val inss = list0_append (inss1, inss2)
+
+      val res_i0declst = list0_append (i0declst, res.0)
+      val gbranch = i0gbranch_make (i0exp, inss)
       val res_gbranchlst = gbranch :: res.1
     in
       '(res_i0declst, res_gbranchlst, res.2)
     end
   end
-
-  val '(i0declst, gbranchlst, gbranchopt) = 
-    list_foldright<c2lau><'(i0declst, i0gbranchlst, i0gbranchopt)> (
+  val '(i0declst, gbranchlst, inssopt) = 
+    list_foldright<c2lau><'(i0declst, i0gbranchlst, option0 i0inslst)> (
       c2laulst, '(nil0, nil0, None0))
 
-  val ins = INS0random (gbranchlst, gbranchopt)
+  val ins = INS0random (gbranchlst, inssopt)
 in
   (i0declst, list0_sing ins)
 end  // end of [D2Ecase]
@@ -509,6 +533,22 @@ in
 end
 end
 
+
+implement i0transform_v2aldec2guardexp (sa, v2aldec) = let
+  val p2at = v2aldec.v2aldec_pat
+  val d2exp = v2aldec.v2aldec_def
+  val i0idopt = i0transform_p2at2holder (sa, p2at)
+in
+  case+ i0idopt of
+  | Some0 _ => exitlocmsg ("guard with store is not supported yet.")
+  | None0 () => let
+    val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
+  in
+    i0exp
+  end
+end
+
+
 implement i0transform_v2ardec (sa, v2ardec) = let
   val name = v2ardec.v2ardec_name: d2var
   val d2expopt = v2ardec.v2ardec_init
@@ -550,7 +590,6 @@ in
 // //
   | D2Eapplst (d2exp, d2exparglst) => let
     val i0id = i0transform_d2exp_fname (sa, d2exp)
-    // todo check whether the function is print
     val i0explst = i0transform_d2exparglst (sa, d2exparglst)
     val app = EXP0app (i0id, i0explst)
   in
@@ -579,7 +618,10 @@ in
   in
     EXP0extfcall (name, i0explst)
   end
-  | D2Elam (p2atlst, d2exp) => let
+  | D2Elam (p2atlst, d2exp) => 
+    if (length p2atlst > 0) then 
+      exitlocmsg ("lambda with parameters is not allowed")
+  else let
     val i0exp = i0transform_d2exp_expvalue (sa, d2exp)
   in
     EXP0lambody i0exp

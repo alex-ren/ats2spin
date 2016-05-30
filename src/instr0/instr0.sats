@@ -103,7 +103,7 @@ datatype i0ins =
 | INS0label of (i0id)
 | INS0return of (option0 i0exp)
 | INS0ifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))
-| INS0random of (i0gbranchlst, i0gbranchopt) 
+| INS0random of (i0gbranchlst, i0inslstopt) 
 | INS0goto of (i0id)
 //
 // Added for recursive functions
@@ -125,6 +125,8 @@ and i0exp =
 
 where
 i0inslst = list0 i0ins
+and
+i0inslstopt = option0 i0inslst
 and
 i0explst = list0 i0exp
 and
@@ -360,6 +362,10 @@ fun i0transform_D2Cvardecs (
 fun i0transform_v2aldec (
   sa: stamp_allocator
   , v2aldec: v2aldec): i0ins (* INS0assign *)
+
+fun i0transform_v2aldec2guardexp (
+  sa: stamp_allocator
+  , v2aldec: v2aldec): i0exp
 
 fun i0transform_v2ardec (
   sa: stamp_allocator

@@ -9,19 +9,16 @@
 
 staload "./Promela.sats"
 
-extern fun get_g1 (): int
-extern fun get_g2 (): int
-
 fun inline$foo (): void = let
   val x = 1
 in
   case+ RANDOM of
   | 0 => let
-    val () = pml$wait_until (lam () => get_g1 () > 3)
+    val () = pml$wait_until (lam () => false)
     val () = $extfcall (void, "printf", "this is branch 1\\n")
   in end
   | 1 => let
-    val () = pml$wait_until (lam () => get_g2 () > 2)
+    val () = pml$wait_until (lam () => true)
     val () = $extfcall (void, "printf", "this is branch 2\\n")
   in end
   | _ => let
@@ -29,7 +26,27 @@ in
   in end
 end
 
-// fun pml$init
+fun inline$foo2 (): void = let
+  val x = 1
+in
+  case+ RANDOM of
+  | 0 => let
+    val () = pml$wait_until (lam () => false)
+    val () = $extfcall (void, "printf", "this is branch 1\\n")
+  in end
+  | 1 => let
+    val () = pml$wait_until (lam () => true)
+    val () = $extfcall (void, "printf", "this is branch 2\\n")
+  in end
+end
+
+fun proctype$foo (): void = inline$foo ()
+fun proctype$foo2 (): void = inline$foo2 ()
+
+fun pml$init (): void = let
+  val _ = pml$run (lam () =>  proctype$foo ())
+  val _ = pml$run (lam () =>  proctype$foo2 ())
+in end
 
 
 //// extern fun check {x,y:int} (x: int x, y: int y): bool (x <> y)

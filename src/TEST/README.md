@@ -49,4 +49,6 @@ Description of Test Files
     This file is for testing the usage of call by reference and recursive function.
 16. `test_pml_16.dats`
     This file is for testing the usage of "case RANDOM".
+16. `test_pml_17.dats`
+    This file is for testing the usage of "case RANDOM" with tail call.
 

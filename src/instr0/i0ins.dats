@@ -44,17 +44,25 @@ fprint_i0ins$carg<i0gbranchlst>(out, arg) = let
   val () = fprint_list0_sep<i0gbranch> (out, arg, "\n")
 in end
 
-implement
-fprint_i0ins$carg<i0gbranchopt>(out, arg) = 
-case+ arg of
-| Some0 (i0gbranch) => let
-  val () = fprint_i0gbranch (out, i0gbranch)
-in end
-| None0 () => ()
 
+implement fprint_i0ins$INS0random$lpar<> (out, ins) =
+  fprint (out, "(\n")
 
 implement fprint_i0ins$INS0random$sep1<> (out, ins) =
   fprint (out, "\n")
+
+implement fprint_i0ins$INS0random$arg2<> (out, arg0) = let
+  val-INS0random(_, arg2) = arg0 
+in
+  case+ arg2 of
+  | Some0 (inss) => let
+    val () = fprint (out, "else:\n")
+    val () = fprint (out, inss)
+    val () = fprint (out, ")")
+  in end
+  | None0 () => ()
+end
+                                            
 
 (* *********** ************ *)
 
