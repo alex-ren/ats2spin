@@ -23,7 +23,7 @@ in
   in 
     inline$foo ()
   end
-  | 2 => let
+  | _ => let
     val () = $extfcall (void, "printf", "this is branch end\\n")
   in end
 end

@@ -23,8 +23,8 @@ inline foo_0() {
   :: atsbool_true -> 
     printf("this is branch 2\n");
     goto foo_7
-  :: printf("this is branch end\n") -> 
-    
+  :: else  -> 
+    printf("this is branch end\n")
   fi
 }
 proctype foo_4() {

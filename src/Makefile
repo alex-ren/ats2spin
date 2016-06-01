@@ -229,10 +229,11 @@ testall:: test_pml_12
 testall:: test_pml_13
 testall:: test_pml_14
 testall:: test_pml_15
-testall:: test_pml_16
-testall:: test_pml_17
 
 testall:: test_example_01_peterson
+
+testall:: test_pml_16
+testall:: test_pml_17
 
 # ######
 
