@@ -6,7 +6,7 @@
 staload "./../utils/utils.dats"
 
 
-staload "./../postiats/utfpl.sats"
+staload "./../postiats/postiats.sats"
 staload "./../utils/emiter.sats"
 staload "./instr0.sats"
 

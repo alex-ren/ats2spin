@@ -10,7 +10,7 @@
 //
 (* ****** ****** *)
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
 
 (* ****** ****** *)
 
@@ -49,4 +49,4 @@ end // end of [fprint_label]
 
 (* ****** ****** *)
 
-(* end of [utfpl_label.dats] *)
+(* end of [postiats_label.dats] *)

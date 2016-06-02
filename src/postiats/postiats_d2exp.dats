@@ -10,7 +10,7 @@
 //
 (* ****** ****** *)
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
 
 #include "./postiats_codegen2.hats"
 
@@ -324,5 +324,5 @@ d2exp_ignored (loc) = d2exp_make_node (loc, D2Eignored())
 
 (* ****** ****** *)
 
-(* end of [utfpl_d2exp.dats] *)
+(* end of [postiats_d2exp.dats] *)
 

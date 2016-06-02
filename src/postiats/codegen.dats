@@ -1,5 +1,13 @@
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
+
+
+#codegen2("datcon", s2rt)
+
+
+#codegen2("fprint", s2rt, fprint_s2rt)
+
+(* **************** **************** *)
 
 #codegen2("datcon", d2ecl_node)
 #codegen2("datcon", d2exp_node)

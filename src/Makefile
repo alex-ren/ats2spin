@@ -39,13 +39,14 @@ MALLOCFLAG=-DATS_MEMALLOC_GCBDW
 
 ATS2PROMELA_sta := \
     parsing/parsing.sats \
-    postiats/utfpl.sats \
+    postiats/postiats.sats \
     instr0/instr0.sats \
     promela/promela.sats
 
 ATS2PROMELA_dyn := \
     utils/emiter.dats \
     parsing/parsing.dats \
+    parsing/parsing_s2cst.dats \
     parsing/parsing_d2cst.dats \
     parsing/parsing_d2ecl.dats \
     parsing/parsing_d2exp.dats \
@@ -54,30 +55,31 @@ ATS2PROMELA_dyn := \
     parsing/parsing_export.dats \
     parsing/parsing_p2at.dats \
     parsing/dynloadall.dats \
-    postiats/utfpl.dats \
-    postiats/utfpl_stamp.dats \
-    postiats/utfpl_symbol.dats \
-    postiats/utfpl_location.dats \
-    postiats/utfpl_label.dats \
-    postiats/utfpl_d2cst.dats \
-    postiats/utfpl_d2var.dats \
-    postiats/utfpl_d2sym.dats \
-    postiats/utfpl_p2at.dats \
-    postiats/utfpl_c2lau.dats \
-    postiats/utfpl_d2exp.dats \
-    postiats/utfpleval_mylib.dats \
-    postiats/utfpl_dynloadall.dats \
-    postiats/utfpl_d2ecl.dats \
+    postiats/postiats.dats \
+    postiats/postiats_stamp.dats \
+    postiats/postiats_symbol.dats \
+    postiats/postiats_location.dats \
+    postiats/postiats_label.dats \
+    postiats/postiats_s2cst.dats \
+    postiats/postiats_d2cst.dats \
+    postiats/postiats_d2var.dats \
+    postiats/postiats_d2sym.dats \
+    postiats/postiats_p2at.dats \
+    postiats/postiats_c2lau.dats \
+    postiats/postiats_d2exp.dats \
+    postiats/postiats_d2ecl.dats \
+    postiats/postiats_mylib.dats \
+    postiats/dynloadall.dats \
     instr0/instr0.dats \
     instr0/i0exp.dats \
     instr0/i0name.dats \
     instr0/i0ins.dats \
     instr0/i0fundef.dats \
-    instr0/optimize.dats \
+    instr0/i0optimize.dats \
     instr0/i0funmap.dats \
     instr0/i0idmap.dats \
     instr0/i0id.dats \
-    instr0/stamp_allocator.dats \
+    instr0/i0stamp_allocator.dats \
     instr0/dynloadall.dats \
     promela/promela.dats \
     promela/promela_fprint.dats \
@@ -170,7 +172,7 @@ $(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d instr0/codegen.dats
 
 
 postiats/postiats_codegen2.hats: \
-./postiats/utfpl.sats ./postiats/codegen.dats; \
+./postiats/postiats.sats ./postiats/codegen.dats; \
 $(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d postiats/codegen.dats
 
 promela/promela_codegen2.hats: \
@@ -193,9 +195,6 @@ depend:: ; $(RMF) .depend
 depend:: ; $(PATSOPT) --output-a .depend --depgen -
 depend:: ; $(PATSOPT) --output-a .depend --depgen -s $(ATS2PROMELA_sta)
 depend:: ; $(PATSOPT) --output-a .depend --depgen -d $(ATS2PROMELA_dyn)
-# depend:: ; $(PATSOPT) --output-a .depend --depgen -s utfpleval.sats
-# depend:: ; $(PATSOPT) --output-a .depend --depgen -d utfpleval_symenv.dats
-# depend:: ; $(PATSOPT) --output-a .depend --depgen -d utfpleval.dats
 
 ######
 
@@ -234,6 +233,7 @@ testall:: test_example_01_peterson
 
 testall:: test_pml_16
 testall:: test_pml_17
+testall:: test_pml_18
 
 # ######
 

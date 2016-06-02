@@ -6,7 +6,7 @@
 staload "./instr0.sats"
 staload "./../utils/emiter.sats"
 
-staload UTFPL = "./../postiats/utfpl.sats"
+staload UTFPL = "./../postiats/postiats.sats"
 
 assume i0name = $UTFPL.symbol
 

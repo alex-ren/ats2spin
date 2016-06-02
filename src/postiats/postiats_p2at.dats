@@ -10,7 +10,7 @@
 //
 (* ****** ****** *)
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
 
 (* ****** ****** *)
 
@@ -116,4 +116,4 @@ p2at_ignored (loc) = p2at_make_node (loc, P2Tignored())
 
 (* ****** ****** *)
 
-(* end of [utfpl_p2at.dats] *)
+(* end of [postiats_p2at.dats] *)

@@ -4,6 +4,7 @@
 dynload "./parsing.sats"
 *)
 dynload "./parsing.dats"
+dynload "./parsing_s2cst.dats"
 dynload "./parsing_d2cst.dats"
 dynload "./parsing_d2var.dats"
 dynload "./parsing_d2sym.dats"

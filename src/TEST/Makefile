@@ -46,6 +46,7 @@ all:: test_pml_14_dats.json
 all:: test_pml_15_dats.json
 all:: test_pml_16_dats.json
 all:: test_pml_17_dats.json
+all:: test_pml_18_dats.json
 
 all:: test_example_01_peterson_dats.json
 

@@ -10,7 +10,7 @@
 //
 (* ****** ****** *)
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
 
 (* ****** ****** *)
 
@@ -30,4 +30,4 @@ fprint_location
 
 (* ****** ****** *)
 
-(* end of [utfpl_location.dats] *)
+(* end of [postiats_location.dats] *)

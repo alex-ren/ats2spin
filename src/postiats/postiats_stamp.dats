@@ -10,7 +10,7 @@
 //
 (* ****** ****** *)
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
 staload "./../utils/emiter.sats"
 
 
@@ -58,5 +58,5 @@ neq_stamp_stamp (s1, s2) = g0int_neq (s1, s2)
 
 (* ****** ****** *)
 
-(* end of [utfpl_stamp.dats] *)
+(* end of [postiats_stamp.dats] *)
 

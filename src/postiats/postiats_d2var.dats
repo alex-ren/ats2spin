@@ -10,7 +10,7 @@
 //
 (* ****** ****** *)
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
 
 (* ****** ****** *)
 //
@@ -128,4 +128,4 @@ compare_d2var_d2var
 
 (* ****** ****** *)
 
-(* end of [utfpl_d2var.dats] *)
+(* end of [postiats_d2var.dats] *)

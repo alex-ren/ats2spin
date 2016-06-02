@@ -5,7 +5,7 @@
 #include "share/atspre_staload.hats"
 #include "share/atspre_define.hats"
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
 
 implement fprint_c2lau (out, c2lau) = let
   val () = fprint! (out, "(", c2lau.c2lau_patlst, ") => ", c2lau.c2lau_body)

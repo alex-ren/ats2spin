@@ -9,7 +9,7 @@
 
 staload "libats/ML/SATS/basis.sats"
 
-staload "./../postiats/utfpl.sats"
+staload "./../postiats/postiats.sats"
 
 staload "./../utils/emiter.sats"
 
@@ -188,7 +188,6 @@ fun i0fundef_get_paralst (f: i0fundef): i0idlst
 (* ************ ************* *)
 
 staload HT = "libats/ML/SATS/hashtblref.sats"
-staload "./../postiats/utfpl.sats"
 
 // Desc: Not used yet.
 typedef i0gvar = (i0id, Option i0exp)

@@ -17,7 +17,7 @@ UN = "prelude/SATS/unsafe.sats"
 (* ****** ****** *)
 
 staload "./parsing.sats"
-staload "./../postiats/utfpl.sats"
+staload "./../postiats/postiats.sats"
 
 (* ****** ****** *)
   
@@ -29,23 +29,27 @@ implement
 parse_d2eclist_export
   (jsv0) = let
 //
-val-~Some_vt(jsv1) =
+val-~Some_vt(jsv_s2cst) =
+  jsonval_get_field (jsv0, "s2cstmap")
+val-~Some_vt(jsv_d2cst) =
   jsonval_get_field (jsv0, "d2cstmap")
-val-~Some_vt(jsv2) =
+val-~Some_vt(jsv_d2var) =
   jsonval_get_field (jsv0, "d2varmap")
-val-~Some_vt(jsv3) =
+val-~Some_vt(jsv_d2eclst) =
   jsonval_get_field (jsv0, "d2eclist")
 //
-val cstmap = parse_d2cstmap (jsv1)
-val varmap = parse_d2varmap (jsv2)
-val d2env = '{
-  d2parsingenv_d2cstmap = cstmap
-  , d2parsingenv_d2varmap = varmap
+val s2cstmap = parse_s2cstmap (jsv_s2cst)
+val d2cstmap = parse_d2cstmap (jsv_d2cst)
+val d2varmap = parse_d2varmap (jsv_d2var)
+val p2env = '{
+  parsingenv_s2cstmap = s2cstmap
+  , parsingenv_d2cstmap = d2cstmap
+  , parsingenv_d2varmap = d2varmap
   }
 
 //
 in
-  parse_d2eclist (d2env, jsv3)
+  parse_d2eclist (p2env, jsv_d2eclst)
 end // end of [parse_d2eclist_export]
   
 (* ****** ****** *)

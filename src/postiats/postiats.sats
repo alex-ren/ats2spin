@@ -1,30 +1,15 @@
-(*
-** Implementing UTFPL
-** with closure-based evaluation
-*)
-
 (* ****** ****** *)
 
 (*
-** Author: Hongwei Xi
-** Authoremail: hwxiATcsDOTbuDOTedu
-** Start time: December, 2013
+** Author: Zhiqiang Ren
 *)
+
+staload "libats/ML/SATS/basis.sats"
 
 (* ****** ****** *)
-
-(*
-** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-** OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-** NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-** HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-** WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-** FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-** OTHER DEALINGS IN THE SOFTWARE.
-*)
 
 staload "./../utils/emiter.sats"
+
 
 (* ****** ****** *)
 //
@@ -34,9 +19,7 @@ fprint_type
 //
 (* ****** ****** *)
 
-fun the_utfpl_mgr_initialize (): void
-
-(* ****** ****** *)
+(* ********** Common Elements ********** *)
 
 abst0ype
 stamp_t0ype = int
@@ -83,6 +66,8 @@ hash_stamp (s: stamp):<> ulint
 fun
 tostring_stamp (s: stamp):<> string
 
+symintr .stamp
+
 //
 (* ****** ****** *)
 
@@ -91,7 +76,7 @@ typedef symbol = symbol_type
 
 (* ****** ****** *)
 
-// postiats/utfpl_symbol.dats
+// postiats/postiats_symbol.dats
 fun the_symbol_mgr_initialize (): void
 
 fun
@@ -123,6 +108,9 @@ compare_symbol_symbol
 //
 overload compare with compare_symbol_symbol
 //
+
+symintr .name
+
 (* ****** ****** *)
 //
 datatype label =
@@ -162,7 +150,66 @@ overload fprint with fprint_location
 
 fun location_make (rep: string): loc_t
 
+(* ********** end of Common Elements ********** *)
+
+(* ********** Statics Related Elements ********** *)
+
+datatype s2rt =
+| S2RTbas of symbol
+| S2RTfun of (s2rtlst, s2rt)
+| S2RTtup of (s2rtlst)
+where
+s2rtlst = list0 s2rt
+
+fun
+myfprint_s2rt: fprint_type (s2rt)
+
+fun{} datcon_s2rt (s2rt): string
+fun{} fprint_s2rt: fprint_type (s2rt)
+
 (* ****** ****** *)
+
+abstype s2cst_type = ptr
+typedef s2cst = s2cst_type
+typedef s2cstlst = list0 (s2cst)
+typedef s2cstopt = option0 (s2cst)
+vtypedef s2cstopt_vt = Option_vt (s2cst)
+
+(* ****** ****** *)
+
+fun
+fprint_s2cst: fprint_type (s2cst)
+overload fprint with fprint_s2cst
+
+(* ****** ****** *)
+
+fun s2cst_make (name: symbol, stamp: stamp, s2rt: s2rt): s2cst
+
+(* ****** ****** *)
+//
+fun s2cst_get_name (s2cst):<> symbol
+fun s2cst_get_stamp (s2cst):<> stamp
+fun s2cst_get_sort (s2cst):<> s2rt
+//
+(* ****** ****** *)
+//
+fun eq_s2cst_s2cst : (s2cst, s2cst) -<> bool
+fun neq_s2cst_s2cst : (s2cst, s2cst) -<> bool
+fun compare_s2cst_s2cst : (s2cst, s2cst) -<> int
+//
+overload = with eq_s2cst_s2cst
+overload != with eq_s2cst_s2cst
+overload compare with compare_s2cst_s2cst
+
+overload .name with s2cst_get_name
+//
+//
+overload .stamp with s2cst_get_stamp
+
+(* ********** end Statics Related Elements ********** *)
+
+
+(* ********** Dynamics Related Elements ********** *)
 
 datatype
 funkind =
@@ -726,21 +773,20 @@ fun d2ecl_ignored (loc_t): d2ecl // error-handling
 
 (* ****** ****** *)
 //
-symintr .name
 //
 overload .name with d2cst_get_name
 overload .name with d2var_get_name
 overload .name with d2sym_get_name
 //
-symintr .stamp
 //
 overload .stamp with d2cst_get_stamp
 overload .stamp with d2var_get_stamp
 //
-(* ****** ****** *)
+(* ********** end of Dynamics Related Elements ********** *)
+
 (* ****** ****** *)
 
-(* end of [utfpl.sats] *)
+(* end of [postiats.sats] *)
 
 
 

@@ -10,7 +10,7 @@
 //
 (* ****** ****** *)
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
 
 (* ****** ****** *)
 
@@ -64,4 +64,4 @@ fprint_d2sym
 //
 (* ****** ****** *)
 
-(* end of [utfpl_d2sym.dats] *)
+(* end of [postiats_d2sym.dats] *)

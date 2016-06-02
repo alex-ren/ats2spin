@@ -10,7 +10,7 @@
 //
 (* ****** ****** *)
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
 
 (* ****** ****** *)
 
@@ -295,7 +295,7 @@ d2ecl_ignored (loc) = d2ecl_make_node (loc, D2Cignored())
 
 (* ****** ****** *)
 
-(* end of [utfpl_d2ecl.dats] *)
+(* end of [postiats_d2ecl.dats] *)
 
 
 

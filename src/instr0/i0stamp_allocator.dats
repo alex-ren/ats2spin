@@ -4,7 +4,7 @@
 
 
 staload "./instr0.sats"
-staload "./../postiats/utfpl.sats"
+staload "./../postiats/postiats.sats"
 
 local
 

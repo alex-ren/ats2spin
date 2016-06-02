@@ -6,7 +6,7 @@
 
 staload "./promela.sats"
 
-staload "./../postiats/utfpl.sats"
+staload "./../postiats/postiats.sats"
 
 assume pml_name = '{
   pml_name_name = string

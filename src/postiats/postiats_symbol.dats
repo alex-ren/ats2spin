@@ -17,7 +17,7 @@ staload "./../utils/emiter.sats"
 
 (* ****** ****** *)
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
 
 (* ****** ****** *)
 
@@ -135,6 +135,6 @@ end  // end of [local]
 
 (* ****** ****** *)
 
-(* end of [utfpl_symbol.dats] *)
+(* end of [postiats_symbol.dats] *)
 
 

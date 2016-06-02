@@ -1,16 +1,20 @@
 (*
-** Implementing UTFPL
-** with closure-based evaluation
 *)
 
 (* ****** ****** *)
 //
-#include
-"share/atspre_staload.hats"
+#include "share/atspre_staload.hats"
+#include "share/atspre_define.hats"
+#include "share/HATS/atspre_staload_libats_ML.hats"
+
+staload "./../utils/utils.dats"
+
+(* ************ ************* *)
+
 //
 (* ****** ****** *)
 
-staload "./utfpl.sats"
+staload "./postiats.sats"
 
 (* ****** ****** *)
 //
@@ -122,4 +126,5 @@ compare_d2cst_d2cst
 
 (* ****** ****** *)
 
-(* end of [utfpl_d2cst.dats] *)
+(* end of [postiats_d2cst.dats] *)
+

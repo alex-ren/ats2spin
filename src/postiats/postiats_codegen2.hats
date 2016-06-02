@@ -2,6 +2,185 @@
 //
 implement
 {}(*tmp*)
+datcon_s2rt
+  (arg0) =
+(
+case+ arg0 of
+| S2RTbas _ => "S2RTbas"
+| S2RTfun _ => "S2RTfun"
+| S2RTtup _ => "S2RTtup"
+)
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_s2rt$S2RTbas: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTfun: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTtup: $d2ctype(fprint_s2rt<>)
+//
+(* ****** ****** *)
+//
+implement{}
+fprint_s2rt
+  (out, arg0) =
+(
+case+ arg0 of
+| S2RTbas _ => fprint_s2rt$S2RTbas<>(out, arg0)
+| S2RTfun _ => fprint_s2rt$S2RTfun<>(out, arg0)
+| S2RTtup _ => fprint_s2rt$S2RTtup<>(out, arg0)
+)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_s2rt$sep: (FILEref) -> void
+implement{}
+fprint_s2rt$sep(out) = fprint(out, ",")
+//
+extern
+fun{}
+fprint_s2rt$lpar: (FILEref) -> void
+implement{}
+fprint_s2rt$lpar(out) = fprint(out, "(")
+//
+extern
+fun{}
+fprint_s2rt$rpar: (FILEref) -> void
+implement{}
+fprint_s2rt$rpar(out) = fprint(out, ")")
+//
+extern
+fun{a:t0p}
+fprint_s2rt$carg: (FILEref, INV(a)) -> void
+implement{a}
+fprint_s2rt$carg(out, arg) = fprint_val<a>(out, arg)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_s2rt$S2RTbas$con: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTbas$lpar: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTbas$rpar: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTbas$arg1: $d2ctype(fprint_s2rt<>)
+//
+implement{}
+fprint_s2rt$S2RTbas(out, arg0) = 
+{
+//
+val () = fprint_s2rt$S2RTbas$con<>(out, arg0)
+val () = fprint_s2rt$S2RTbas$lpar<>(out, arg0)
+val () = fprint_s2rt$S2RTbas$arg1<>(out, arg0)
+val () = fprint_s2rt$S2RTbas$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2rt$S2RTbas$con(out, _) = fprint(out, "S2RTbas")
+implement{}
+fprint_s2rt$S2RTbas$lpar(out, _) = fprint_s2rt$lpar(out)
+implement{}
+fprint_s2rt$S2RTbas$rpar(out, _) = fprint_s2rt$rpar(out)
+implement{}
+fprint_s2rt$S2RTbas$arg1(out, arg0) =
+  let val-S2RTbas(arg1) = arg0 in fprint_s2rt$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_s2rt$S2RTfun$con: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTfun$lpar: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTfun$rpar: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTfun$sep1: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTfun$arg1: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTfun$arg2: $d2ctype(fprint_s2rt<>)
+//
+implement{}
+fprint_s2rt$S2RTfun(out, arg0) = 
+{
+//
+val () = fprint_s2rt$S2RTfun$con<>(out, arg0)
+val () = fprint_s2rt$S2RTfun$lpar<>(out, arg0)
+val () = fprint_s2rt$S2RTfun$arg1<>(out, arg0)
+val () = fprint_s2rt$S2RTfun$sep1<>(out, arg0)
+val () = fprint_s2rt$S2RTfun$arg2<>(out, arg0)
+val () = fprint_s2rt$S2RTfun$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2rt$S2RTfun$con(out, _) = fprint(out, "S2RTfun")
+implement{}
+fprint_s2rt$S2RTfun$lpar(out, _) = fprint_s2rt$lpar(out)
+implement{}
+fprint_s2rt$S2RTfun$rpar(out, _) = fprint_s2rt$rpar(out)
+implement{}
+fprint_s2rt$S2RTfun$sep1(out, _) = fprint_s2rt$sep<>(out)
+implement{}
+fprint_s2rt$S2RTfun$arg1(out, arg0) =
+  let val-S2RTfun(arg1, _) = arg0 in fprint_s2rt$carg(out, arg1) end
+implement{}
+fprint_s2rt$S2RTfun$arg2(out, arg0) =
+  let val-S2RTfun(_, arg2) = arg0 in fprint_s2rt$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_s2rt$S2RTtup$con: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTtup$lpar: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTtup$rpar: $d2ctype(fprint_s2rt<>)
+extern
+fun{}
+fprint_s2rt$S2RTtup$arg1: $d2ctype(fprint_s2rt<>)
+//
+implement{}
+fprint_s2rt$S2RTtup(out, arg0) = 
+{
+//
+val () = fprint_s2rt$S2RTtup$con<>(out, arg0)
+val () = fprint_s2rt$S2RTtup$lpar<>(out, arg0)
+val () = fprint_s2rt$S2RTtup$arg1<>(out, arg0)
+val () = fprint_s2rt$S2RTtup$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2rt$S2RTtup$con(out, _) = fprint(out, "S2RTtup")
+implement{}
+fprint_s2rt$S2RTtup$lpar(out, _) = fprint_s2rt$lpar(out)
+implement{}
+fprint_s2rt$S2RTtup$rpar(out, _) = fprint_s2rt$rpar(out)
+implement{}
+fprint_s2rt$S2RTtup$arg1(out, arg0) =
+  let val-S2RTtup(arg1) = arg0 in fprint_s2rt$carg(out, arg1) end
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
 datcon_d2ecl_node
   (arg0) =
 (

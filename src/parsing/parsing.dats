@@ -19,7 +19,7 @@ staload UN = $UNSAFE
 (* ****** ****** *)
 //
 staload "./parsing.sats"
-staload "./../postiats/utfpl.sats"
+staload "./../postiats/postiats.sats"
 //
 (* ****** ****** *)
 
