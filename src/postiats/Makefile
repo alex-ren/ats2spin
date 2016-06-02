@@ -45,7 +45,10 @@ ATS2PROMELA_sta := \
 ATS2PROMELA_dyn := \
     ./../utils/emiter.dats \
     ./../parsing/parsing.dats \
+    ./../parsing/parsing_s2rt.dats \
     ./../parsing/parsing_s2cst.dats \
+    ./../parsing/parsing_s2var.dats \
+    ./../parsing/parsing_d2con.dats \
     ./../parsing/parsing_d2cst.dats \
     ./../parsing/parsing_d2ecl.dats \
     ./../parsing/parsing_d2exp.dats \
@@ -60,6 +63,8 @@ ATS2PROMELA_dyn := \
     postiats_location.dats \
     postiats_label.dats \
     postiats_s2cst.dats \
+    postiats_s2var.dats \
+    postiats_d2con.dats \
     postiats_d2cst.dats \
     postiats_d2var.dats \
     postiats_d2sym.dats \

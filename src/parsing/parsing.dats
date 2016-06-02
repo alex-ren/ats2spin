@@ -190,5 +190,42 @@ in
 end // end of [parse_option]
 
 (* ****** ****** *)
+implement
+{a}(*tmp*)
+parse_list0
+  (jsv0, f) = let
+//
+val-JSONarray(jsvs) = jsv0
+//
+fun auxlst
+(
+  jsvs: jsonvalist, f: jsonval -<cloref1> a
+) : list0 (a) =
+  case+ jsvs of
+  | list_cons
+      (jsv, jsvs) =>
+      cons0{a}(f(jsv), auxlst (jsvs, f))
+  | list_nil () => nil0 ()
+//
+in
+  auxlst (jsvs, f)
+end // end of [parse_list0]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+parse_option0
+  (jsv0, f) = let
+//
+val-JSONarray (jsvs) = jsv0
+//
+in
+  case+ jsvs of
+  | list_nil () => None0(*void*)
+  | list_cons (jsv, _) => Some0{a}(f(jsv))
+end // end of [parse_option0]
+
+
 
 (* end of [parsing.dats] *)

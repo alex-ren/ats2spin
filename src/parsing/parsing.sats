@@ -106,6 +106,26 @@ fun parse_s2rt (jsv: jsonval): s2rt
 
 (* ****** ****** *)
 
+typedef s2varmap = $HT.hashtbl (stamp, s2var)
+fun parse_s2var (s2varmap: s2varmap, jsv: jsonval): s2var
+
+fun parse_s2varmap (jsv: jsonval): s2varmap
+
+(* ****** ****** *)
+
+typedef s2parsingenv = '{
+  s2parsingenv_s2cstmap = s2cstmap
+  , s2parsingenv_s2varmap = s2varmap
+  }
+
+(* ****** ****** *)
+
+fun parse_s2exp_node (s2parsingenv, jsonval): s2exp 
+
+fun parse_s2exp (s2parsingenv, jsonval): s2exp 
+
+(* ****** ****** *)
+
 fun parse_funkind: jsonval -> funkind
 fun parse_valkind: jsonval -> valkind
 fun parse_casekind: jsonval -> casekind
@@ -122,14 +142,22 @@ fun parse_d2cstmap (jsv: jsonval): d2cstmap
 
 (* ****** ****** *)
 
+typedef d2conmap = $HT.hashtbl (stamp, d2con)
+
+fun parse_d2con (s2env: s2parsingenv, d2conmap: d2conmap, jsv: jsonval): d2con
+
+fun parse_d2conmap (s2env: s2parsingenv, jsv: jsonval): d2conmap
+
+(* ****** ****** *)
+
 typedef d2varmap = $HT.hashtbl (stamp, d2var)
 fun parse_d2var (d2varmap: d2varmap, jsv: jsonval): d2var
 fun parse_d2varmap (jsv: jsonval): d2varmap
 
 (* ****** ****** *)
+
 typedef parsingenv = '{
-  parsingenv_s2cstmap = s2cstmap
-  , parsingenv_d2cstmap = d2cstmap
+  parsingenv_d2cstmap = d2cstmap
   , parsingenv_d2varmap = d2varmap
   }
 

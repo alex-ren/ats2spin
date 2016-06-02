@@ -15,7 +15,9 @@ dynload "./postiats_location.dats"
 dynload "./postiats_label.dats"
 
 dynload "./postiats_s2cst.dats"
+dynload "./postiats_s2var.dats"
 
+dynload "./postiats_d2con.dats"
 dynload "./postiats_d2cst.dats"
 dynload "./postiats_d2var.dats"
 dynload "./postiats_d2sym.dats"

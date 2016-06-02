@@ -1,7 +1,3 @@
-(*
-** Parsing: ATS/JSON -> UTFPL
-*)
-
 (* ****** ****** *)
 //
 #include

@@ -201,10 +201,64 @@ overload = with eq_s2cst_s2cst
 overload != with eq_s2cst_s2cst
 overload compare with compare_s2cst_s2cst
 
+//
+(* ****** ****** *)
+//
+
+abstype s2var_type = ptr
+typedef s2var = s2var_type
+typedef s2varlst = list0 (s2var)
+typedef s2varopt = option0 (s2var)
+vtypedef s2varopt_vt = Option_vt (s2var)
+
+(* ****** ****** *)
+
+fun
+fprint_s2var: fprint_type (s2var)
+overload fprint with fprint_s2var
+
+(* ****** ****** *)
+
+fun s2var_make (symbol, stamp, s2rt): s2var
+
+(* ****** ****** *)
+//
+fun s2var_get_name (s2var):<> symbol
+fun s2var_get_stamp (s2var):<> stamp
+fun s2var_get_sort (s2var):<> s2rt
+//
+(* ****** ****** *)
+//
+fun eq_s2var_s2var : (s2var, s2var) -<> bool
+fun neq_s2var_s2var : (s2var, s2var) -<> bool
+fun compare_s2var_s2var : (s2var, s2var) -<> int
+//
+overload = with eq_s2var_s2var
+overload != with eq_s2var_s2var
+overload compare with compare_s2var_s2var
+//
 overload .name with s2cst_get_name
+overload .name with s2var_get_name
 //
 //
 overload .stamp with s2cst_get_stamp
+overload .stamp with s2var_get_stamp
+
+(* *************** *************** *)
+
+datatype s2exp_node =
+| S2Ecst
+| S2Eextkind
+| S2Eapp
+
+where
+s2exp = '{
+  s2exp_sort = s2rt, s2exp_node = s2exp_node
+} (* end of [s2exp] *)
+
+and s2explst = list0 (s2exp)
+and s2expopt = option0 (s2exp)
+and s2expopt_vt = Option_vt (s2exp)
 
 (* ********** end Statics Related Elements ********** *)
 
@@ -344,6 +398,39 @@ fun d2sym_make (sym: symbol): d2sym
 
 fun d2sym_get_name (d2sym):<> symbol
 
+(* ****** ****** *)
+abstype d2con_type = ptr
+typedef d2con = d2con_type
+typedef d2conlst = List0 (d2con)
+typedef d2conopt = Option (d2con)
+vtypedef d2conopt_vt = Option_vt (d2con)
+
+(* ****** ****** *)
+
+fun
+fprint_d2con: fprint_type (d2con)
+overload fprint with fprint_d2con
+
+(* ****** ****** *)
+
+fun d2con_make (symbol, s2exp, stamp): d2con
+
+(* ****** ****** *)
+//
+fun d2con_get_name (d2con):<> symbol
+fun d2con_get_type (d2con):<> s2exp
+fun d2con_get_stamp (d2con):<> stamp
+//
+(* ****** ****** *)
+//
+fun eq_d2con_d2con : (d2con, d2con) -<> bool
+fun neq_d2con_d2con : (d2con, d2con) -<> bool
+fun compare_d2con_d2con : (d2con, d2con) -<> int
+//
+overload = with eq_d2con_d2con
+overload != with eq_d2con_d2con
+overload compare with compare_d2con_d2con
+//
 (* ****** ****** *)
 
 datatype
@@ -777,10 +864,12 @@ fun d2ecl_ignored (loc_t): d2ecl // error-handling
 overload .name with d2cst_get_name
 overload .name with d2var_get_name
 overload .name with d2sym_get_name
+overload .name with d2con_get_name
 //
 //
 overload .stamp with d2cst_get_stamp
 overload .stamp with d2var_get_stamp
+overload .stamp with d2con_get_stamp
 //
 (* ********** end of Dynamics Related Elements ********** *)
 

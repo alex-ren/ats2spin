@@ -1,6 +1,4 @@
 (*
-** Implementing UTFPL
-** with closure-based evaluation
 *)
 
 (* ****** ****** *)
