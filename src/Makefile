@@ -49,6 +49,7 @@ ATS2PROMELA_dyn := \
     parsing/parsing_s2rt.dats \
     parsing/parsing_s2cst.dats \
     parsing/parsing_s2var.dats \
+    parsing/parsing_s2exp.dats \
     parsing/parsing_d2con.dats \
     parsing/parsing_d2cst.dats \
     parsing/parsing_d2ecl.dats \
@@ -65,6 +66,7 @@ ATS2PROMELA_dyn := \
     postiats/postiats_label.dats \
     postiats/postiats_s2cst.dats \
     postiats/postiats_s2var.dats \
+    postiats/postiats_s2exp.dats \
     postiats/postiats_d2con.dats \
     postiats/postiats_d2cst.dats \
     postiats/postiats_d2var.dats \

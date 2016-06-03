@@ -247,18 +247,40 @@ overload .stamp with s2var_get_stamp
 (* *************** *************** *)
 
 datatype s2exp_node =
-| S2Ecst
-| S2Eextkind
-| S2Eapp
+| S2Ecst of s2cst
+| S2Evar of s2var
+| S2Eextkind of symbol
+| S2Eapp of (s2exp, s2explst)
+| S2Eeqeq of (s2exp, s2exp)
+| S2Eexi of (s2varlst, s2explst (*predicates*), s2exp (*body*))
+| S2Euni of (s2varlst, s2explst (*predicates*), s2exp (*body*))
+| S2Efun of (int (*npf*), s2explst (*args*), s2exp (*res*))
+| S2Eint of int
+| S2Eintinf of int
+| S2Einvar of s2exp
+| S2Esizeof of s2exp
+| S2Etyrec of ((*knd, *) int (*npf*), labs2explst)
+| S2Eignored
+| S2Eerr
 
 where
 s2exp = '{
   s2exp_sort = s2rt, s2exp_node = s2exp_node
 } (* end of [s2exp] *)
 
+and labs2exp = '{
+labs2exp_label = label
+, labs2exp_name = string
+, labs2exp_s2exp = s2exp
+}
+and labs2explst = list0 labs2exp
+
 and s2explst = list0 (s2exp)
 and s2expopt = option0 (s2exp)
 and s2expopt_vt = Option_vt (s2exp)
+
+fun s2exp_make_node
+  (srt: s2rt, node: s2exp_node): s2exp
 
 (* ********** end Statics Related Elements ********** *)
 

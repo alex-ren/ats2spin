@@ -28,7 +28,7 @@ all::
 ######
 
 all:: test_postiats_01_dats.json
-# all:: test_postiats_02_dats.json
+all:: test_postiats_02_dats.json
 
 
 ######

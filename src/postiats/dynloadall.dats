@@ -16,6 +16,7 @@ dynload "./postiats_label.dats"
 
 dynload "./postiats_s2cst.dats"
 dynload "./postiats_s2var.dats"
+dynload "./postiats_s2exp.dats"
 
 dynload "./postiats_d2con.dats"
 dynload "./postiats_d2cst.dats"
@@ -28,4 +29,7 @@ dynload "./postiats_d2ecl.dats"
 //
 (* ****** ****** *)
 
-(* end of [postiats_dynloadall.dats] *)
+(* end of [dynloadall.dats] *)
+
+
+
