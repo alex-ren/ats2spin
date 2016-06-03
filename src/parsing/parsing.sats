@@ -135,10 +135,10 @@ fun parse_casekind: jsonval -> casekind
 
 typedef d2cstmap = $HT.hashtbl (stamp, d2cst)
 
-fun parse_d2cst (d2cstmap: d2cstmap, jsv: jsonval): d2cst
+fun parse_d2cst (s2env: s2parsingenv, d2cstmap: d2cstmap, jsv: jsonval): d2cst
 fun parse_d2cst_extdef (jsv: jsonval): Option string
 
-fun parse_d2cstmap (jsv: jsonval): d2cstmap
+fun parse_d2cstmap (s2env: s2parsingenv, jsv: jsonval): d2cstmap
 
 (* ****** ****** *)
 
@@ -170,14 +170,14 @@ fun parse_p2atlst (d2varmap: d2varmap, jsv: jsonval): p2atlst
 
 (* ****** ****** *)
 
-fun parse_d2exp (parsingenv, jsv: jsonval): d2exp
-fun parse_d2explst (parsingenv, jsv: jsonval): d2explst
-fun parse_d2expopt (parsingenv, jsv: jsonval): d2expopt
+fun parse_d2exp (s2parsingenv, parsingenv, jsv: jsonval): d2exp
+fun parse_d2explst (s2parsingenv, parsingenv, jsv: jsonval): d2explst
+fun parse_d2expopt (s2parsingenv, parsingenv, jsv: jsonval): d2expopt
 
 (* ****** ****** *)
 
-fun parse_d2ecl (parsingenv, jsv: jsonval): d2ecl
-fun parse_d2eclist (parsingenv, jsv: jsonval): d2eclist
+fun parse_d2ecl (s2parsingenv, parsingenv, jsv: jsonval): d2ecl
+fun parse_d2eclist (s2parsingenv, parsingenv, jsv: jsonval): d2eclist
 
 (* ****** ****** *)
 

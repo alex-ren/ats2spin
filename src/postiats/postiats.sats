@@ -282,6 +282,9 @@ and s2expopt_vt = Option_vt (s2exp)
 fun s2exp_make_node
   (srt: s2rt, node: s2exp_node): s2exp
 
+fun fprint_s2exp: fprint_type (s2exp)
+overload fprint with fprint_s2exp
+
 (* ********** end Statics Related Elements ********** *)
 
 
@@ -344,12 +347,13 @@ emit_d2cst: emit_type (d2cst)
 
 (* ****** ****** *)
 
-fun d2cst_make (symbol, stamp, Option string): d2cst
+fun d2cst_make (symbol, stamp, s2exp, Option string): d2cst
 
 (* ****** ****** *)
 //
 fun d2cst_get_name (d2cst):<> symbol
 fun d2cst_get_stamp (d2cst):<> stamp
+fun d2cst_get_type (d2cst):<> s2exp
 fun d2cst_get_extdef_opt (d2cst):<> Option string
 //
 (* ****** ****** *)
@@ -893,6 +897,10 @@ overload .stamp with d2cst_get_stamp
 overload .stamp with d2var_get_stamp
 overload .stamp with d2con_get_stamp
 //
+symintr .type
+overload .type with d2cst_get_type
+overload .type with d2con_get_type
+
 (* ********** end of Dynamics Related Elements ********** *)
 
 (* ****** ****** *)

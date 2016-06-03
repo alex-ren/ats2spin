@@ -49,7 +49,7 @@ s2parsingenv_s2cstmap = s2cstmap
 , s2parsingenv_s2varmap = s2varmap
 }
 val d2conmap = parse_d2conmap (s2env, jsv_d2con)
-val d2cstmap = parse_d2cstmap (jsv_d2cst)
+val d2cstmap = parse_d2cstmap (s2env, jsv_d2cst)
 val d2varmap = parse_d2varmap (jsv_d2var)
 val p2env = '{
   , parsingenv_d2cstmap = d2cstmap
@@ -58,7 +58,7 @@ val p2env = '{
 
 //
 in
-  parse_d2eclist (p2env, jsv_d2eclst)
+  parse_d2eclist (s2env, p2env, jsv_d2eclst)
 end // end of [parse_d2eclist_export]
   
 (* ****** ****** *)

@@ -103,7 +103,7 @@ end
 
 implement
 parse_d2cst
-  (d2cstmap, jsv0) = let
+  (s2env, d2cstmap, jsv0) = let
 //
 val-~Some_vt(jsv2) =
   jsonval_get_field (jsv0, "d2cst_stamp")
@@ -120,19 +120,23 @@ case+ opt of
   val-~Some_vt(jsv1) =
     jsonval_get_field (jsv0, "d2cst_sym")
   val sym = parse_symbol (jsv1)
+
+  val-~Some_vt(jsv_s2exp) =
+    jsonval_get_field (jsv0, "d2cst_type")
+  val s2exp = parse_s2exp (s2env, jsv_s2exp)
   val jsv2 = jsonval_get_field (jsv0, "d2cst_extdef")
 in
   case+ jsv2 of
   | ~Some_vt (jsv3) =>
   let
     val extdef = parse_d2cst_extdef (jsv3)
-    val d2c = d2cst_make (sym, stamp, extdef)
+    val d2c = d2cst_make (sym, stamp, s2exp, extdef)
     val ((*void*)) = the_d2cstmap_insert (d2cstmap, d2c)
   in
     d2c
   end
   | ~None_vt () => let
-    val d2c = d2cst_make (sym, stamp, None)
+    val d2c = d2cst_make (sym, stamp, s2exp, None)
     val ((*void*)) = the_d2cstmap_insert (d2cstmap, d2c)
   in
     d2c
@@ -145,12 +149,13 @@ end // end of [parse_d2cst]
   
 implement
 parse_d2cstmap
-  (jsv0) = let
+  (s2env, jsv0) = let
 //
 fun
 loop
 (
-  d2cstmap: d2cstmap
+  s2env: s2parsingenv
+  , d2cstmap: d2cstmap
   , jsvs: jsonvalist
 ) : void =
 (
@@ -158,7 +163,7 @@ case+ jsvs of
 | list_nil () => ()
 | list_cons
     (jsv, jsvs) => let
-    val d2c = parse_d2cst(d2cstmap, jsv) in loop (d2cstmap, jsvs)
+    val d2c = parse_d2cst(s2env, d2cstmap, jsv) in loop (s2env, d2cstmap, jsvs)
   end // end of [list_cons]
 )
 //
@@ -166,7 +171,7 @@ val-JSONarray(jsvs) = jsv0
 //
 val d2cstmap = the_d2cstmap_create ()
 
-val () = loop (d2cstmap, jsvs)
+val () = loop (s2env, d2cstmap, jsvs)
 in
   d2cstmap
 end // end of [parse_d2cstmap]

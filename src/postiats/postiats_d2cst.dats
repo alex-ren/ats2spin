@@ -31,6 +31,7 @@ typedef
 d2cst_struct = @{
   d2cst_name= symbol
 , d2cst_stamp= stamp
+, d2cst_type = s2exp
 , d2cst_extdef = Option string
 } (* end of [d2cst_struct] *)
 
@@ -58,7 +59,7 @@ in (* in of [local] *)
 
 implement
 d2cst_make
-  (name, stamp, extdef_opt) = let
+  (name, stamp, s2exp, extdef_opt) = let
 //
 val (
   pfat, pfgc | p
@@ -66,6 +67,7 @@ val (
 //
 val () = p->d2cst_name := name
 val () = p->d2cst_stamp := stamp
+val () = p->d2cst_type := s2exp
 val () = p->d2cst_extdef := extdef_opt
 //
 in
@@ -106,6 +108,17 @@ in
 end // end of [let]
 ) (* end of [d2cst_get_stamp] *)
 
+implement
+d2cst_get_type
+  (d2c) = $effmask_ref
+(
+let
+  val (vbox _ | p) = ref_get_viewptr (d2c)
+in
+  p->d2cst_type
+end // end of [let]
+) (* end of [d2cst_get_type] *)
+
 end // end of [local]
 
 (* ****** ****** *)
@@ -114,7 +127,7 @@ implement
 fprint_d2cst
   (out, d2c) =
 (
-  fprint! (out, d2c.name(), "(", d2c.stamp(), ")")
+  fprint! (out, d2c.name(), "(", d2c.stamp(), "):(", d2c.type(), ")")
 ) (* end of [fprint_d2cst] *)
 
 (* ****** ****** *)

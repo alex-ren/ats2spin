@@ -18,4 +18,7 @@ implement s2exp_make_node (srt, node) =
 , s2exp_node = node
 }
 
+implement fprint_s2exp (out, s2exp) = let
+  val () = fprint (out, "s2exp")
+in end
 
