@@ -28,6 +28,10 @@ implement fprint_val<d2explst> = fprint_d2explst
 implement fprint_val<d2lablst> = fprint_d2lablst
 implement fprint_val<p2atlst> = fprint_p2atlst
 
+implement fprint_val<s2exp> = fprint_s2exp
+implement fprint_val<s2explst> = fprint_s2explst
+implement fprint_val<s2varlst> = fprint_s2varlst
+
 implement{}
 fprint_d2exp_node$D2Elet$arg1(out, arg0) =
   let val-D2Elet(arg1, _) = arg0 
@@ -70,9 +74,9 @@ fprint_d2exp_node$D2Eselab$arg2(out, arg0) =
 in fprint_d2exp_node$carg<d2lablst>(out, arg2) end
 
 implement{}
-fprint_d2exp_node$D2Elam$arg1(out, arg0) =
-  let val-D2Elam(arg1, _) = arg0 
-in fprint_d2exp_node$carg<p2atlst>(out, arg1) end
+fprint_d2exp_node$D2Elam_dyn$arg2(out, arg0) =
+  let val-D2Elam_dyn(_, arg2, _) = arg0 
+in fprint_d2exp_node$carg<p2atlst>(out, arg2) end
 
 implement{}
 fprint_d2exp_node$D2Efix$arg2(out, arg0) =
@@ -304,9 +308,9 @@ d2exp_list
 (* ****** ****** *)
 //
 implement
-d2exp_lam
-  (loc, p2ts_arg, d2e_body) =
-  d2exp_make_node (loc, D2Elam (p2ts_arg, d2e_body))
+d2exp_lam_dyn
+  (loc, npf, p2ts_arg, d2e_body) =
+  d2exp_make_node (loc, D2Elam_dyn (npf, p2ts_arg, d2e_body))
 //
 implement
 d2exp_fix

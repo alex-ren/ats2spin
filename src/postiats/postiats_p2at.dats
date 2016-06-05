@@ -21,12 +21,20 @@ staload "./postiats.sats"
 implement fprint_val<d2var> = fprint_d2var
 
 implement fprint_val<labp2atlst> = fprint_labp2atlst
+implement fprint_val<p2atlst> = fprint_p2atlst
 implement fprint_val<p2at> = fprint_p2at
+implement fprint_val<s2exp> = fprint_s2exp
+implement fprint_val<d2con> = fprint_d2con
 
 implement{}
-fprint_p2at_node$P2Trec$arg1(out, arg0) =
-  let val-P2Trec(arg1) = arg0 
+fprint_p2at_node$P2Trec$arg3(out, arg0) =
+  let val-P2Trec(_, _, arg1) = arg0 
 in fprint_p2at_node$carg<labp2atlst>(out, arg1) end
+
+implement{}
+fprint_p2at_node$P2Tcon$arg3(out, arg0) =
+  let val-P2Tcon(_, _, arg1) = arg0 
+in fprint_p2at_node$carg<p2atlst>(out, arg1) end
 
 (* ****** ****** *)
 
@@ -106,8 +114,8 @@ p2at_var (loc, d2v) =
 (* ****** ****** *)
 
 implement
-p2at_rec (loc, lp2ts) =
-  p2at_make_node (loc, P2Trec (lp2ts))
+p2at_rec (loc, kind, npf, lp2ts) =
+  p2at_make_node (loc, P2Trec (kind, npf, lp2ts))
 //
 (* ****** ****** *)
 

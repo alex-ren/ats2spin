@@ -118,6 +118,8 @@ typedef s2parsingenv = '{
   , s2parsingenv_s2varmap = s2varmap
   }
 
+fun s2parsingenv_make (s2cstmap, s2varmap): s2parsingenv
+
 (* ****** ****** *)
 
 fun parse_s2exp_node (s2parsingenv, jsonval): s2exp 
@@ -158,15 +160,17 @@ fun parse_d2varmap (jsv: jsonval): d2varmap
 
 typedef parsingenv = '{
   parsingenv_d2cstmap = d2cstmap
+  , parsingenv_d2conmap = d2conmap
   , parsingenv_d2varmap = d2varmap
-  }
+}
+fun parsingenv_make (d2cstmap, d2conmap, d2varmap): parsingenv
 
 fun parse_d2sym (jsv: jsonval): d2sym
 
 (* ****** ****** *)
 
-fun parse_p2at (d2varmap: d2varmap, jsv: jsonval): p2at
-fun parse_p2atlst (d2varmap: d2varmap, jsv: jsonval): p2atlst
+fun parse_p2at (s2parsingenv, d2env: parsingenv, jsv: jsonval): p2at
+fun parse_p2atlst (s2parsingenv, d2env: parsingenv, jsv: jsonval): p2atlst
 
 (* ****** ****** *)
 

@@ -44,17 +44,12 @@ val-~Some_vt(jsv_d2eclst) =
 //
 val s2cstmap = parse_s2cstmap (jsv_s2cst)
 val s2varmap = parse_s2varmap (jsv_s2var)
-val s2env = '{
-s2parsingenv_s2cstmap = s2cstmap
-, s2parsingenv_s2varmap = s2varmap
-}
+val s2env = s2parsingenv_make (s2cstmap, s2varmap)
+
 val d2conmap = parse_d2conmap (s2env, jsv_d2con)
 val d2cstmap = parse_d2cstmap (s2env, jsv_d2cst)
 val d2varmap = parse_d2varmap (jsv_d2var)
-val p2env = '{
-  , parsingenv_d2cstmap = d2cstmap
-  , parsingenv_d2varmap = d2varmap
-  }
+val p2env = parsingenv_make (d2cstmap, d2conmap, d2varmap)
 
 //
 in

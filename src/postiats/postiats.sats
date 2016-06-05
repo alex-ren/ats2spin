@@ -211,6 +211,8 @@ typedef s2varlst = list0 (s2var)
 typedef s2varopt = option0 (s2var)
 vtypedef s2varopt_vt = Option_vt (s2var)
 
+fun fprint_s2varlst: fprint_type (s2varlst)
+
 (* ****** ****** *)
 
 fun
@@ -260,6 +262,11 @@ datatype s2exp_node =
 | S2Einvar of s2exp
 | S2Esizeof of s2exp
 | S2Etyrec of ((*knd, *) int (*npf*), labs2explst)
+(* This is for the return type of a function whose parameters use
+* reference type.
+*)
+| S2Ewthtype of (s2exp (*, todo: WTHS2EXPLST*))
+| S2Erefarg of (s2exp)
 | S2Eignored
 | S2Eerr
 
@@ -284,6 +291,9 @@ fun s2exp_make_node
 
 fun fprint_s2exp: fprint_type (s2exp)
 overload fprint with fprint_s2exp
+
+fun fprint_s2explst: fprint_type (s2explst)
+overload fprint with fprint_s2explst
 
 (* ********** end Statics Related Elements ********** *)
 
@@ -467,9 +477,10 @@ p2at_node =
 //
   | P2Tempty of ()
 //
-  | P2Tpat of (p2at)
+  | P2Tann of (p2at, s2exp)
 //
-  | P2Trec of (labp2atlst)
+  | P2Trec of (int (*kind*), int (*npf*), labp2atlst)
+  | P2Tcon of (d2con, int (*npf*), p2atlst)
   | P2Ti0nt of (string)
 //
   | P2Tignored of ((*void*))
@@ -532,7 +543,7 @@ fun p2at_var (loc: loc_t, d2v: d2var): p2at
 
 (* ****** ****** *)
 
-fun p2at_rec (loc: loc_t, lp2ts: labp2atlst): p2at
+fun p2at_rec (loc: loc_t, int (*kind*), int (*npf*), lp2ts: labp2atlst): p2at
 
 (* ****** ****** *)
 
@@ -577,6 +588,7 @@ and d2exp_node =
   | D2Eempty of ((*void*))
 //
   | D2Eexp of (d2exp) // dummy
+  | D2Eann_type of (d2exp, s2exp)
 //
   | D2Elet of (d2eclist, d2exp)
 //
@@ -601,7 +613,10 @@ and d2exp_node =
 //
   | D2Eselab of (d2exp, d2lablst)
 //
-  | D2Elam of (p2atlst, d2exp)
+  | D2Elam_dyn of (int (*npf*), p2atlst, d2exp)
+  | D2Elam_sta of (s2varlst (*static variables*)
+                   , s2explst (*predicates in the statics*)
+                   , d2exp)
   | D2Efix of (d2var, p2atlst, d2exp)
   | D2Eextfcall of (string, d2explst)
   | D2Eassgn of (d2exp, d2exp)
@@ -612,7 +627,7 @@ and d2exp_node =
 
 and d2exparg =
   | D2EXPARGsta of ()
-  | D2EXPARGdyn of (int, loc_t, d2explst)
+  | D2EXPARGdyn of (int (*npf*), loc_t, d2explst)
 // end of [d2exparg]
 
 and d2lab =
@@ -828,9 +843,9 @@ fun d2exp_selab
 
 (* ****** ****** *)
 
-fun d2exp_lam
-  (loc: loc_t, p2ts: p2atlst, d2e: d2exp): d2exp
-// end of [d2exp_lam]
+fun d2exp_lam_dyn
+  (loc: loc_t, npf: int, p2ts: p2atlst, d2e: d2exp): d2exp
+// end of [d2exp_lam_dyn]
 
 (* ****** ****** *)
 

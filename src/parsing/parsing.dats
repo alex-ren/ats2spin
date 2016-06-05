@@ -226,6 +226,18 @@ in
   | list_cons (jsv, _) => Some0{a}(f(jsv))
 end // end of [parse_option0]
 
+implement s2parsingenv_make (s2cstmap, s2varmap) = '{
+s2parsingenv_s2cstmap = s2cstmap
+, s2parsingenv_s2varmap = s2varmap
+}
+
+implement parsingenv_make (d2cstmap, d2conmap, d2varmap) = '{
+  parsingenv_d2cstmap = d2cstmap
+  , parsingenv_d2conmap = d2conmap
+  , parsingenv_d2varmap = d2varmap
+  }
+
+
 
 
 (* end of [parsing.dats] *)

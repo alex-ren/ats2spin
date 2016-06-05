@@ -186,7 +186,7 @@ val-~Some_vt(def) =
 //
 val loc =
   parse_location (loc)
-val p2t = parse_p2at (p2env.parsingenv_d2varmap, p2t)
+val p2t = parse_p2at (s2env, p2env, p2t)
 val def = parse_d2exp (s2env, p2env, def)
 //
 in

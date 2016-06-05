@@ -39,6 +39,17 @@ fun parse_S2Eapp (s2parsingenv, jsonval): s2exp_node
 extern 
 fun parse_S2Efun (s2parsingenv, jsonval): s2exp_node
 
+(* This is for the return type of a function whose parameters use
+* reference type
+*)
+extern 
+fun parse_S2Ewthtype (s2parsingenv, jsonval): s2exp_node
+
+(* This is for the reference type used for function parameters *)
+extern 
+fun parse_S2Erefarg (s2parsingenv, jsonval): s2exp_node
+
+
 extern 
 fun parse_S2Eignored (jsonval): s2exp_node
 
@@ -75,6 +86,8 @@ case+ name of
 | "S2Eapp" => parse_S2Eapp (s2env, jsv2)
 | "S2Eignored" => parse_S2Eignored (jsv2)
 | "S2Efun" => parse_S2Efun (s2env, jsv2)
+| "S2Ewthtype" => parse_S2Ewthtype (s2env, jsv2)
+| "S2Erefarg" => parse_S2Erefarg (s2env, jsv2)
 //
 | s (*rest*) => let
   val () = print! (s,  " is ignored in parsing/parsing_s2exp.dats")
@@ -134,7 +147,22 @@ in
   S2Efun (s2e_npf, s2e_args, s2e_res)
 end // end of [parse_S2Efun]
 
+implement parse_S2Ewthtype (s2env, jsv0) = let
+val-JSONarray(jsvs) = jsv0
+val () = assertloc (length(jsvs) >= 2)
+val s2e = parse_s2exp (s2env, jsvs[0])
+// todo: parse WTH2EXPLST
+in
+  S2Ewthtype (s2e)
+end
 
+implement parse_S2Erefarg (s2env, jsv0) = let
+val-JSONarray(jsvs) = jsv0
+val () = assertloc (length(jsvs) >= 2)
+val s2e = parse_s2exp (s2env, jsvs[1])
+in
+  S2Erefarg (s2e)
+end
 
 
 implement

@@ -423,7 +423,7 @@ implement parse_c2lau (s2env, p2env, jsv0) = let
 
 
   val-~Some_vt(jsv_patlst) = jsonval_get_field (jsv0, "c2lau_pat") 
-  val c2lau_patlst = parse_p2atlst (p2env.parsingenv_d2varmap, jsv_patlst)
+  val c2lau_patlst = parse_p2atlst (s2env, p2env, jsv_patlst)
 
 
   val-~Some_vt(jsv_body) = jsonval_get_field (jsv0, "c2lau_body") 
@@ -516,11 +516,12 @@ parse_D2Elam_dyn
 //
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 4)
-val p2ts = parse_p2atlst (p2env.parsingenv_d2varmap, jsvs[2])
+val npf = parse_int (jsvs[1])
+val p2ts = parse_p2atlst (s2env, p2env, jsvs[2])
 val d2e_body = parse_d2exp (s2env, p2env, jsvs[3])
 //
 in
-  D2Elam (p2ts, d2e_body)
+  D2Elam_dyn (npf, p2ts, d2e_body)
 end // end of [parse_D2Elam_dyn]
 
 (* ****** ****** *)
@@ -531,10 +532,15 @@ parse_D2Elam_sta
 //
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 3)
+val s2varlst = 
+  parse_list0 (jsvs[0], lam x => parse_s2var (s2env.s2parsingenv_s2varmap, x))
+
+val s2explst = parse_list0 (jsvs[1], lam x => parse_s2exp (s2env, x))
+
 val d2e = parse_d2exp (s2env, p2env, jsvs[2])
 //
 in
-  D2Eexp (d2e)
+  D2Elam_sta (s2varlst, s2explst, d2e)
 end // end of [parse_D2Elam_sta]
 
 (* ****** ****** *)
@@ -560,9 +566,10 @@ parse_D2Eann_type
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 2)
 val d2e = parse_d2exp (s2env, p2env, jsvs[0])
+val s2e = parse_s2exp (s2env, jsvs[1])
 //
 in
-  D2Eexp (d2e)
+  D2Eann_type (d2e, s2e)
 end // end of [parse_D2Eann_type]
 
 (* ****** ****** *)
