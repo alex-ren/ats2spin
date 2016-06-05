@@ -150,6 +150,9 @@ overload fprint with fprint_location
 
 fun location_make (rep: string): loc_t
 
+fun location_tostring (loc: loc_t): string
+overload .tostring with location_tostring
+
 (* ********** end of Common Elements ********** *)
 
 (* ********** Statics Related Elements ********** *)
@@ -266,6 +269,7 @@ datatype s2exp_node =
 * reference type.
 *)
 | S2Ewthtype of (s2exp (*, todo: WTHS2EXPLST*))
+| S2Etop of (s2exp)
 | S2Erefarg of (s2exp)
 | S2Eignored
 | S2Eerr
@@ -774,6 +778,11 @@ fun d2var_set_bind (d2var, d2exp): void
 
 fun d2exp_make_node
   (loc: loc_t, node: d2exp_node): d2exp
+
+(* ****** ****** *)
+
+// Expose the body of the lambda expression.
+fun d2exp_expose_lam_dyn (d2exp): d2exp
 
 (* ****** ****** *)
 

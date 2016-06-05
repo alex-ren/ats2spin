@@ -7,63 +7,112 @@
 staload "libats/ML/SATS/basis.sats"
 
 staload "./../postiats/postiats.sats"
+staload HT = "libats/ML/SATS/hashtblref.sats"
 
-datatype s0srt =
-| S0SRTtype
-| S0SRTt0ype
-| S0RTprop
-| S0SRTview
-| S0SRTviewtype
-| S0SRTviewt0ype
+datatype s3srt =
+| S3SRTtype
+| S3SRTt0ype
+| S3RTprop
+| S3SRTview
+| S3SRTviewtype
+| S3SRTviewt0ype
 
-datatype s0tkind =
-| S0TKINDflat | S0TKINDboxed
+(* tkind: type kind*)
+datatype s3tkind =
+| S3TKINDflat | S3TKINDboxed
 
-datatype s0type_node =
-| S0TYPEref of ref (s0type_node)
-| S0TYPEelement of (symbol)
-| S0TYPErecord of (s0tkind, int (*npf*), s0labeltypelst)
-| S0TYPEprop
-| S0TYPEcon of (s2cst, s0typelst)
-| S0TYPEfun of (int (*npf*), s0typelst (*args*)
-                , s0type (*res*), bool (*effect*))
-| S0TYPEvar of s2var
-| S0TYPEPoly of (s2varlst, s0type)
+datatype s3type_node =
+| S3TYPEref of ref (s3type_node)
+| S3TYPEelement of (symbol)
+| S3TYPErecord of (s3tkind, int (*npf*), s3labeltypelst)
+| S3TYPEprop
+| S3TYPEcon of (s2cst, s3typelst)
+| S3TYPEfun of (int (*npf*)
+                , s3typelst (*args*)
+                , s3type (*res*)
+                , bool (*effect*))
+| S3TYPEvar of s2var
+| S3TYPEpoly of (s2varlst, s3type)
 
 where
-s0type = '{
-S0TYPEnode = s0type_node
-, S0TYPEsrt = s0srt
+s3type = '{
+s3type_node = s3type_node
+, s3type_srt = s3srt
 }
 
-and s0typelst = list0 s0type
+and s3typelst = list0 s3type
 
-and s0labeltype = '{
-s0labeltype_label = label
-, s0labeltype_type = s0type
+and s3labeltype = '{
+s3labeltype_label = label
+, s3labeltype_type = s3type
 }
 
-and s0labeltypelst = list0 s0labeltype
+and s3labeltypelst = list0 s3labeltype
 
-
-fun s0labeltype_make (label, s0type): s0labeltype
+fun s3labeltype_make (label, s3type): s3labeltype
 
 (* ************* ************* *)
 
-abstype s0typemap_type
-typedef s0typemap = s0typemap_type
-
-fun s0typemap_create (): s0typemap
-fun s0typemap_get_type (d2cst): s0type
-fun s0typemap_get_type (d2var): s0type
-fun s0typemap_get_type (d2sym): s0typelst
-
-fun s0typemap_set_type (d2cst, s0type): void
-fun s0typemap_set_type (d2var, s0type): void
+typedef s3type_map = $HT.hashtbl (stamp, s3type)
 
 (* ************* ************* *)
 
-fun s0typecheck_d2eclist (tmap: s0typemap, d2ecs: d2eclist): void
+typedef s3typemap = $HT.hashtbl (stamp, s3type)
+
+typedef s3typelst = List0 (s3type)
+typedef s3typeopt = Option (s3type)
+vtypedef s3typeopt_vt = Option_vt (s3type)
+
+fun s3typemap_create (): s3typemap
+fun s3typemap_get_type (d2cst): s3type
+fun s3typemap_get_type (d2var): s3type
+fun s3typemap_get_type (d2sym): s3typelst
+
+fun s3typemap_set_type (d2cst, s3type): void
+fun s3typemap_set_type (d2var, s3type): void
+
+(* ************* ************* *)
+
+// s3type is S3TYPEfun or S3TYPEpoly
+fun s3type_get_funtype (s3type): s3type
+
+// s3type is S3TYPEfun
+fun s3type_get_rettype (s3type): s3type
+
+(* ************* ************* *)
+
+fun s3typecheck_d2eclist (d2ecs: d2eclist, tmap: s3typemap): void
+fun s3typecheck_d2ecl (d2ecl: d2ecl, tmap: s3typemap): void
+
+fun s3typecheck_f2undec_body (f2undec, s3typemap): void
+
+fun s3typecheck_v2aldec (v2aldec, s3typemap): void
+fun s3typecheck_v2ardec (v2ardec, s3typemap): void
+
+fun s3typecheck_d2exp (d2exp, s3type, s3typemap): void
+
+(* ************* ************* *)
+
+symintr .oftype
+fun oftype_d2exp (d2exp: d2exp, tmap: s3typemap): s3type
+fun oftype_d2var (d2var: d2var, tmap: s3typemap): s3type
+
+fun oftype_f2undec_head (f2undec, s3typemap): s3type
+
+overload .oftype with oftype_d2exp
+overload .oftype with oftype_d2var
+
+(* ************* ************* *)
+
+// type checking result
+typedef tcresult = option0 string
+
+fun type_match (s3typemap, s3type, s3type): tcresult
+
+(* ************* ************* *)
+
+
+
 
 
 

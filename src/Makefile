@@ -40,6 +40,7 @@ MALLOCFLAG=-DATS_MEMALLOC_GCBDW
 ATS2PROMELA_sta := \
     parsing/parsing.sats \
     postiats/postiats.sats \
+    simpletypes/simpletypes.sats \
     instr0/instr0.sats \
     promela/promela.sats
 
@@ -77,6 +78,9 @@ ATS2PROMELA_dyn := \
     postiats/postiats_d2ecl.dats \
     postiats/postiats_mylib.dats \
     postiats/dynloadall.dats \
+    simpletypes/simpletypes.dats \
+    simpletypes/simpletypes_typemap.dats \
+    simpletypes/dynloadall.dats \
     instr0/instr0.dats \
     instr0/i0exp.dats \
     instr0/i0name.dats \

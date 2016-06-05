@@ -49,6 +49,9 @@ fun parse_S2Ewthtype (s2parsingenv, jsonval): s2exp_node
 extern 
 fun parse_S2Erefarg (s2parsingenv, jsonval): s2exp_node
 
+(* One user case is inside a S2Erefarg *)
+extern
+fun parse_S2Etop (s2parsingenv, jsonval): s2exp_node
 
 extern 
 fun parse_S2Eignored (jsonval): s2exp_node
@@ -88,6 +91,7 @@ case+ name of
 | "S2Efun" => parse_S2Efun (s2env, jsv2)
 | "S2Ewthtype" => parse_S2Ewthtype (s2env, jsv2)
 | "S2Erefarg" => parse_S2Erefarg (s2env, jsv2)
+| "S2Etop" => parse_S2Etop (s2env, jsv2)
 //
 | s (*rest*) => let
   val () = print! (s,  " is ignored in parsing/parsing_s2exp.dats")
@@ -164,6 +168,13 @@ in
   S2Erefarg (s2e)
 end
 
+implement parse_S2Etop (s2env, jsv0) = let
+val-JSONarray(jsvs) = jsv0
+val () = assertloc (length(jsvs) >= 2)
+val s2e = parse_s2exp (s2env, jsvs[1])
+in
+  S2Etop (s2e)
+end
 
 implement
 parse_S2Eignored (jsv) = S2Eignored ((*void*))

@@ -6,6 +6,9 @@
 #include "share/atspre_staload.hats"
 #include "share/atspre_define.hats"
 //
+#include "share/HATS/atspre_staload_libats_ML.hats"
+//
+staload "./../utils/utils.dats"
 (* ****** ****** *)
 
 staload "./postiats.sats"
@@ -29,8 +32,9 @@ implement fprint_val<d2lablst> = fprint_d2lablst
 implement fprint_val<p2atlst> = fprint_p2atlst
 
 implement fprint_val<s2exp> = fprint_s2exp
-implement fprint_val<s2explst> = fprint_s2explst
-implement fprint_val<s2varlst> = fprint_s2varlst
+implement fprint_val<s2exp> = fprint_s2exp
+
+implement fprint_val<s2var> = fprint_s2var
 
 implement{}
 fprint_d2exp_node$D2Elet$arg1(out, arg0) =
@@ -207,6 +211,14 @@ d2exp_make_node
   (loc, node) = '{
   d2exp_loc= loc, d2exp_node= node
 } (* end of [d2exp_make_node] *)
+
+(* ****** ****** *)
+
+implement d2exp_expose_lam_dyn (d2exp) =
+case+ d2exp.d2exp_node of
+| D2Elam_sta (_, _, d2exp') => d2exp_expose_lam_dyn (d2exp')
+| D2Elam_dyn (_, _, d2exp') => d2exp
+| _ => exitlocmsg ("This is not allowed.\n")
 
 (* ****** ****** *)
 //

@@ -28,6 +28,9 @@ fprint_location
   (out, loc) = fprint_string (out, loc)
 // end of [fprint_location]
 
+implement
+location_tostring (loc) = loc
+
 (* ****** ****** *)
 
 (* end of [postiats_location.dats] *)
