@@ -79,6 +79,7 @@ ATS2PROMELA_dyn := \
     ./../postiats/dynloadall.dats \
     simpletypes.dats \
     simpletypes_typemap.dats \
+    simpletypes_poly_para_map.dats \
     dynloadall.dats
 
 
@@ -152,12 +153,16 @@ ATS2PROMELAOBJ := $(patsubst %.sats, %_sats.o, $(ATS2PROMELAOBJ))
 
 # ######### ##########
 
-codegen:: ./../postiats/postiats_codegen2.hats;
+codegen:: ./../postiats/postiats_codegen2.hats \
+    ./simpletypes_codegen2.hats ;
 
 ./../postiats/postiats_codegen2.hats: \
 ./../postiats/postiats.sats ./../postiats/codegen.dats; \
 $(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d codegen.dats
 
+./simpletypes_codegen2.hats: \
+./simpletypes.sats ./codegen.dats; \
+$(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d codegen.dats
 
 # ######### ##########
 

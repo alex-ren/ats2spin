@@ -13,12 +13,7 @@ staload "./../postiats/postiats.sats"
 staload "./simpletypes.sats"
 
 
-extern
-fun the_s3typemap_create (): s3typemap
-extern
-fun the_s3typemap_find (s3typemap, stamp): s3typeopt_vt
-extern
-fun the_s3typemap_insert (s3typemap: s3typemap, stamp: stamp, s3type): void
+// vtypedef s3typeopt_vt = Option_vt (s3type)
 
 local
 
@@ -34,35 +29,40 @@ implement $HT.hash_key<stamp> (x) = hash_stamp (x)
 implement
 $HT.equal_key_key<stamp> (k1, k2) = eq_stamp_stamp (k1, k2)
 
+extern fun s3typemap_find (s3typemap, stamp): s3typeopt
+extern fun s3typemap_update (
+  s3typemap: s3typemap, stamp: stamp, s3type: s3type): void
+
 in (* in of [local] *)
 
-implement the_s3typemap_create () = let
+
+implement s3typemap_create () = let
   val s3typemap =  $HT.hashtbl_make_nil<stamp, s3type> (i2sz(2048))
 in
   s3typemap
 end
 
-implement
-the_s3typemap_find
-  (s3typemap, k0) = let
-//
-in
-  $HT.hashtbl_search (s3typemap, k0)
-end // end of [the_s3typemap_find]
+implement s3typemap_find_d2cst (tmap, d2cst) =
+s3typemap_find (tmap, d2cst_get_stamp (d2cst))
+
+implement s3typemap_find (tmap, stamp) = 
+case+ $HT.hashtbl_search (tmap, stamp) of
+| ~Some_vt (s3type) => Some0 s3type
+| ~None_vt () => None0
 
 implement
-the_s3typemap_insert
-  (s3typemap, stamp, s3type) = let
-//
-val- ~None_vt ((*void*)) = 
-  $HT.hashtbl_insert (s3typemap, stamp, s3type)
-//
-in
-  // nothing
-end // end of [the_s3typemap_insert]
+s3typemap_update_d2cst
+  (tmap, d2cst, s3type) = 
+  s3typemap_update (tmap, d2cst_get_stamp (d2cst), s3type)
+
+
+implement
+s3typemap_update
+  (tmap, stamp, s3type) = $HT.hashtbl_insert_any (tmap, stamp, s3type)
+
 
 end  // end of [local]
 (* ****** ****** *)
 
-implement s3typemap_create () = the_s3typemap_create ()
+
 
