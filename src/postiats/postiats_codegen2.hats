@@ -1215,7 +1215,13 @@ fun{}
 fprint_d2exp_node$D2Elist$rpar: $d2ctype(fprint_d2exp_node<>)
 extern
 fun{}
+fprint_d2exp_node$D2Elist$sep1: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
 fprint_d2exp_node$D2Elist$arg1: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
+fprint_d2exp_node$D2Elist$arg2: $d2ctype(fprint_d2exp_node<>)
 //
 implement{}
 fprint_d2exp_node$D2Elist(out, arg0) = 
@@ -1224,6 +1230,8 @@ fprint_d2exp_node$D2Elist(out, arg0) =
 val () = fprint_d2exp_node$D2Elist$con<>(out, arg0)
 val () = fprint_d2exp_node$D2Elist$lpar<>(out, arg0)
 val () = fprint_d2exp_node$D2Elist$arg1<>(out, arg0)
+val () = fprint_d2exp_node$D2Elist$sep1<>(out, arg0)
+val () = fprint_d2exp_node$D2Elist$arg2<>(out, arg0)
 val () = fprint_d2exp_node$D2Elist$rpar<>(out, arg0)
 //
 }
@@ -1234,8 +1242,13 @@ fprint_d2exp_node$D2Elist$lpar(out, _) = fprint_d2exp_node$lpar(out)
 implement{}
 fprint_d2exp_node$D2Elist$rpar(out, _) = fprint_d2exp_node$rpar(out)
 implement{}
+fprint_d2exp_node$D2Elist$sep1(out, _) = fprint_d2exp_node$sep<>(out)
+implement{}
 fprint_d2exp_node$D2Elist$arg1(out, arg0) =
-  let val-D2Elist(arg1) = arg0 in fprint_d2exp_node$carg(out, arg1) end
+  let val-D2Elist(arg1, _) = arg0 in fprint_d2exp_node$carg(out, arg1) end
+implement{}
+fprint_d2exp_node$D2Elist$arg2(out, arg0) =
+  let val-D2Elist(_, arg2) = arg0 in fprint_d2exp_node$carg(out, arg2) end
 //
 extern
 fun{}
@@ -1248,7 +1261,19 @@ fun{}
 fprint_d2exp_node$D2Etup$rpar: $d2ctype(fprint_d2exp_node<>)
 extern
 fun{}
+fprint_d2exp_node$D2Etup$sep1: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
+fprint_d2exp_node$D2Etup$sep2: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
 fprint_d2exp_node$D2Etup$arg1: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
+fprint_d2exp_node$D2Etup$arg2: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
+fprint_d2exp_node$D2Etup$arg3: $d2ctype(fprint_d2exp_node<>)
 //
 implement{}
 fprint_d2exp_node$D2Etup(out, arg0) = 
@@ -1257,6 +1282,10 @@ fprint_d2exp_node$D2Etup(out, arg0) =
 val () = fprint_d2exp_node$D2Etup$con<>(out, arg0)
 val () = fprint_d2exp_node$D2Etup$lpar<>(out, arg0)
 val () = fprint_d2exp_node$D2Etup$arg1<>(out, arg0)
+val () = fprint_d2exp_node$D2Etup$sep1<>(out, arg0)
+val () = fprint_d2exp_node$D2Etup$arg2<>(out, arg0)
+val () = fprint_d2exp_node$D2Etup$sep2<>(out, arg0)
+val () = fprint_d2exp_node$D2Etup$arg3<>(out, arg0)
 val () = fprint_d2exp_node$D2Etup$rpar<>(out, arg0)
 //
 }
@@ -1267,8 +1296,18 @@ fprint_d2exp_node$D2Etup$lpar(out, _) = fprint_d2exp_node$lpar(out)
 implement{}
 fprint_d2exp_node$D2Etup$rpar(out, _) = fprint_d2exp_node$rpar(out)
 implement{}
+fprint_d2exp_node$D2Etup$sep1(out, _) = fprint_d2exp_node$sep<>(out)
+implement{}
+fprint_d2exp_node$D2Etup$sep2(out, _) = fprint_d2exp_node$sep<>(out)
+implement{}
 fprint_d2exp_node$D2Etup$arg1(out, arg0) =
-  let val-D2Etup(arg1) = arg0 in fprint_d2exp_node$carg(out, arg1) end
+  let val-D2Etup(arg1, _, _) = arg0 in fprint_d2exp_node$carg(out, arg1) end
+implement{}
+fprint_d2exp_node$D2Etup$arg2(out, arg0) =
+  let val-D2Etup(_, arg2, _) = arg0 in fprint_d2exp_node$carg(out, arg2) end
+implement{}
+fprint_d2exp_node$D2Etup$arg3(out, arg0) =
+  let val-D2Etup(_, _, arg3) = arg0 in fprint_d2exp_node$carg(out, arg3) end
 //
 extern
 fun{}

@@ -45,6 +45,9 @@ end
 implement s3typemap_find_d2cst (tmap, d2cst) =
 s3typemap_find (tmap, d2cst_get_stamp (d2cst))
 
+implement s3typemap_find_d2var (tmap, d2var) =
+s3typemap_find (tmap, d2var_get_stamp (d2var))
+
 implement s3typemap_find (tmap, stamp) = 
 case+ $HT.hashtbl_search (tmap, stamp) of
 | ~Some_vt (s3type) => Some0 s3type
@@ -55,6 +58,17 @@ s3typemap_update_d2cst
   (tmap, d2cst, s3type) = 
   s3typemap_update (tmap, d2cst_get_stamp (d2cst), s3type)
 
+implement
+s3typemap_update_d2var
+  (tmap, d2var, s3type) = let
+  val tyopt = s3typemap_find_d2var (tmap, d2var)
+in
+  case+ tyopt of
+  | Some0 ty => let
+    val tcres = s3type_match (tmap, ty, s3type)
+  in () end
+  | None0 () => s3typemap_update (tmap, d2var_get_stamp (d2var), s3type)
+end
 
 implement
 s3typemap_update

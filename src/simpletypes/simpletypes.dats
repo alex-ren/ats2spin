@@ -10,6 +10,7 @@ staload "./../utils/utils.dats"
 staload "./../postiats/postiats.sats"
 staload "./simpletypes.sats"
 
+#include "./../postiats/postiats_codegen2.hats"
 #include "./simpletypes_codegen2.hats"
 
 (* ************ ************* *)
@@ -19,8 +20,20 @@ implement s3type_char () = S3TYPEelement (S3ELEMENTchar)
 implement s3type_bool () = S3TYPEelement (S3ELEMENTbool)
 implement s3type_string () = S3TYPEelement (S3ELEMENTstring)
 implement s3type_unit () = S3TYPEelement (S3ELEMENTunit)
-
 implement s3type_ref () = S3TYPEref (ref<option0 s3type> (None0 ()))
+implement s3type_fun (npf, ty_args, ty_res, effect) = 
+ S3TYPEfun (ref npf, ty_args, ty_res, effect)
+
+implement s3tkind_make (kind) = 
+case+ kind of
+| 0 => S3TKINDflat
+| 1 => S3TKINDboxed
+| _ => S3TKINDignored
+
+implement s3labeltype_make (label, s3type) = 
+'{ s3labeltype_label = label
+, s3labeltype_type = s3type
+}
 
 (* ************ ************* *)
 implement s3type_get_funtype (s3type) =
@@ -93,7 +106,7 @@ implement s3typecheck_D2Cfundecs (tmap, d2ecl) = let
   val- D2Cfundecs (funknd, f2undeclst) = d2ecl.d2ecl_node
   // clooect type information from function headers
   implement list_foldleft$fopr<s3typemap><f2undec> (acc, x) = let
-    val _ = oftype_f2undec_head (x, acc)
+    val _ = oftype_funhead_f2undec (x, acc)
   in acc end
   val _ = list_foldleft<s3typemap><f2undec> (f2undeclst, tmap)
 
@@ -168,6 +181,70 @@ in
 end
 
 (* ******************* ******************* *)
+implement s3typecheck_v2aldec (v2aldec, tmap) = let
+  val p2at = v2aldec.v2aldec_pat
+  val ty_p2at = oftype_p2at (p2at, tmap)
+  val def = v2aldec.v2aldec_def
+  val ty_def = oftype_d2exp (def, tmap)
+  val tcres = s3type_match (tmap, ty_p2at, ty_def)
+in end 
+
+
+implement s3typecheck_v2ardec (v2ardec, tmap) = let
+  val ty_var = s3type_ref ()
+  val () = s3typemap_update_d2var (tmap, v2ardec.v2ardec_name, ty_var)
+in
+  case+ v2ardec.v2ardec_init of
+  | Some d2exp => s3typecheck_d2exp (d2exp, ty_var, tmap)
+  | None () => ()
+end
+
+(* ******************* ******************* *)
+
+implement oftype_p2at (p2at, tmap) = let
+  val loc = p2at.p2at_loc
+  val node = p2at.p2at_node
+in
+  case+ node of
+  | P2Tany () => s3type_ref ()
+//
+  | P2Tvar (d2var) => let
+    val ty = s3type_ref ()
+    val () = s3typemap_update_d2var (tmap, d2var, ty)
+  in ty end
+//
+  | P2Tempty () => s3type_unit ()
+//
+  | P2Tann (p2at, s2exp) => let
+    val ty_pat = oftype_p2at (p2at, tmap)
+    val ty_exp = s3type_translate (s2exp)
+    val tcres = s3type_match (tmap, ty_pat, ty_exp)
+    val ty = s3type_normalize (ty_pat)
+  in ty end
+//
+  | P2Trec (kind, npf, labp2atlst) => let
+    implement list_foldright$fopr<labp2at><s3labeltypelst> (labp2at, res) = let
+      val- LABP2ATnorm (label, p2at) = labp2at
+      val s3type = oftype_p2at (p2at, tmap)
+      val s3labeltype = s3labeltype_make (label, s3type)
+      val res = cons0 (s3labeltype, res)
+    in res end
+    val s3labeltypelst = 
+      list_foldright<labp2at><s3labeltypelst> (labp2atlst, nil0 ())
+    val ty = S3TYPErecord (ref (s3tkind_make (kind)), npf, s3labeltypelst)
+  in
+    ty
+  end
+  | P2Tcon (d2con, npf, p2atlst) => exitlocmsg ("Not supported.\n")
+//
+  | P2Ti0nt (rep) => s3type_int ()
+//
+  | P2Tignored ((*void*)) => exitlocmsg ("Check this.\n")
+end
+// end of [oftype_p2at]
+
+
+(* ******************* ******************* *)
 
 implement oftype_d2cst (d2cst, tmap, loc) = let
   val s3typeopt = s3typemap_find_d2cst (tmap, d2cst)
@@ -208,8 +285,8 @@ fun oftype_D2Eapplst (
   , d2exparglst: d2exparglst
   , tmap: s3typemap
   , loc: location_type): s3type = let
-  val s3type_fun = oftype_d2exp (d2exp, tmap)
-  val s3type_fun = s3type_normalize (s3type_fun)
+  val s3type_funty = oftype_d2exp (d2exp, tmap)
+  val s3type_funty = s3type_normalize (s3type_funty)
 
   fun loop_s3type (s3type: s3type
             , d2exparglst: d2exparglst
@@ -284,8 +361,9 @@ fun oftype_D2Eapplst (
     val- S3TYPEfun (npf_ty, ty_args, ty_res, effect) = s3type
     val- list_cons (args0, d2exparglst1) = d2exparglst
     val- D2EXPARGdyn (npf_args, loc_args, d2expargs) = args0
+    val () = !npf_ty := npf_args
   in
-    if (length (ty_args) <> length (d2expargs) || npf_ty <> npf_args)
+    if (length (ty_args) <> length (d2expargs))
     then exitlocmsg (
       "Type mismatched: " + loc.tostring () + " different length.\n")
     else let
@@ -344,11 +422,7 @@ fun oftype_D2Eapplst (
       val ty_args = list_foldright<d2exp><s3typelst> (d2explst, nil0)
       val ty_ret = s3type_ref ()
 
-      val ty_fun = S3TYPEfun (npf
-                              , ty_args
-                              , ty_ret
-                              , false (*no information, assume no effect*)
-                              )
+      val ty_fun = s3type_fun (npf, ty_args, ty_ret, ~1)
       val () = !vartype := Some0 ty_fun
       val inner_types1 = cons0 (ty_ret, inner_types)
     in
@@ -361,7 +435,7 @@ fun oftype_D2Eapplst (
   end  // end of [loop_ref]
 
   val (restype, inner_types) = 
-    loop_s3type (s3type_fun, d2exparglst, nil0 (), loc)
+    loop_s3type (s3type_funty, d2exparglst, nil0 (), loc)
 in
   restype
 end
@@ -419,16 +493,14 @@ in
 //
   | D2Eifopt (
     d2exp_if(*test*), d2exp_then(*then*), d2expopt_else (*else*)) => let 
-      val () = s3typecheck_d2exp (d2exp_if, s3type_bool (), tmap)
-      val ty_if = oftype_d2exp (d2exp_then, tmap)
-    in
-      case+ d2expopt_else of
-      | Some d2exp_else => let
-        val () = s3typecheck_d2exp (d2exp_else, ty_if, tmap)
-      in ty_if end
+    val () = s3typecheck_d2exp (d2exp_if, s3type_bool (), tmap)
+    val ty_if = oftype_d2exp (d2exp_then, tmap)
+  in
+    case+ d2expopt_else of
+    | Some d2exp_else => let
+      val () = s3typecheck_d2exp (d2exp_else, ty_if, tmap)
+    in ty_if end
       | None () => ty_if
-    end
-
   end
   | D2Ecase (
       casekind
@@ -436,25 +508,312 @@ in
       , c2laulst
     ) => exitlocmsg ("todo\n")
 //
-  | D2Esing of (d2exp)
-  | D2Elist of (d2explst)
-//
-  | D2Etup of (d2explst)
-//
-  | D2Eseq of (d2explst)
-//
-  | D2Eselab of (d2exp, d2lablst)
-//
-  | D2Elam_dyn of (int (*npf*), p2atlst, d2exp)
-  | D2Elam_sta of (s2varlst (*static variables*)
-                   , s2explst (*predicates in the statics*)
-                   , d2exp)
-  | D2Efix of (d2var, p2atlst, d2exp)
-  | D2Eextfcall of (string, d2explst)
-  | D2Eassgn of (d2exp, d2exp)
-//
-  | D2Eignored of ((*void*)) // HX: error-handling
+  | D2Esing (d2exp) => oftype_d2exp (d2exp, tmap)
+  | D2Elist (npf, d2explst) => let
+    implement list_foldright$fopr<d2exp><'(int, s3labeltypelst)> (d2exp, res) = let
+      val s3type = oftype_d2exp (d2exp, tmap)
+      val index = res.0
+      val label = LABint (index)
+      val labeltype = s3labeltype_make (label, s3type)
+      val res = '(index + 1, cons0 (labeltype, res.1))
+    in
+      res
+    end
+    val res = 
+      list_foldright<d2exp><'(int, s3labeltypelst)> (d2explst, '(0, nil0 ()))
 
+    val ty = S3TYPErecord (ref (S3TKINDignored), npf, res.1)
+  in
+    ty
+  end
+//
+  | D2Etup (kind, npf, d2explst) => let
+    implement list_foldright$fopr<d2exp><'(int, s3labeltypelst)> (d2exp, res) = let
+      val s3type = oftype_d2exp (d2exp, tmap)
+      val index = res.0
+      val label = LABint (index)
+      val labeltype = s3labeltype_make (label, s3type)
+      val res = '(index + 1, cons0 (labeltype, res.1))
+    in
+      res
+    end
+    val res = 
+      list_foldright<d2exp><'(int, s3labeltypelst)> (d2explst, '(0, nil0 ()))
+
+    val ty = S3TYPErecord (ref (s3tkind_make (kind)), npf, res.1)
+  in
+    ty
+  end
+  | D2Eseq (d2explst) => exitlocmsg ("Not supported.\n")
+//
+  | D2Eselab (d2exp, d2lablst) => exitlocmsg ("Not supported.\n")
+//
+  | D2Elam_dyn (npf, p2atlst, d2exp) => let
+    implement list_foldright$fopr<p2at><s3typelst> (p2at, res) = let
+      val s3type = oftype_p2at (p2at, tmap)
+    in cons0 (s3type, res) end
+    val ty_args = list_foldright<p2at><s3typelst> (p2atlst, nil0 ())
+    val ty_res = oftype_d2exp (d2exp, tmap)
+
+    val ty_fun = s3type_fun (npf, ty_args, ty_res, ~1)
+  in
+    ty_fun
+  end
+  | D2Elam_sta (s2varlst (*static variables*)
+               , s2explst (*predicates in the statics*)
+               , d2exp) => let
+    val ty = oftype_d2exp (d2exp, tmap)
+    val ret = S3TYPEpoly (s2varlst, ty)
+  in
+    ret
+  end
+  | D2Efix (d2var, p2atlst, d2exp) => exitlocmsg ("Not supported.\n")
+  | D2Eextfcall (string, d2explst) => s3type_ref ()
+  | D2Eassgn (d2exp1, d2exp2) => let
+    val ty1 = oftype_d2exp (d2exp1, tmap)
+    val ty2 = oftype_d2exp (d2exp2, tmap)
+    val tcres = s3type_match (tmap, ty1, ty2)
+    val ret = s3type_normalize (ty1)
+  in
+    ty1
+  end
+  | D2Eignored ((*void*)) => exitlocmsg ("Check this.\n")
+end  // end of [oftype_d2exp]
+
+implement oftype_funhead_f2undec (f2undec, tmap) = let
+  val fundef = f2undec.f2undec_def
+  val funtype = oftype_funhead_d2exp (fundef, tmap)
+
+  val funvar = f2undec.f2undec_var
+  val () = s3typemap_update_d2var (tmap, funvar, funtype)
+in
+  funtype
+end
+
+implement oftype_funhead_d2exp (d2exp, tmap) = let
+  val node = d2exp.d2exp_node
+in
+  case+ node of
+  | D2Elam_sta (s2varlst (*static variables*)
+               , s2explst (*predicates in the statics*)
+               , d2exp) => let
+    val ty = oftype_funhead_d2exp (d2exp, tmap)
+    val ret = S3TYPEpoly (s2varlst, ty)
+  in
+    ret
+  end
+  | D2Elam_dyn (npf, p2atlst, d2exp) => let
+    implement list_foldright$fopr<p2at><s3typelst> (p2at, res) = let
+      val s3type = oftype_p2at (p2at, tmap)
+    in cons0 (s3type, res) end
+    val ty_args = list_foldright<p2at><s3typelst> (p2atlst, nil0 ())
+
+    fun get_type_lamdyn_ret (d2exp: d2exp, tmap: s3typemap): s3type =
+      case+ d2exp.d2exp_node of
+      | D2Eann_type (_, s2exp) => s3type_translate (s2exp)
+      | _ => s3type_ref ()
+
+    val ty_ret = get_type_lamdyn_ret (d2exp, tmap)
+    val ty_fun = s3type_fun (npf, ty_args, ty_ret, ~1)
+  in
+    ty_fun
+  end
+  | _ => exitlocmsg (datcon_d2exp_node (node) + 
+                     " is encountered, which shall not happen here.\n")
+end
+
+(* ******************* ******************* *)
+
+implement s3type_match (tmap, left, right) = let
+  val tyleft = s3type_normalize (left)
+  val tyright = s3type_normalize (right)
+in
+  case+ (tyleft, tyright) of
+  | (S3TYPEref (tyvar), _) =>
+    (
+    case+ !tyvar of
+    | Some0 (_) => exitlocmsg ("This should not happen.\n")
+    | None0 () => let
+      val () = !tyvar := Some0 tyright
+    in
+      None0 ()
+    end
+    )
+  | (_, S3TYPEref (tyvar)) =>
+    (
+    case+ !tyvar of
+    | Some0 (_) => exitlocmsg ("This should not happen.\n")
+    | None0 () => let
+      val () = !tyvar := Some0 tyleft
+    in
+      None0 ()
+    end
+    )
+  //
+  | (S3TYPEelement (S3ELEMENTint ())
+    , S3TYPEelement (S3ELEMENTint ())) => None0 ()
+  | (S3TYPEelement (S3ELEMENTchar ())
+    , S3TYPEelement (S3ELEMENTchar ())) => None0 ()
+  | (S3TYPEelement (S3ELEMENTbool ())
+    , S3TYPEelement (S3ELEMENTbool ())) => None0 ()
+  | (S3TYPEelement (S3ELEMENTstring ())
+    , S3TYPEelement (S3ELEMENTstring ())) => None0 ()
+  | (S3TYPEelement (S3ELEMENTunit ())
+    , S3TYPEelement (S3ELEMENTunit ())) => None0 ()
+  //
+  | (S3TYPErecord (kind1, npf1, labtypelst1)
+    , S3TYPErecord (kind2, npf2, labtypelst2)) => let
+    val () = (case+ !kind1 of
+             | S3TKINDignored () => !kind1 := !kind2
+             | _ => ()
+             )
+    val () = (case+ !kind2 of
+             | S3TKINDignored () => !kind2 := !kind1
+             | _ => ()
+             )
+    fun loop (labtypelst1: s3labeltypelst
+      , labtypelst2: s3labeltypelst): tcresult =
+    case+ (labtypelst1, labtypelst2) of
+    | (cons0 (labtype1, labtypelst1'), cons0 (labtype2, labtypelst2')) => let
+      val tcres = s3type_match_labeltype (tmap, labtype1, labtype2)
+    in
+      case+ tcres of
+      | Some0 _ => tcres
+      | None0 () => loop (labtypelst1', labtypelst2')
+    end
+    | (nil0 (), nil0 ()) => None0 ()
+    | (_, _) => Some0 ("Type mismatch: " + $mylocation)
+
+  in
+    loop (labtypelst1, labtypelst2)
+  end
+  //
+  | (S3TYPEprop (), S3TYPEprop ()) => None0 ()
+  //
+  | (S3TYPEcon (s2cst1, typelst1), S3TYPEcon (s2cst2, typelst2)) =>
+    if s2cst1 != s2cst2 then 
+      Some0 (s2cst1.tostring () + " <> " + s2cst2.tostring ())
+    else s3type_match_typelst (tmap, typelst1, typelst2)
+  //
+  | (S3TYPEfun (npf1, args1, res1, eff1)
+    , S3TYPEfun (npf2, args2, res2, eff2)) =>
+  if !npf1 <> !npf2 then Some0 ("Type mismatch: " + $mylocation)
+  else let
+    val tcres = s3type_match_typelst (tmap, args1, args2)
+  in
+    case+ tcres of
+    | Some0 _ => tcres
+    | None0 () => let
+      val tcres = s3type_match (tmap, res1, res2)
+    in
+      tcres
+    end
+  end
+  //
+  | (S3TYPEvar (s2var1), S3TYPEvar (s2var2)) => 
+    if (s2var1 != s2var2) then Some0 ("Type mismatch: " + $mylocation)
+    else None0 ()
+  | (S3TYPEpoly (s2varlst1, s3type1), S3TYPEpoly (s2varlst2, s3type2)) =>
+    s3type_match (tmap, s3type1, s3type2)
+  | (_, _) => Some0 ("Type mismatch: " + $mylocation)
+end
+
+implement s3type_match_typelst (tmap, typelst1, typelst2) =
+case+ (typelst1, typelst2) of
+| (cons0 (type1, typelst1'), cons0 (type2, typelst2')) => let
+  val tcres = s3type_match (tmap, type1, type2)
+in
+  case+ tcres of
+  | Some0 _ => tcres
+  | None0 () => s3type_match_typelst (tmap, typelst1', typelst2')
+end
+| (nil0 (), nil0 ()) => None0 ()
+| (_, _) => Some0 ("Type mismatch: " + $mylocation)
+
+implement s3type_match_labeltype (tmap, labtype1, labtype2) = let
+  val lab1 = labtype1.s3labeltype_label
+  val lab2 = labtype2.s3labeltype_label
+  val type1 = labtype1.s3labeltype_type
+  val type2 = labtype2.s3labeltype_type
+in
+  if lab1 != lab2 then Some0 (lab1.tostring () + " <> " + lab2.tostring ())
+  else s3type_match (tmap, type1, type2)
+end
+
+implement s3type_normalize (s3type) =
+case+ s3type of
+| S3TYPEref (typeopt_ref) => let
+  val typeopt = !typeopt_ref
+in
+  case+ typeopt of
+  | None0 () => s3type
+  | Some0 (type0) => let
+    val type1 = s3type_normalize (type0)
+    val () = !typeopt_ref := Some0 type1
+  in
+    type1
+  end
+end
+//
+| S3TYPEelement (s3element) => s3type
+//
+| S3TYPErecord (tkindref, npf, s3labeltypelst) => let
+  val s3labeltypelst1 = list0_foldright (s3labeltypelst, fopr, nil0) where {
+  fun fopr (s3labeltype: s3labeltype
+            , res: s3labeltypelst):<cloref1> s3labeltypelst = let
+    val lab = s3labeltype.s3labeltype_label
+    val type0 = s3labeltype.s3labeltype_type
+    val type1 = s3type_normalize (type0)
+    val labtype = s3labeltype_make (lab, type1)
+  in
+    cons0 (labtype, res)
+  end
+  }
+in
+  S3TYPErecord (tkindref, npf, s3labeltypelst1)
+end
+//
+| S3TYPEprop () => s3type
+//
+| S3TYPEcon (s2cst, s3typelst) => let
+  val s3typelst1 = s3type_normalize_typelst (s3typelst)
+in
+  S3TYPEcon (s2cst, s3typelst1)
+end
+//
+| S3TYPEfun (npfref, args, res, eff) => let
+  val args1 = s3type_normalize_typelst (args)
+  val res1 = s3type_normalize (res)
+in
+  S3TYPEfun (npfref, args1, res1, eff)
+end
+//
+| S3TYPEvar s2var => s3type
+//
+| S3TYPEpoly (s2varlst, s3type) => let
+  val s3type1 = s3type_normalize (s3type)
+in
+  S3TYPEpoly (s2varlst, s3type1)
+end
+
+
+implement s3type_normalize_typelst (s3typelst) = let
+  val s3typelst1 = list0_foldright (s3typelst, fopr, nil0) where {
+  fun fopr (type0: s3type
+            , res: s3typelst):<cloref1> s3typelst = let
+    val type1 = s3type_normalize (type0)
+  in
+    cons0 (type1, res)
+  end
+  }
+in
+  s3typelst1
+end
+
+        
+        
+
+  
 
 
 

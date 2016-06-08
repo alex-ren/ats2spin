@@ -194,7 +194,7 @@ $(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d promela/codegen.dats
 
 simpletypes/simpletypes_codegen2.hats: \
 ./simpletypes/simpletypes.sats ./simpletypes/codegen.dats; \
-$(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d promela/codegen.dats
+$(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d simpletypes/codegen.dats
 
 # ######### ##########
 

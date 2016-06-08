@@ -459,10 +459,11 @@ parse_D2Elist
 //
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 2)
+val npf = parse_int (jsvs[0])
 val d2es = parse_d2explst (s2env, p2env, jsvs[1])
 //
 in
-  D2Elist (d2es)
+  D2Elist (npf, d2es)
 end // end of [parse_D2Elist]
 
 (* ****** ****** *)
@@ -473,10 +474,12 @@ parse_D2Etup
 //
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 3)
+val kind = parse_int (jsvs[0])
+val npf = parse_int (jsvs[1])
 val d2es = parse_d2explst (s2env, p2env, jsvs[2])
 //
 in
-  D2Etup (d2es)
+  D2Etup (kind, npf, d2es)
 end // end of [parse_D2Etup]
 
 (* ****** ****** *)

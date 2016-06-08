@@ -158,7 +158,7 @@ codegen:: ./../postiats/postiats_codegen2.hats \
 
 ./../postiats/postiats_codegen2.hats: \
 ./../postiats/postiats.sats ./../postiats/codegen.dats; \
-$(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d codegen.dats
+$(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d ./../postiats/codegen.dats
 
 ./simpletypes_codegen2.hats: \
 ./simpletypes.sats ./codegen.dats; \

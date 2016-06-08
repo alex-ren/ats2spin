@@ -19,7 +19,11 @@ datatype s3rt =
 
 (* tkind: type kind*)
 datatype s3tkind =
-| S3TKINDflat | S3TKINDboxed
+| S3TKINDflat 
+| S3TKINDboxed
+| S3TKINDignored
+
+fun s3tkind_make (int): s3tkind
 
 datatype s3element =
 | S3ELEMENTint
@@ -31,15 +35,16 @@ datatype s3element =
 datatype s3type =
 | S3TYPEref of ref (s3typeopt)
 | S3TYPEelement of (s3element)
-| S3TYPErecord of (s3tkind, int (*npf*), s3labeltypelst)
+| S3TYPErecord of (ref s3tkind, int (*npf*), s3labeltypelst)
 | S3TYPEprop
 | S3TYPEcon of (s2cst, s3typelst)
-| S3TYPEfun of (int (*npf*)
+| S3TYPEfun of (ref int (*npf*)
                 , s3typelst (*args*)
                 , s3type (*res*)
-                , bool (*effect*))
+                , int (*effect: -1: ignored, 0: false, 1: true*))
 | S3TYPEvar of s2var
 | S3TYPEpoly of (s2varlst, s3type)
+| S3TYPEignored
 
 where
 s3typelst = list0 s3type
@@ -49,8 +54,10 @@ and s3labeltype = '{
 s3labeltype_label = label
 , s3labeltype_type = s3type
 }
-
+``
 and s3labeltypelst = list0 s3labeltype
+
+fun s3labeltype_make (label, s3type): s3labeltype
 
 (* ************* ************* *)
 
@@ -63,8 +70,8 @@ fun s3type_char (): s3type
 fun s3type_bool (): s3type
 fun s3type_string (): s3type
 fun s3type_unit (): s3type
-
 fun s3type_ref (): s3type
+fun s3type_fun (npf: int, ty_args: s3typelst, ty_res: s3type, effect: int): s3type
 
 fun s3labeltype_make (label, s3type): s3labeltype
 
@@ -108,7 +115,7 @@ fun s3type_get_rettype (s3type): s3type
 
 (* ************* ************* *)
 
-fun s3type_translate (s2exp): s3type
+fun s3type_translate (s2exp): s3typeopt
 
 (* ************* ************* *)
 
@@ -127,6 +134,8 @@ fun s3typecheck_d2exp (d2exp, s3type, s3typemap): void
 symintr .oftype
 fun oftype_d2exp (d2exp: d2exp, tmap: s3typemap): s3type
 
+fun oftype_p2at (p2at: p2at, tmap: s3typemap): s3type
+
 fun oftype_d2cst (d2cst: d2cst, tmap: s3typemap, loc: location_type): s3type
 fun oftype_d2var (d2var: d2var, tmap: s3typemap, loc: location_type): s3type
 fun oftype_d2sym (d2sym: d2sym, tmap: s3typemap, loc: location_type): s3type
@@ -135,7 +144,8 @@ fun oftype_d2sym (d2sym: d2sym, tmap: s3typemap, loc: location_type): s3type
 
 
 
-fun oftype_f2undec_head (f2undec, s3typemap): s3type
+fun oftype_funhead_f2undec (f2undec, s3typemap): s3type
+fun oftype_funhead_d2exp (d2exp, s3typemap): s3type
 
 overload .oftype with oftype_d2exp
 overload .oftype with oftype_d2var
@@ -146,10 +156,13 @@ overload .oftype with oftype_d2var
 typedef tcresult = option0 string
 
 fun s3type_match (s3typemap, s3type, s3type): tcresult
+fun s3type_match_typelst (s3typemap, s3typelst, s3typelst): tcresult
+fun s3type_match_labeltype (s3typemap, s3labeltype, s3labeltype): tcresult
 
 (* ************* ************* *)
 
 fun s3type_normalize (s3type): s3type
+fun s3type_normalize_typelst (s3typelst): s3typelst
 
 abstype s3poly_para_map = ptr
 fun s3poly_para_map_create (): s3poly_para_map

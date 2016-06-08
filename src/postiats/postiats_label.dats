@@ -5,8 +5,14 @@
 
 (* ****** ****** *)
 //
-#include
-"share/atspre_staload.hats"
+#include "share/atspre_staload.hats"
+#include "share/atspre_define.hats"
+#include "share/HATS/atspre_staload_libats_ML.hats"
+//
+(* ****** ****** *)
+staload "./../utils/utils.dats"
+
+
 //
 (* ****** ****** *)
 
@@ -42,11 +48,19 @@ fprint_label
 in
 //
 case+ lab of
-| LABint (int) => fprint (out, int)
+| LABint (n) => fprint (out, n)
 | LABsym (sym) => fprint (out, sym)
 //
 end // end of [fprint_label]
 
 (* ****** ****** *)
 
+implement tostring_label (label) =
+case+ label of
+| LABint (n) => "lab:" + tostring_int (n)
+| LABsym (sym) => tostring_symbol (sym)
+
+
 (* end of [postiats_label.dats] *)
+
+

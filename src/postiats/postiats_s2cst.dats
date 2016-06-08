@@ -100,19 +100,31 @@ end // end of [local]
 
 implement
 fprint_s2cst
-  (out, d2c) =
+  (out, s2cst) =
 (
-  fprint! (out, d2c.name(), "(", d2c.stamp(), ")")
+  fprint! (out, s2cst.name(), "(", s2cst.stamp(), ")")
 ) (* end of [fprint_s2cst] *)
 
 (* ****** ****** *)
 
 implement
 compare_s2cst_s2cst
-  (d2c1, d2c2) = compare (d2c1.stamp(), d2c2.stamp())
+  (s2cst1, s2cst2) = compare (s2cst1.stamp(), s2cst2.stamp())
 // end of [compare_s2cst_s2cst]
 
 (* ****** ****** *)
 
+implement tostring_s2cst (s2cst) = let
+  val s = s2cst.name ()
+in s.tostring () end
+
+
 (* end of [postiats_s2cst.dats] *)
+
+
+
+
+
+
+
 

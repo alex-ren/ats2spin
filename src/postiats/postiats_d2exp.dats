@@ -57,15 +57,15 @@ fprint_d2exp_node$D2Ecase$arg3(out, arg0) =
 in fprint_d2exp_node$carg<c2laulst>(out, arg3) end
 
 implement{}
-fprint_d2exp_node$D2Elist$arg1(out, arg0) =
-  let val-D2Elist(arg1) = arg0 
-in fprint_d2exp_node$carg<d2explst>(out, arg1) end
+fprint_d2exp_node$D2Elist$arg2(out, arg0) =
+  let val-D2Elist(_, arg2) = arg0 
+in fprint_d2exp_node$carg<d2explst>(out, arg2) end
 
 
 implement{}
-fprint_d2exp_node$D2Etup$arg1(out, arg0) =
-  let val-D2Etup(arg1) = arg0 
-in fprint_d2exp_node$carg<d2explst>(out, arg1) end
+fprint_d2exp_node$D2Etup$arg3(out, arg0) =
+  let val-D2Etup(_, _, arg3) = arg0 
+in fprint_d2exp_node$carg<d2explst>(out, arg3) end
 
 implement{}
 fprint_d2exp_node$D2Eseq$arg1(out, arg0) =
@@ -314,7 +314,7 @@ d2exp_sing
 //
 implement
 d2exp_list
-  (loc, d2es) = d2exp_make_node (loc, D2Elist(d2es))
+  (loc, npf, d2es) = d2exp_make_node (loc, D2Elist(npf, d2es))
 // end of [d2exp_list]
 //
 (* ****** ****** *)

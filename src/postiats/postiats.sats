@@ -98,6 +98,7 @@ hash_symbol (s: symbol):<> ulint
 (* ****** ****** *)
 
 fun tostring_symbol (symbol): string
+overload .tostring with tostring_symbol
 
 (* ****** ****** *)
 // The symbols to be compared needs to be created 
@@ -124,6 +125,9 @@ overload fprint with fprint_label
 
 fun
 emit_label: emit_type (label)
+
+fun tostring_label (label): string
+overload .tostring with tostring_label
 
 (* ****** ****** *)
 //
@@ -248,6 +252,9 @@ overload .name with s2var_get_name
 //
 overload .stamp with s2cst_get_stamp
 overload .stamp with s2var_get_stamp
+
+fun tostring_s2cst (s2cst): string
+overload .tostring with tostring_s2cst
 
 (* *************** *************** *)
 
@@ -609,9 +616,9 @@ and d2exp_node =
     ) (* end of [D2Ecase] *)
 //
   | D2Esing of (d2exp)
-  | D2Elist of (d2explst)
+  | D2Elist of (int (*npf*), d2explst)
 //
-  | D2Etup of (d2explst)
+  | D2Etup of (int (*kind*), int (*npf*), d2explst)
 //
   | D2Eseq of (d2explst)
 //
@@ -835,11 +842,11 @@ fun d2exp_ifopt
 (* ****** ****** *)
 
 fun d2exp_sing (loc: loc_t, d2e: d2exp): d2exp
-fun d2exp_list (loc: loc_t, d2es: d2explst): d2exp
+fun d2exp_list (loc: loc_t, npf: int, d2es: d2explst): d2exp
 
 (* ****** ****** *)
 
-fun d2exp_tup (loc: loc_t, d2es: d2explst): d2exp
+fun d2exp_tup (loc: loc_t, kind: int, npf: int, d2es: d2explst): d2exp
 
 (* ****** ****** *)
 
