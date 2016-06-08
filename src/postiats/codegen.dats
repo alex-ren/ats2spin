@@ -4,8 +4,8 @@ staload "./postiats.sats"
 
 #codegen2("datcon", s2rt)
 
-
 #codegen2("fprint", s2rt, fprint_s2rt)
+#codegen2("fprint", s2exp_node, fprint_s2exp_node)
 
 (* **************** **************** *)
 

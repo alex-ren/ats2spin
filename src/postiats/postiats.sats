@@ -41,6 +41,11 @@ emit_stamp: emit_type (stamp)
 fun stamp_make (int): stamp
 
 (* ****** ****** *)
+
+fun stamp_get_value (stamp): int
+
+(* ****** ****** *)
+
 //
 fun
 compare_stamp_stamp
@@ -161,6 +166,16 @@ overload .tostring with location_tostring
 
 (* ********** Statics Related Elements ********** *)
 
+#define SORT_TYPE      "type"
+#define SORT_T0YPE     "t0ype"
+#define SORT_T_AT_YPE     "t@ype"
+#define SORT_VIEWTYPE  "viewtype"
+#define SORT_VIEWT0YPE "viewt0ype"
+#define SORT_VIEWT_AT_YPE "viewt@ype"
+#define SORT_PROP      "prop"
+#define SORT_VIEW      "view"
+
+
 datatype s2rt =
 | S2RTbas of symbol
 | S2RTfun of (s2rtlst, s2rt)
@@ -168,8 +183,9 @@ datatype s2rt =
 where
 s2rtlst = list0 s2rt
 
-fun
-myfprint_s2rt: fprint_type (s2rt)
+fun s2rt_is_type (s2rt): bool
+
+fun myfprint_s2rt: fprint_type (s2rt)
 
 fun{} datcon_s2rt (s2rt): string
 fun{} fprint_s2rt: fprint_type (s2rt)
@@ -205,7 +221,7 @@ fun neq_s2cst_s2cst : (s2cst, s2cst) -<> bool
 fun compare_s2cst_s2cst : (s2cst, s2cst) -<> int
 //
 overload = with eq_s2cst_s2cst
-overload != with eq_s2cst_s2cst
+overload != with neq_s2cst_s2cst
 overload compare with compare_s2cst_s2cst
 
 //
@@ -271,7 +287,7 @@ datatype s2exp_node =
 | S2Eintinf of int
 | S2Einvar of s2exp
 | S2Esizeof of s2exp
-| S2Etyrec of ((*knd, *) int (*npf*), labs2explst)
+| S2Etyrec of (int (*knd*), int (*npf*), labs2explst)
 (* This is for the return type of a function whose parameters use
 * reference type.
 *)
@@ -305,6 +321,11 @@ overload fprint with fprint_s2exp
 
 fun fprint_s2explst: fprint_type (s2explst)
 overload fprint with fprint_s2explst
+
+fun myfprint_s2exp_node: fprint_type (s2exp_node)
+fun{} fprint_s2exp_node: fprint_type (s2exp_node)
+
+fun fprint_labs2exp: fprint_type (labs2exp)
 
 (* ********** end Statics Related Elements ********** *)
 

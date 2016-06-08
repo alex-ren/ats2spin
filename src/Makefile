@@ -68,6 +68,7 @@ ATS2PROMELA_dyn := \
     postiats/postiats_s2cst.dats \
     postiats/postiats_s2var.dats \
     postiats/postiats_s2exp.dats \
+    postiats/postiats_s2rt.dats \
     postiats/postiats_d2con.dats \
     postiats/postiats_d2cst.dats \
     postiats/postiats_d2var.dats \
@@ -81,6 +82,9 @@ ATS2PROMELA_dyn := \
     simpletypes/simpletypes.dats \
     simpletypes/simpletypes_typemap.dats \
     simpletypes/simpletypes_poly_para_map.dats \
+    simpletypes/simpletypes_translate.dats \
+    simpletypes/simpletypes_instantiate.dats \
+    simpletypes/simpletypes_export.dats \
     simpletypes/dynloadall.dats \
     instr0/instr0.dats \
     instr0/i0exp.dats \

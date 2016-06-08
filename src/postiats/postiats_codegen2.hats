@@ -179,6 +179,829 @@ fprint_s2rt$S2RTtup$arg1(out, arg0) =
 (* ****** ****** *)
 (* ****** ****** *)
 //
+extern
+fun{}
+fprint_s2exp_node$S2Ecst: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Evar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eextkind: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eapp: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eeqeq: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eexi: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Euni: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Efun: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eint: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eintinf: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Einvar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Esizeof: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etyrec: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Ewthtype: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etop: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Erefarg: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eignored: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eerr: $d2ctype(fprint_s2exp_node<>)
+//
+(* ****** ****** *)
+//
+implement{}
+fprint_s2exp_node
+  (out, arg0) =
+(
+case+ arg0 of
+| S2Ecst _ => fprint_s2exp_node$S2Ecst<>(out, arg0)
+| S2Evar _ => fprint_s2exp_node$S2Evar<>(out, arg0)
+| S2Eextkind _ => fprint_s2exp_node$S2Eextkind<>(out, arg0)
+| S2Eapp _ => fprint_s2exp_node$S2Eapp<>(out, arg0)
+| S2Eeqeq _ => fprint_s2exp_node$S2Eeqeq<>(out, arg0)
+| S2Eexi _ => fprint_s2exp_node$S2Eexi<>(out, arg0)
+| S2Euni _ => fprint_s2exp_node$S2Euni<>(out, arg0)
+| S2Efun _ => fprint_s2exp_node$S2Efun<>(out, arg0)
+| S2Eint _ => fprint_s2exp_node$S2Eint<>(out, arg0)
+| S2Eintinf _ => fprint_s2exp_node$S2Eintinf<>(out, arg0)
+| S2Einvar _ => fprint_s2exp_node$S2Einvar<>(out, arg0)
+| S2Esizeof _ => fprint_s2exp_node$S2Esizeof<>(out, arg0)
+| S2Etyrec _ => fprint_s2exp_node$S2Etyrec<>(out, arg0)
+| S2Ewthtype _ => fprint_s2exp_node$S2Ewthtype<>(out, arg0)
+| S2Etop _ => fprint_s2exp_node$S2Etop<>(out, arg0)
+| S2Erefarg _ => fprint_s2exp_node$S2Erefarg<>(out, arg0)
+| S2Eignored _ => fprint_s2exp_node$S2Eignored<>(out, arg0)
+| S2Eerr _ => fprint_s2exp_node$S2Eerr<>(out, arg0)
+)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_s2exp_node$sep: (FILEref) -> void
+implement{}
+fprint_s2exp_node$sep(out) = fprint(out, ",")
+//
+extern
+fun{}
+fprint_s2exp_node$lpar: (FILEref) -> void
+implement{}
+fprint_s2exp_node$lpar(out) = fprint(out, "(")
+//
+extern
+fun{}
+fprint_s2exp_node$rpar: (FILEref) -> void
+implement{}
+fprint_s2exp_node$rpar(out) = fprint(out, ")")
+//
+extern
+fun{a:t0p}
+fprint_s2exp_node$carg: (FILEref, INV(a)) -> void
+implement{a}
+fprint_s2exp_node$carg(out, arg) = fprint_val<a>(out, arg)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_s2exp_node$S2Ecst$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Ecst$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Ecst$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Ecst$arg1: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Ecst(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Ecst$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Ecst$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Ecst$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Ecst$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Ecst$con(out, _) = fprint(out, "S2Ecst")
+implement{}
+fprint_s2exp_node$S2Ecst$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Ecst$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Ecst$arg1(out, arg0) =
+  let val-S2Ecst(arg1) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Evar$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Evar$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Evar$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Evar$arg1: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Evar(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Evar$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Evar$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Evar$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Evar$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Evar$con(out, _) = fprint(out, "S2Evar")
+implement{}
+fprint_s2exp_node$S2Evar$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Evar$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Evar$arg1(out, arg0) =
+  let val-S2Evar(arg1) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Eextkind$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eextkind$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eextkind$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eextkind$arg1: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Eextkind(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Eextkind$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Eextkind$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Eextkind$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Eextkind$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Eextkind$con(out, _) = fprint(out, "S2Eextkind")
+implement{}
+fprint_s2exp_node$S2Eextkind$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Eextkind$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Eextkind$arg1(out, arg0) =
+  let val-S2Eextkind(arg1) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Eapp$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eapp$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eapp$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eapp$sep1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eapp$arg1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eapp$arg2: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Eapp(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Eapp$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Eapp$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Eapp$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Eapp$sep1<>(out, arg0)
+val () = fprint_s2exp_node$S2Eapp$arg2<>(out, arg0)
+val () = fprint_s2exp_node$S2Eapp$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Eapp$con(out, _) = fprint(out, "S2Eapp")
+implement{}
+fprint_s2exp_node$S2Eapp$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Eapp$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Eapp$sep1(out, _) = fprint_s2exp_node$sep<>(out)
+implement{}
+fprint_s2exp_node$S2Eapp$arg1(out, arg0) =
+  let val-S2Eapp(arg1, _) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+implement{}
+fprint_s2exp_node$S2Eapp$arg2(out, arg0) =
+  let val-S2Eapp(_, arg2) = arg0 in fprint_s2exp_node$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Eeqeq$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eeqeq$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eeqeq$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eeqeq$sep1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eeqeq$arg1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eeqeq$arg2: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Eeqeq(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Eeqeq$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Eeqeq$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Eeqeq$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Eeqeq$sep1<>(out, arg0)
+val () = fprint_s2exp_node$S2Eeqeq$arg2<>(out, arg0)
+val () = fprint_s2exp_node$S2Eeqeq$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Eeqeq$con(out, _) = fprint(out, "S2Eeqeq")
+implement{}
+fprint_s2exp_node$S2Eeqeq$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Eeqeq$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Eeqeq$sep1(out, _) = fprint_s2exp_node$sep<>(out)
+implement{}
+fprint_s2exp_node$S2Eeqeq$arg1(out, arg0) =
+  let val-S2Eeqeq(arg1, _) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+implement{}
+fprint_s2exp_node$S2Eeqeq$arg2(out, arg0) =
+  let val-S2Eeqeq(_, arg2) = arg0 in fprint_s2exp_node$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Eexi$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eexi$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eexi$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eexi$sep1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eexi$sep2: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eexi$arg1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eexi$arg2: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eexi$arg3: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Eexi(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Eexi$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Eexi$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Eexi$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Eexi$sep1<>(out, arg0)
+val () = fprint_s2exp_node$S2Eexi$arg2<>(out, arg0)
+val () = fprint_s2exp_node$S2Eexi$sep2<>(out, arg0)
+val () = fprint_s2exp_node$S2Eexi$arg3<>(out, arg0)
+val () = fprint_s2exp_node$S2Eexi$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Eexi$con(out, _) = fprint(out, "S2Eexi")
+implement{}
+fprint_s2exp_node$S2Eexi$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Eexi$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Eexi$sep1(out, _) = fprint_s2exp_node$sep<>(out)
+implement{}
+fprint_s2exp_node$S2Eexi$sep2(out, _) = fprint_s2exp_node$sep<>(out)
+implement{}
+fprint_s2exp_node$S2Eexi$arg1(out, arg0) =
+  let val-S2Eexi(arg1, _, _) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+implement{}
+fprint_s2exp_node$S2Eexi$arg2(out, arg0) =
+  let val-S2Eexi(_, arg2, _) = arg0 in fprint_s2exp_node$carg(out, arg2) end
+implement{}
+fprint_s2exp_node$S2Eexi$arg3(out, arg0) =
+  let val-S2Eexi(_, _, arg3) = arg0 in fprint_s2exp_node$carg(out, arg3) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Euni$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Euni$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Euni$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Euni$sep1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Euni$sep2: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Euni$arg1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Euni$arg2: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Euni$arg3: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Euni(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Euni$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Euni$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Euni$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Euni$sep1<>(out, arg0)
+val () = fprint_s2exp_node$S2Euni$arg2<>(out, arg0)
+val () = fprint_s2exp_node$S2Euni$sep2<>(out, arg0)
+val () = fprint_s2exp_node$S2Euni$arg3<>(out, arg0)
+val () = fprint_s2exp_node$S2Euni$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Euni$con(out, _) = fprint(out, "S2Euni")
+implement{}
+fprint_s2exp_node$S2Euni$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Euni$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Euni$sep1(out, _) = fprint_s2exp_node$sep<>(out)
+implement{}
+fprint_s2exp_node$S2Euni$sep2(out, _) = fprint_s2exp_node$sep<>(out)
+implement{}
+fprint_s2exp_node$S2Euni$arg1(out, arg0) =
+  let val-S2Euni(arg1, _, _) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+implement{}
+fprint_s2exp_node$S2Euni$arg2(out, arg0) =
+  let val-S2Euni(_, arg2, _) = arg0 in fprint_s2exp_node$carg(out, arg2) end
+implement{}
+fprint_s2exp_node$S2Euni$arg3(out, arg0) =
+  let val-S2Euni(_, _, arg3) = arg0 in fprint_s2exp_node$carg(out, arg3) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Efun$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Efun$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Efun$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Efun$sep1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Efun$sep2: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Efun$arg1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Efun$arg2: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Efun$arg3: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Efun(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Efun$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Efun$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Efun$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Efun$sep1<>(out, arg0)
+val () = fprint_s2exp_node$S2Efun$arg2<>(out, arg0)
+val () = fprint_s2exp_node$S2Efun$sep2<>(out, arg0)
+val () = fprint_s2exp_node$S2Efun$arg3<>(out, arg0)
+val () = fprint_s2exp_node$S2Efun$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Efun$con(out, _) = fprint(out, "S2Efun")
+implement{}
+fprint_s2exp_node$S2Efun$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Efun$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Efun$sep1(out, _) = fprint_s2exp_node$sep<>(out)
+implement{}
+fprint_s2exp_node$S2Efun$sep2(out, _) = fprint_s2exp_node$sep<>(out)
+implement{}
+fprint_s2exp_node$S2Efun$arg1(out, arg0) =
+  let val-S2Efun(arg1, _, _) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+implement{}
+fprint_s2exp_node$S2Efun$arg2(out, arg0) =
+  let val-S2Efun(_, arg2, _) = arg0 in fprint_s2exp_node$carg(out, arg2) end
+implement{}
+fprint_s2exp_node$S2Efun$arg3(out, arg0) =
+  let val-S2Efun(_, _, arg3) = arg0 in fprint_s2exp_node$carg(out, arg3) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Eint$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eint$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eint$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eint$arg1: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Eint(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Eint$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Eint$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Eint$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Eint$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Eint$con(out, _) = fprint(out, "S2Eint")
+implement{}
+fprint_s2exp_node$S2Eint$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Eint$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Eint$arg1(out, arg0) =
+  let val-S2Eint(arg1) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Eintinf$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eintinf$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eintinf$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eintinf$arg1: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Eintinf(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Eintinf$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Eintinf$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Eintinf$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Eintinf$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Eintinf$con(out, _) = fprint(out, "S2Eintinf")
+implement{}
+fprint_s2exp_node$S2Eintinf$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Eintinf$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Eintinf$arg1(out, arg0) =
+  let val-S2Eintinf(arg1) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Einvar$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Einvar$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Einvar$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Einvar$arg1: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Einvar(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Einvar$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Einvar$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Einvar$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Einvar$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Einvar$con(out, _) = fprint(out, "S2Einvar")
+implement{}
+fprint_s2exp_node$S2Einvar$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Einvar$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Einvar$arg1(out, arg0) =
+  let val-S2Einvar(arg1) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Esizeof$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Esizeof$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Esizeof$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Esizeof$arg1: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Esizeof(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Esizeof$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Esizeof$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Esizeof$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Esizeof$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Esizeof$con(out, _) = fprint(out, "S2Esizeof")
+implement{}
+fprint_s2exp_node$S2Esizeof$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Esizeof$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Esizeof$arg1(out, arg0) =
+  let val-S2Esizeof(arg1) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Etyrec$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etyrec$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etyrec$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etyrec$sep1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etyrec$sep2: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etyrec$arg1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etyrec$arg2: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etyrec$arg3: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Etyrec(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Etyrec$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Etyrec$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Etyrec$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Etyrec$sep1<>(out, arg0)
+val () = fprint_s2exp_node$S2Etyrec$arg2<>(out, arg0)
+val () = fprint_s2exp_node$S2Etyrec$sep2<>(out, arg0)
+val () = fprint_s2exp_node$S2Etyrec$arg3<>(out, arg0)
+val () = fprint_s2exp_node$S2Etyrec$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Etyrec$con(out, _) = fprint(out, "S2Etyrec")
+implement{}
+fprint_s2exp_node$S2Etyrec$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Etyrec$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Etyrec$sep1(out, _) = fprint_s2exp_node$sep<>(out)
+implement{}
+fprint_s2exp_node$S2Etyrec$sep2(out, _) = fprint_s2exp_node$sep<>(out)
+implement{}
+fprint_s2exp_node$S2Etyrec$arg1(out, arg0) =
+  let val-S2Etyrec(arg1, _, _) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+implement{}
+fprint_s2exp_node$S2Etyrec$arg2(out, arg0) =
+  let val-S2Etyrec(_, arg2, _) = arg0 in fprint_s2exp_node$carg(out, arg2) end
+implement{}
+fprint_s2exp_node$S2Etyrec$arg3(out, arg0) =
+  let val-S2Etyrec(_, _, arg3) = arg0 in fprint_s2exp_node$carg(out, arg3) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Ewthtype$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Ewthtype$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Ewthtype$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Ewthtype$arg1: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Ewthtype(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Ewthtype$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Ewthtype$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Ewthtype$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Ewthtype$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Ewthtype$con(out, _) = fprint(out, "S2Ewthtype")
+implement{}
+fprint_s2exp_node$S2Ewthtype$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Ewthtype$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Ewthtype$arg1(out, arg0) =
+  let val-S2Ewthtype(arg1) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Etop$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etop$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etop$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Etop$arg1: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Etop(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Etop$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Etop$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Etop$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Etop$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Etop$con(out, _) = fprint(out, "S2Etop")
+implement{}
+fprint_s2exp_node$S2Etop$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Etop$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Etop$arg1(out, arg0) =
+  let val-S2Etop(arg1) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Erefarg$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Erefarg$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Erefarg$rpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Erefarg$arg1: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Erefarg(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Erefarg$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Erefarg$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Erefarg$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Erefarg$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Erefarg$con(out, _) = fprint(out, "S2Erefarg")
+implement{}
+fprint_s2exp_node$S2Erefarg$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Erefarg$rpar(out, _) = fprint_s2exp_node$rpar(out)
+implement{}
+fprint_s2exp_node$S2Erefarg$arg1(out, arg0) =
+  let val-S2Erefarg(arg1) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_s2exp_node$S2Eignored$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eignored$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eignored$rpar: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Eignored(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Eignored$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Eignored$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Eignored$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Eignored$con(out, _) = fprint(out, "S2Eignored")
+implement{}
+fprint_s2exp_node$S2Eignored$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Eignored$rpar(out, _) = fprint_s2exp_node$rpar(out)
+//
+extern
+fun{}
+fprint_s2exp_node$S2Eerr$con: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eerr$lpar: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Eerr$rpar: $d2ctype(fprint_s2exp_node<>)
+//
+implement{}
+fprint_s2exp_node$S2Eerr(out, arg0) = 
+{
+//
+val () = fprint_s2exp_node$S2Eerr$con<>(out, arg0)
+val () = fprint_s2exp_node$S2Eerr$lpar<>(out, arg0)
+val () = fprint_s2exp_node$S2Eerr$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s2exp_node$S2Eerr$con(out, _) = fprint(out, "S2Eerr")
+implement{}
+fprint_s2exp_node$S2Eerr$lpar(out, _) = fprint_s2exp_node$lpar(out)
+implement{}
+fprint_s2exp_node$S2Eerr$rpar(out, _) = fprint_s2exp_node$rpar(out)
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
 implement
 {}(*tmp*)
 datcon_d2ecl_node

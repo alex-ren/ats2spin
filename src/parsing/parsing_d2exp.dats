@@ -216,7 +216,7 @@ parse_D2Ecst
 //
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 1)
-val d2c = parse_d2cst (s2env, d2cstmap, jsvs[0])
+val d2c = parse_d2cst0 (s2env, d2cstmap, jsvs[0])
 //
 in
   D2Ecst (d2c)
@@ -230,7 +230,7 @@ parse_D2Evar
 //
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 1)
-val d2v = parse_d2var (d2varmap, jsvs[0])
+val d2v = parse_d2var0 (d2varmap, jsvs[0])
 //
 in
   D2Evar (d2v)
@@ -536,7 +536,7 @@ parse_D2Elam_sta
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 3)
 val s2varlst = 
-  parse_list0 (jsvs[0], lam x => parse_s2var (s2env.s2parsingenv_s2varmap, x))
+  parse_list0 (jsvs[0], lam x => parse_s2var0 (s2env.s2parsingenv_s2varmap, x))
 
 val s2explst = parse_list0 (jsvs[1], lam x => parse_s2exp (s2env, x))
 

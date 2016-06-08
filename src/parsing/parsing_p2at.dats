@@ -177,7 +177,7 @@ parse_P2Tvar
 //
 val-JSONarray(jsvs) = jsv2
 val () = assertloc (length(jsvs) >= 1)
-val d2v = parse_d2var (d2varmap, jsvs[0])
+val d2v = parse_d2var0 (d2varmap, jsvs[0])
 //
 in
   P2Tvar (d2v)
@@ -220,7 +220,7 @@ parse_P2Tcon
 //
 val-JSONarray(jsvs) = jsv2
 val () = assertloc (length(jsvs) >= 6)
-val d2c = parse_d2con (s2env, d2env.parsingenv_d2conmap, jsvs[1])
+val d2c = parse_d2con0 (s2env, d2env.parsingenv_d2conmap, jsvs[1])
 val npf = parse_int (jsvs[4])
 val p2atlst =
   parse_list<p2at> (jsvs[5], lam x => parse_p2at (s2env, d2env, x))

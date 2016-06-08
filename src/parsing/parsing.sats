@@ -95,9 +95,10 @@ fun parse_label (jsv: jsonval): label
 (* ****** ****** *)
 
 typedef s2cstmap = $HT.hashtbl (stamp, s2cst)
-fun parse_s2cst (s2cstmap: s2cstmap, jsv: jsonval): s2cst
+fun parse_s2cst (max: int, s2cstmap: s2cstmap, jsv: jsonval): '(s2cst, int)
+fun parse_s2cst0 (s2cstmap: s2cstmap, jsv: jsonval): s2cst
 
-fun parse_s2cstmap (jsv: jsonval): s2cstmap
+fun parse_s2cstmap (max: int, jsv: jsonval): '(s2cstmap, int(*max stamp*))
 
 (* ****** ****** *)
 
@@ -106,9 +107,10 @@ fun parse_s2rt (jsv: jsonval): s2rt
 (* ****** ****** *)
 
 typedef s2varmap = $HT.hashtbl (stamp, s2var)
-fun parse_s2var (s2varmap: s2varmap, jsv: jsonval): s2var
+fun parse_s2var (max: int, s2varmap: s2varmap, jsv: jsonval): '(s2var, int)
+fun parse_s2var0 (s2varmap: s2varmap, jsv: jsonval): s2var
 
-fun parse_s2varmap (jsv: jsonval): s2varmap
+fun parse_s2varmap (max: int, jsv: jsonval): '(s2varmap, int(*max stamp*))
 
 (* ****** ****** *)
 
@@ -136,24 +138,33 @@ fun parse_casekind: jsonval -> casekind
 
 typedef d2cstmap = $HT.hashtbl (stamp, d2cst)
 
-fun parse_d2cst (s2env: s2parsingenv, d2cstmap: d2cstmap, jsv: jsonval): d2cst
+fun parse_d2cst (max: int, s2env: s2parsingenv
+  , d2cstmap: d2cstmap, jsv: jsonval): '(d2cst, int)
+fun parse_d2cst0 (s2env: s2parsingenv
+  , d2cstmap: d2cstmap, jsv: jsonval): d2cst
 fun parse_d2cst_extdef (jsv: jsonval): Option string
 
-fun parse_d2cstmap (s2env: s2parsingenv, jsv: jsonval): d2cstmap
+fun parse_d2cstmap (max: int, s2env: s2parsingenv, jsv: jsonval)
+  : '(d2cstmap, int)
 
 (* ****** ****** *)
 
 typedef d2conmap = $HT.hashtbl (stamp, d2con)
 
-fun parse_d2con (s2env: s2parsingenv, d2conmap: d2conmap, jsv: jsonval): d2con
+fun parse_d2con (max: int, s2env: s2parsingenv
+  , d2conmap: d2conmap, jsv: jsonval): '(d2con, int)
+fun parse_d2con0 (s2env: s2parsingenv
+  , d2conmap: d2conmap, jsv: jsonval): d2con
 
-fun parse_d2conmap (s2env: s2parsingenv, jsv: jsonval): d2conmap
+fun parse_d2conmap (max: int, s2env: s2parsingenv, jsv: jsonval)
+  : '(d2conmap, int)
 
 (* ****** ****** *)
 
 typedef d2varmap = $HT.hashtbl (stamp, d2var)
-fun parse_d2var (d2varmap: d2varmap, jsv: jsonval): d2var
-fun parse_d2varmap (jsv: jsonval): d2varmap
+fun parse_d2var (max: int, d2varmap: d2varmap, jsv: jsonval): '(d2var, int)
+fun parse_d2var0 (d2varmap: d2varmap, jsv: jsonval): d2var
+fun parse_d2varmap (max: int, jsv: jsonval): '(d2varmap, int)
 
 (* ****** ****** *)
 
@@ -184,7 +195,7 @@ fun parse_d2eclist (s2parsingenv, parsingenv, jsv: jsonval): d2eclist
 
 (* ****** ****** *)
 
-fun parse_d2eclist_export (jsv0: jsonval): d2eclist
+fun parse_d2eclist_export (jsv0: jsonval): '(d2eclist, int)
 
 (* ****** ****** *)
 

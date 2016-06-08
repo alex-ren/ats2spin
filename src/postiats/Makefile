@@ -66,6 +66,7 @@ ATS2PROMELA_dyn := \
     postiats_s2cst.dats \
     postiats_s2var.dats \
     postiats_s2exp.dats \
+    postiats_s2rt.dats \
     postiats_d2con.dats \
     postiats_d2cst.dats \
     postiats_d2var.dats \

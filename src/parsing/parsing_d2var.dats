@@ -65,23 +65,28 @@ end // end of [the_d2varmap_find]
 end // end of [local]
 
 (* ****** ****** *)
+implement
+parse_d2var0
+  (d2varmap, jsv0) = (parse_d2var (0, d2varmap, jsv0)).0
 
 implement
 parse_d2var
-  (d2varmap, jsv0) = let
+  (max, d2varmap, jsv0) = let
 //
 val-~Some_vt(jsv2) =
   jsonval_get_field (jsv0, "d2var_stamp")
 //
 val stamp = parse_stamp (jsv2)
+val n = stamp_get_value (stamp)
+val max = if n > max then n else max
 //
 val opt = the_d2varmap_find (d2varmap, stamp)
 //
 in
 //
 case+ opt of
-| ~Some_vt (d2v) => d2v
-| ~None_vt ((*void*)) => d2v where
+| ~Some_vt (d2v) => '(d2v, max)
+| ~None_vt ((*void*)) => '(d2v, max) where
   {
     val-~Some_vt(jsv1) =
       jsonval_get_field (jsv0, "d2var_sym")
@@ -105,20 +110,23 @@ in  // in of [local]
 
 implement
 parse_d2varmap
-  (jsv0) = let
+  (max, jsv0) = let
 //
 fun
 loop
 (
-  d2varmap: d2varmap
+  max: int
+  , d2varmap: d2varmap
   , jsvs: jsonvalist
-) : void =
+) : int =
 (
 case+ jsvs of
-| list_nil () => ()
+| list_nil () => max
 | list_cons
     (jsv, jsvs) => let
-    val d2v = parse_d2var(d2varmap, jsv) in loop (d2varmap, jsvs)
+    val '(d2v, max) = parse_d2var(max, d2varmap, jsv) 
+  in 
+    loop (max, d2varmap, jsvs)
   end // end of [list_cons]
 )
 //
@@ -126,9 +134,9 @@ val-JSONarray(jsvs) = jsv0
 //
 val d2varmap = $HT. hashtbl_make_nil (i2sz(2048))
 
-val () = loop (d2varmap, jsvs)
+val max = loop (max, d2varmap, jsvs)
 in
-  d2varmap
+  '(d2varmap, max)
 end // end of [parse_d2varmap]
 
 end  // end of [local]

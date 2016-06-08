@@ -100,22 +100,27 @@ in
   end
 end
 
+implement
+parse_d2cst0
+  (s2env, d2cstmap, jsv0) = (parse_d2cst (0, s2env, d2cstmap, jsv0)).0
 
 implement
 parse_d2cst
-  (s2env, d2cstmap, jsv0) = let
+  (max, s2env, d2cstmap, jsv0) = let
 //
 val-~Some_vt(jsv2) =
   jsonval_get_field (jsv0, "d2cst_stamp")
 //
 val stamp = parse_stamp (jsv2)
+val n = stamp_get_value (stamp)
+val max = if n > max then n else max
 //
 val opt = the_d2cstmap_find (d2cstmap, stamp)
 //
 in
 //
 case+ opt of
-| ~Some_vt (d2c) => d2c
+| ~Some_vt (d2c) => '(d2c, max)
 | ~None_vt ((*void*)) => let
   val-~Some_vt(jsv1) =
     jsonval_get_field (jsv0, "d2cst_sym")
@@ -133,13 +138,13 @@ in
     val d2c = d2cst_make (sym, stamp, s2exp, extdef)
     val ((*void*)) = the_d2cstmap_insert (d2cstmap, d2c)
   in
-    d2c
+    '(d2c, max)
   end
   | ~None_vt () => let
     val d2c = d2cst_make (sym, stamp, s2exp, None)
     val ((*void*)) = the_d2cstmap_insert (d2cstmap, d2c)
   in
-    d2c
+    '(d2c, max)
   end
 end
 //
@@ -149,21 +154,24 @@ end // end of [parse_d2cst]
   
 implement
 parse_d2cstmap
-  (s2env, jsv0) = let
+  (max, s2env, jsv0) = let
 //
 fun
 loop
 (
-  s2env: s2parsingenv
+  max: int
+  , s2env: s2parsingenv
   , d2cstmap: d2cstmap
   , jsvs: jsonvalist
-) : void =
+) : int =
 (
 case+ jsvs of
-| list_nil () => ()
+| list_nil () => max
 | list_cons
     (jsv, jsvs) => let
-    val d2c = parse_d2cst(s2env, d2cstmap, jsv) in loop (s2env, d2cstmap, jsvs)
+    val '(d2c, max) = parse_d2cst(max, s2env, d2cstmap, jsv) 
+  in 
+    loop (max, s2env, d2cstmap, jsvs)
   end // end of [list_cons]
 )
 //
@@ -171,9 +179,9 @@ val-JSONarray(jsvs) = jsv0
 //
 val d2cstmap = the_d2cstmap_create ()
 
-val () = loop (s2env, d2cstmap, jsvs)
+val max = loop (max, s2env, d2cstmap, jsvs)
 in
-  d2cstmap
+  '(d2cstmap, max)
 end // end of [parse_d2cstmap]
   
 (* ****** ****** *)

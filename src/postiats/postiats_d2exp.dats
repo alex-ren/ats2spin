@@ -32,7 +32,6 @@ implement fprint_val<d2lablst> = fprint_d2lablst
 implement fprint_val<p2atlst> = fprint_p2atlst
 
 implement fprint_val<s2exp> = fprint_s2exp
-implement fprint_val<s2exp> = fprint_s2exp
 
 implement fprint_val<s2var> = fprint_s2var
 

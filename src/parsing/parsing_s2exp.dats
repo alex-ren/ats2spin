@@ -105,7 +105,7 @@ implement parse_S2Ecst (s2cstmap, jsv0) = let
 //
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 1)
-val s2c = parse_s2cst (s2cstmap, jsvs[0])
+val s2c = parse_s2cst0 (s2cstmap, jsvs[0])
 //
 in
   S2Ecst (s2c)
@@ -116,7 +116,7 @@ implement parse_S2Evar (s2varmap, jsv0) = let
 //
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 1)
-val s2v = parse_s2var (s2varmap, jsvs[0])
+val s2v = parse_s2var0 (s2varmap, jsvs[0])
 //
 in
   S2Evar (s2v)

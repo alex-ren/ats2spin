@@ -24,31 +24,107 @@ val node = s2exp.s2exp_node
 in
 case+ node of
 | S2Ecst (s2cst) => exitlocmsg ("todo\n")
-| S2Evar (s2var) =>
-  if s2var_is_type (s2var) then Some0 (S3TYPEvar (s2var))
-  else None0 ()
-| S2Eextkind (symbol) => exitlocmsg ("S3Eextkind should not be seen.")
+//
+| S2Evar (s2var) => Some0 (S3TYPEvar (s2var))
+//
+| S2Eextkind (symbol) => exitlocmsg ("S2Eextkind should not be seen.")
+//
 | S2Eapp (s2exp1, s2explst) => let
   val- S2Ecst (s2cst_con) = s2exp1.s2exp_node
-  val srt_con = s2cst_get_sort (s2cst_con)
 
+  val tyopt = s3type_translate_S3Eapp_con (s2cst_con)
+in
+  case+ tyopt of
+  | Some0 ty => tyopt
+  | None0 () => let
+    val args = s3type_translate_s2explst (s2explst)
+  in
+    Some0 (S3TYPEcon (s2cst_con, args))
+  end
+end
+//
+| S2Eeqeq (s2exp1, s2exp2) => exitlocmsg ("This shall not happen.")
+//
+| S2Eexi (s2varlst, s2explst (*predicates*), s2exp (*body*)) =>
+    s3type_translate (s2exp)  // todo: Is this the correct way?
+//
+| S2Euni (s2varlst, s2explst (*predicates*), s2exp (*body*)) => let
+  val s2varlst = list0_foldright<s2var><s2varlst> (s2varlst, fopr, nil0) where {
+  fun fopr (s2var: s2var, res: s2varlst):<cloref1> s2varlst = let
+    val srt = s2var_get_sort (s2var)
+  in
+    if s2rt_is_type (srt) then cons0 (s2var, res)
+    else res
+  end
+  }
 
+  val- Some0 (s3type) = s3type_translate (s2exp)
+in
+  if length (s2varlst) > 0 then Some0 (S3TYPEpoly (s2varlst, s3type))
+  else Some0 s3type
+end
+| S2Efun (npf, s2explst (*args*), s2exp (*res*)) => let
+  val ty_args = s3type_translate_s2explst (s2explst)
+  val- Some0 (ty_ret) = s3type_translate (s2exp)
 
+  val ty_fun = S3TYPEfun (ref npf, ty_args, ty_ret, ~1)
+in
+  Some0 ty_fun
+end
+//
+| S2Eint n => exitlocmsg ("This shall not happen.")
+//
+| S2Eintinf n => exitlocmsg ("This shall not happen.")
+//
+| S2Einvar (s2exp) => exitlocmsg ("Check this.\n")
+//
+| S2Esizeof s2exp => exitlocmsg ("This shall not happen.")
+//
+| S2Etyrec (knd, npf, labs2explst) => let
+  val labeltypelst = list0_foldright<labs2exp><s3labeltypelst> (
+    labs2explst, fopr, nil0 ()) where {
+  fun fopr (labs2exp: labs2exp
+    , res: s3labeltypelst):<cloref1> s3labeltypelst = let
+    val label = labs2exp.labs2exp_label
+    val s2exp = labs2exp.labs2exp_s2exp
+    val- Some0 (s3type) = s3type_translate (s2exp)
+    val labeltype = s3labeltype_make (label, s3type)
+  in
+    cons0 (labeltype, res)
+  end
+  }
 
-| S2Eeqeq of (s2exp, s2exp)
-| S2Eexi of (s2varlst, s2explst (*predicates*), s2exp (*body*))
-| S2Euni of (s2varlst, s2explst (*predicates*), s2exp (*body*))
-| S2Efun of (int (*npf*), s2explst (*args*), s2exp (*res*))
-| S2Eint of int
-| S2Eintinf of int
-| S2Einvar of s2exp
-| S2Esizeof of s2exp
-| S2Etyrec of ((*knd, *) int (*npf*), labs2explst)
+  val ty = S3TYPErecord (ref (s3tkind_make (knd)), npf, labeltypelst)
+in
+  Some0 ty
+end
+//
 (* This is for the return type of a function whose parameters use
 * reference type.
 *)
-| S2Ewthtype of (s2exp (*, todo: WTHS2EXPLST*))
-| S2Etop of (s2exp)
-| S2Erefarg of (s2exp)
-| S2Eignored
-| S2Eerr
+| S2Ewthtype (s2exp (*, todo: WTHS2EXPLST*)) => exitlocmsg ("todo\n")
+| S2Etop (s2exp) => exitlocmsg ("Check what this is.\n")
+| S2Erefarg (s2exp) => let
+  val- Some0 (s3type) = s3type_translate (s2exp)
+in
+  Some0 (S3TYPErefarg s3type)
+end
+| S2Eignored () => None0 ()
+| S2Eerr () => None0 ()
+end
+end  // end of [s3type_translate]
+
+
+implement s3type_translate_s2explst (s2explst) = let
+  val res = list0_foldright<s2exp><s3typelst> (s2explst, fopr, nil0) where {
+  fun fopr (s2exp: s2exp, res: s3typelst):<cloref1> s3typelst = let
+    val s3typeopt = s3type_translate (s2exp)
+  in
+    case+ s3typeopt of
+    | Some0 s3type => cons0 (s3type, res)
+    | None0 () => res
+  end
+  }
+in
+  res
+end

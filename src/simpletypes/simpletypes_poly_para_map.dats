@@ -55,6 +55,14 @@ in
   | ~None_vt () => None0 ()
 end
 
+implement s3poly_para_map_haskey (map, s2var) = let
+  val k0 = s2var.stamp()
+  val opt = $HT.hashtbl_search (map, k0)
+in
+  case+ opt of
+  | ~Some_vt (_) => true
+  | ~None_vt () => false
+end
 
 end  // end of [local]
 

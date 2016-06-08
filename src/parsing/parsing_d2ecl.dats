@@ -142,7 +142,7 @@ val loc =
   parse_location (loc)
 val locid =
   parse_location (locid)
-val d2c = parse_d2cst (s2env, p2env.parsingenv_d2cstmap, d2c)
+val d2c = parse_d2cst0 (s2env, p2env.parsingenv_d2cstmap, d2c)
 val def = parse_d2exp (s2env, p2env, def)
 //
 in
@@ -164,7 +164,7 @@ val-~Some_vt(def) =
 //
 val loc =
   parse_location (loc)
-val d2v = parse_d2var (p2env.parsingenv_d2varmap, d2v)
+val d2v = parse_d2var0 (p2env.parsingenv_d2varmap, d2v)
 val def = parse_d2exp (s2env, p2env, def)
 //
 in
@@ -222,7 +222,7 @@ val-~Some_vt(init) =
   jsonval_get_field (jsv0, "v2ardec_init")
 //
 val loc  = parse_location (loc)
-val name = parse_d2var (p2env.parsingenv_d2varmap, dvar)
+val name = parse_d2var0 (p2env.parsingenv_d2varmap, dvar)
 val init  = parse_v2ardec_init (s2env, p2env, init)
 //
 in
@@ -253,7 +253,7 @@ val () = assertloc (length(jsvs) >= 3)
 val knd = parse_int (jsvs[0])
 val-JSONarray(jsvs1) = jsvs[2]
 val () = assertloc (length jsvs1 >= 1)
-val d2cst = parse_d2cst (s2env, p2env.parsingenv_d2cstmap, jsvs1[0])
+val d2cst = parse_d2cst0 (s2env, p2env.parsingenv_d2cstmap, jsvs1[0])
 //
 in
   D2Cdcstdecs (knd, d2cst)

@@ -98,7 +98,7 @@ implement main0 (argc, argv) = let
   val jsv = postiats2jsonval (inpref)
 
 
-  val d2ecs_model = parse_d2eclist_export (jsv)
+  val '(d2ecs_model, max) = parse_d2eclist_export (jsv)
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
@@ -106,8 +106,7 @@ implement main0 (argc, argv) = let
   val () = fprint_d2eclist (stdout_ref, d2ecs_model)
   }
 
-  val tmap = s3typemap_create ()
-  val () = s3typecheck_d2eclist (d2ecs_model, tmap)
+  val '(d2eclist, tmap) = s3type_export (max, d2ecs_model)
   
   val () = if fopen > 0 then fileref_close (inpref)
   val () = fprint (stdout_ref, "\n\n")

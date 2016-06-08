@@ -42,18 +42,18 @@ val-~Some_vt(jsv_d2var) =
 val-~Some_vt(jsv_d2eclst) =
   jsonval_get_field (jsv0, "d2eclist")
 //
-val s2cstmap = parse_s2cstmap (jsv_s2cst)
-val s2varmap = parse_s2varmap (jsv_s2var)
+val '(s2cstmap, max) = parse_s2cstmap (0, jsv_s2cst)
+val '(s2varmap, max) = parse_s2varmap (max, jsv_s2var)
 val s2env = s2parsingenv_make (s2cstmap, s2varmap)
 
-val d2conmap = parse_d2conmap (s2env, jsv_d2con)
-val d2cstmap = parse_d2cstmap (s2env, jsv_d2cst)
-val d2varmap = parse_d2varmap (jsv_d2var)
+val '(d2conmap, max) = parse_d2conmap (max, s2env, jsv_d2con)
+val '(d2cstmap, max) = parse_d2cstmap (max, s2env, jsv_d2cst)
+val '(d2varmap, max) = parse_d2varmap (max, jsv_d2var)
 val p2env = parsingenv_make (d2cstmap, d2conmap, d2varmap)
 
 //
 in
-  parse_d2eclist (s2env, p2env, jsv_d2eclst)
+  '(parse_d2eclist (s2env, p2env, jsv_d2eclst), max)
 end // end of [parse_d2eclist_export]
   
 (* ****** ****** *)

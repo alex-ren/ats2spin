@@ -14,6 +14,57 @@ staload "./simpletypes.sats"
 #include "./simpletypes_codegen2.hats"
 
 (* ************ ************* *)
+implement myfprint_s3tkind (out, s3tkind) = fprint_s3tkind<> (out, s3tkind)
+
+implement fprint_val<s2cst> = fprint_s2cst
+implement fprint_val<s2var> = fprint_s2var
+implement fprint_val<s3tkind> = myfprint_s3tkind
+
+implement fprint_val<s3element> = fprint_s3element
+implement fprint_val<s3type> = myfprint_s3type
+
+
+
+implement{}
+fprint_s3type$S3TYPEref$arg1(out, arg0) = let 
+  val-S3TYPEref(arg1) = arg0 
+  val tyopt = !arg1
+in 
+  fprint_s3type$carg<option0 s3type>(out, tyopt) 
+end
+
+implement{}
+fprint_s3type$S3TYPErecord$arg1(out, arg0) = let 
+  val-S3TYPErecord(arg1, _, _) = arg0 
+  val kind = !arg1
+in 
+  fprint_s3type$carg<s3tkind>(out, kind) 
+end
+
+
+implement{}
+fprint_s3type$S3TYPEfun$arg1(out, arg0) = let 
+  val-S3TYPEfun(arg1, _, _, _) = arg0 
+  val npf = !arg1
+in 
+  fprint_s3type$carg<int>(out, npf) 
+end
+
+implement fprint_val<s3labeltype> = fprint_s3labeltype
+
+implement myfprint_s3type (out, s3type) = fprint_s3type<> (out, s3type)
+
+implement fprint_s3labeltype (out, labtype) = let
+  val lab = labtype.s3labeltype_label
+  val ty = labtype.s3labeltype_type
+  val () = fprint (out, "{label: ")
+  val () = fprint_label (out, lab)
+  val () = fprint (out, ", ty: ")
+  val () = myfprint_s3type (out, ty)
+  val () = fprint (out, "}")
+in end
+
+(* ************ ************* *)
 
 implement s3type_int () = S3TYPEelement (S3ELEMENTint)
 implement s3type_char () = S3TYPEelement (S3ELEMENTchar)
@@ -40,13 +91,25 @@ implement s3type_get_funtype (s3type) =
 case+ s3type of
 | S3TYPEfun (_, _, _, _) => s3type
 | S3TYPEpoly (_, s3type') => s3type_get_funtype (s3type')
-| _ => exitlocmsg ("This is not allowed.\n")
+| S3TYPEref (tyopt_ref) =>
+  (
+  case+ !tyopt_ref of
+  | Some0 ty => s3type_get_funtype (ty)
+  | None0 () => exitlocmsg ("This is not allowed.\n")
+  )
+| _ => exitlocmsg ((datcon_s3type s3type) + " is not allowed.\n")
 
 
 implement s3type_get_rettype (s3type) =
 case+ s3type of
 | S3TYPEfun (_, _, ret, _) => ret
-| _ => exitlocmsg ("This is not allowed.\n")
+| S3TYPEref (tyopt_ref) =>
+  (
+  case+ !tyopt_ref of
+  | Some0 ty => s3type_get_rettype (ty)
+  | None0 () => exitlocmsg ("This is not allowed.\n")
+  )
+| _ => exitlocmsg ((datcon_s3type s3type) + " is not allowed.\n")
 
 (* ************ ************* *)
 
@@ -161,8 +224,10 @@ in end
 
 implement s3typecheck_f2undec_body (f2undec, tmap) = let
   val loc = f2undec.f2undec_loc
-  val s3type = f2undec.f2undec_var.oftype (tmap, loc)
+  val s3type = oftype_d2var (f2undec.f2undec_var, tmap, loc)
+  val () = fprintln! (stderr_ref, "==========start=========")
   val funtype = s3type_get_funtype (s3type)
+  val () = fprintln! (stderr_ref, "==========end=========")
   val rettype = s3type_get_rettype (funtype)
 
   val retexp = d2exp_expose_lam_dyn (f2undec.f2undec_def)
@@ -217,7 +282,9 @@ in
 //
   | P2Tann (p2at, s2exp) => let
     val ty_pat = oftype_p2at (p2at, tmap)
-    val ty_exp = s3type_translate (s2exp)
+    val- tyopt = s3type_translate (s2exp)
+    val () = fprintln! (stdout_ref, "=======s2exp: ", s2exp)
+    val- Some0 (ty_exp) = tyopt
     val tcres = s3type_match (tmap, ty_pat, ty_exp)
     val ty = s3type_normalize (ty_pat)
   in ty end
@@ -252,7 +319,7 @@ in
   case+ s3typeopt of
   | None0 () => let
     val s2exp = d2cst_get_type (d2cst)
-    val s3type = s3type_translate (s2exp)
+    val- Some0 (s3type) = s3type_translate (s2exp)
     val () = s3typemap_update_d2cst (tmap, d2cst, s3type)
   in
     s3type
@@ -271,12 +338,7 @@ implement oftype_d2sym (d2sym, tmap, loc) = let
   val s3typeopt = s3typemap_find_d2sym (tmap, d2sym)
 in
   case+ s3typeopt of
-  | None0 () => let
-    val vartype = s3type_ref ()
-    val () = s3typemap_update_d2sym (tmap, d2sym, vartype)
-  in
-    vartype
-  end
+  | None0 () => s3type_ref ()
   | Some0 (s3type) => s3type
 end
 
@@ -475,7 +537,7 @@ in
 //
   | D2Eann_type (d2exp, s2exp) => let
     val s3type_d2exp = oftype_d2exp (d2exp, tmap)
-    val s3type_s2exp = s3type_translate (s2exp)
+    val- Some0 (s3type_s2exp) = s3type_translate (s2exp)
     val tcres = s3type_match (tmap, s3type_d2exp, s3type_s2exp)
   in
     s3type_d2exp
@@ -610,7 +672,9 @@ in
 
     fun get_type_lamdyn_ret (d2exp: d2exp, tmap: s3typemap): s3type =
       case+ d2exp.d2exp_node of
-      | D2Eann_type (_, s2exp) => s3type_translate (s2exp)
+      | D2Eann_type (_, s2exp) => let
+        val- Some0 (ty) = s3type_translate (s2exp)
+      in ty end
       | _ => s3type_ref ()
 
     val ty_ret = get_type_lamdyn_ret (d2exp, tmap)
@@ -682,7 +746,7 @@ in
       | None0 () => loop (labtypelst1', labtypelst2')
     end
     | (nil0 (), nil0 ()) => None0 ()
-    | (_, _) => Some0 ("Type mismatch: " + $mylocation)
+    | (_, _) => Some0 ("S3TYPErecord mismatch: " + $mylocation)
 
   in
     loop (labtypelst1, labtypelst2)
@@ -692,12 +756,13 @@ in
   //
   | (S3TYPEcon (s2cst1, typelst1), S3TYPEcon (s2cst2, typelst2)) =>
     if s2cst1 != s2cst2 then 
-      Some0 (s2cst1.tostring () + " <> " + s2cst2.tostring ())
+      Some0 ("S3TYPEcon mismatch: " + 
+             s2cst1.tostring () + " <> " + s2cst2.tostring ())
     else s3type_match_typelst (tmap, typelst1, typelst2)
   //
   | (S3TYPEfun (npf1, args1, res1, eff1)
     , S3TYPEfun (npf2, args2, res2, eff2)) =>
-  if !npf1 <> !npf2 then Some0 ("Type mismatch: " + $mylocation)
+  if !npf1 <> !npf2 then Some0 ("S3TYPEfun mismatch: " + $mylocation)
   else let
     val tcres = s3type_match_typelst (tmap, args1, args2)
   in
@@ -711,11 +776,23 @@ in
   end
   //
   | (S3TYPEvar (s2var1), S3TYPEvar (s2var2)) => 
-    if (s2var1 != s2var2) then Some0 ("Type mismatch: " + $mylocation)
+    if (s2var1 != s2var2) then Some0 ("S3TYPEvar mismatch: " + $mylocation)
     else None0 ()
   | (S3TYPEpoly (s2varlst1, s3type1), S3TYPEpoly (s2varlst2, s3type2)) =>
     s3type_match (tmap, s3type1, s3type2)
-  | (_, _) => Some0 ("Type mismatch: " + $mylocation)
+  | (left, right) => let
+    val () = fprint (stderr_ref, "\nleft is ")
+    val () = myfprint_s3type (stderr_ref, left)
+    val () = fprint (stderr_ref, "\n")
+    val () = fprint (stderr_ref, "right is ")
+    val () = myfprint_s3type (stderr_ref, right)
+    val () = fprint (stderr_ref, "\n")
+  in
+    Some0 ("general mismatch: " +
+       datcon_s3type (left) + " <> " + 
+       datcon_s3type (right) + " at " +
+       $mylocation)
+  end
 end
 
 implement s3type_match_typelst (tmap, typelst1, typelst2) =
@@ -753,6 +830,12 @@ in
   in
     type1
   end
+end
+//
+| S3TYPErefarg (ty) => let
+  val ty1 = s3type_normalize (ty)
+in
+  S3TYPErefarg ty1
 end
 //
 | S3TYPEelement (s3element) => s3type
@@ -795,6 +878,8 @@ end
 in
   S3TYPEpoly (s2varlst, s3type1)
 end
+| S3TYPEignored () => S3TYPEignored () 
+// end of [s3type_normalize]
 
 
 implement s3type_normalize_typelst (s3typelst) = let
