@@ -15,6 +15,22 @@ staload "./simpletypes.sats"
 
 (* ************ ************* *)
 
+implement s3type_translate_S3Eapp_con (s2cst) = let
+  val name = (s2cst_get_name (s2cst)).tostring ()
+in
+  case+ name of
+  | "g0int_t0ype" => Some0 (s3type_int ())
+  | "g1int_int_t0ype" => Some0 (s3type_int ())
+  | "bool_bool_t0ype" => Some0 (s3type_bool ())
+  // todo add more type constructors here if needed
+  | str => let
+    val () = fprint (stderr_ref, str + " is encountered.\n")
+  in
+    None0 ()
+  end
+end
+
+
 implement s3type_translate (s2exp) = let
 val srt = s2exp.s2exp_sort
 in
@@ -23,7 +39,18 @@ else let
 val node = s2exp.s2exp_node
 in
 case+ node of
-| S2Ecst (s2cst) => exitlocmsg ("todo\n")
+| S2Ecst (s2cst) => let
+  val () = fprint (stderr_ref, "s2cst is ")
+  val () = fprint_s2cst (stderr_ref, s2cst)
+  val () = fprint (stderr_ref, "\n")
+  val name = (s2cst_get_name (s2cst)).tostring ()
+in
+  case+ name of
+  | "int" => Some0 (s3type_int ())
+  | "bool_t0ype" => Some0 (s3type_bool ())
+  | "atsvoid_t0ype" => Some0 (s3type_unit ())
+  | str => exitlocmsg (str + " is not handled.\n")
+end
 //
 | S2Evar (s2var) => Some0 (S3TYPEvar (s2var))
 //
