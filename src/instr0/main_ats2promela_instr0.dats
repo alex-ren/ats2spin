@@ -1,5 +1,4 @@
 (*
-** Start Date: 03/09/2016
 ** Author: Zhiqiang ren
 *)
 
@@ -20,10 +19,14 @@ staload "{$JSONC}/SATS/json.sats"
 staload "{$JSONC}/SATS/json_ML.sats"
 
 staload "./../parsing/parsing.sats"
-staload "./postiats.sats"
+staload "./../postiats/postiats.sats"
+staload "./../simpletypes/simpletypes.sats"
+staload "./instr0.sats"
 
-dynload "./dynloadall.dats"
 dynload "./../parsing/dynloadall.dats"
+dynload "./../postiats/dynloadall.dats"
+dynload "./../simpletypes/dynloadall.dats"
+dynload "./dynloadall.dats"
 
 
 fun postiats2jsonval (inp: FILEref): jsonval = let
@@ -62,7 +65,10 @@ implement main0 (argc, argv) = let
   val () = if argc >= 3 then let
     val option1 = argv[2]
   in
-    if option1 = "--debug" then is_debug := true
+    if option1 = "--debug" then let
+      val () = is_debug := true
+      // val () = !is_debug_typechecking := true
+    in end
   end
 
   val () = if is_debug then {
@@ -95,6 +101,7 @@ implement main0 (argc, argv) = let
   //
   val jsv = postiats2jsonval (inpref)
 
+  (* ************** ************** *)
 
   val '(d2ecs_model, max) = parse_d2eclist_export (jsv)
 
@@ -104,7 +111,63 @@ implement main0 (argc, argv) = let
   val () = fprint_d2eclist (stdout_ref, d2ecs_model)
   }
 
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== type checking ================\n\n")
+  }
+  val '(d2eclist, tmap) = s3type_export (max, d2ecs_model)
+
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== transform postiats to instr0 ================\n\n")
+  }
+
+  val sa = stamp_allocator_create ()
+  val i0prog = i0transform_d2eclst_global (sa, d2ecs_model)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== level instr0 ==============================\n\n")
+  val () = fprint (stdout_ref, i0prog)
+  }
+
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== optimizing tailcall on instr0 ================\n\n")
+  }
+
+  val i0prog = i0optimize_tailcall (sa, i0prog)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== level instr0 after tail call optimization =====================\n\n")
+  val () = fprint (stdout_ref, i0prog)
+  }
+
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== moving declarations on instr0 ================\n\n")
+  }
+
+  val i0prog = i0optimize_collect_decs (i0prog)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== level instr0 after declarations movement =====================\n\n")
+  val () = fprint (stdout_ref, i0prog)
+  }
   
+
+  (* ************** ************** *)
+
   val () = if fopen > 0 then fileref_close (inpref)
   val () = fprint (stdout_ref, "\n\n")
   //

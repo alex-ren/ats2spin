@@ -225,7 +225,10 @@ implement s3typecheck_D2Cdcstdecs (tmap, d2ecl) = let
     val () = fprint! (stdout_ref, "===== s3typecheck_D2Cdcstdecs =====\n")
   in end
   val- D2Cdcstdecs (n, d2cst) = d2ecl.d2ecl_node
-in exitlocmsg ("todo\n") end
+in
+  (* do nothing *)
+  // exitlocmsg ("todo\n") 
+end
 
 //
 implement s3typecheck_D2Clocal (tmap, d2ecl) = let
@@ -365,6 +368,9 @@ in
   case+ s3typeopt of
   | None0 () => let
     val s2exp = d2cst_get_type (d2cst)
+    val () = fprint (stderr_ref, "s2exp is ")
+    val () = fprint_s2exp (stderr_ref, s2exp)
+    val () = fprint (stderr_ref, "\n")
     val- Some0 (s3type) = s3type_translate (s2exp)
     val () = s3typemap_update_d2cst (tmap, d2cst, s3type)
   in

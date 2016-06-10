@@ -67,7 +67,10 @@ implement main0 (argc, argv) = let
   val () = if argc >= 3 then let
     val option1 = argv[2]
   in
-    if option1 = "--debug" then is_debug := true
+    if option1 = "--debug" then let
+      val () = is_debug := true
+      // val () = !is_debug_typechecking := true
+    in end
   end
 
   val () = if is_debug then {
@@ -102,7 +105,7 @@ in end
   val () = the_symbol_mgr_initialize ()
   //
 
-  val d2ecs_json = parse_d2eclist_export (jsv)
+  val '(d2ecs_json, max) = parse_d2eclist_export (jsv)
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== preprocessed content ==============================\n\n")
@@ -130,7 +133,7 @@ in end
   val jsv = postiats2jsonval (inpref)
 
 
-  val d2ecs_model = parse_d2eclist_export (jsv)
+  val '(d2ecs_model, max) = parse_d2eclist_export (jsv)
 
   val d2ecs = list_append (d2ecs_json, d2ecs_model)
 

@@ -93,8 +93,10 @@ in
 case+ opt of
 | ~Some_vt (s2var) => '(s2var, max)
 | ~None_vt ((*void*)) => let
+  // val () = fprint (stderr_ref, "stamp is ")
+  // val () = fprint_stamp (stderr_ref, stamp)
   val-~Some_vt(jsv_name) =
-    jsonval_get_field (jsv0, "s2var_name")
+    jsonval_get_field (jsv0, "s2var_sym")
   val name = parse_symbol (jsv_name)
   val-~Some_vt(jsv_srt) = jsonval_get_field (jsv0, "s2var_srt")
   val srt = parse_s2rt (jsv_srt)

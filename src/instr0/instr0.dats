@@ -115,8 +115,9 @@ end
 extern fun d2exp_node_get_lambda (d2exp_node): (p2atlst, d2exp)
 implement d2exp_node_get_lambda (node) =
 case+ node of
-| D2Elam (p2atlst, d2exp) => (p2atlst, d2exp)
-| D2Eexp (node) => d2exp_node_get_lambda (node.d2exp_node)
+| D2Elam_dyn (npf, p2atlst, d2exp) => (p2atlst, d2exp)
+| D2Elam_sta (_, _, d2exp) => d2exp_node_get_lambda (d2exp.d2exp_node)
+| D2Eann_type (d2exp, s2exp) => d2exp_node_get_lambda (d2exp.d2exp_node)
 | _ => exitlocmsg ("This should not happen.")
 
 fun f2undec_is_recursive (f: f2undec): bool = let
@@ -141,7 +142,6 @@ fun f2undec_is_recursive (f: f2undec): bool = let
     val node = e.d2exp_node
   in
     case+ e.d2exp_node of
-    | D2Eexp (e1) => d2exp_has_tailcall (e1, fvar)
     | D2Elet (_, e1) => d2exp_has_tailcall (e1, fvar)
     | D2Eapplst (fexp, _) => d2exp_is_fun (fexp, fvar)
     | D2Eifopt (_, e1, e2opt) =>
@@ -162,6 +162,8 @@ fun f2undec_is_recursive (f: f2undec): bool = let
        loop (c2laulst)
      end
     | D2Eempty () => false
+    | D2Eann_seff (d2exp) => d2exp_has_tailcall (d2exp, fvar)
+    | D2Eann_type (d2exp, s2exp) => d2exp_has_tailcall (d2exp, fvar)
     | _ => exitlocmsg (datcon_d2exp_node node + " is not supported")
   end
 in
@@ -283,8 +285,9 @@ case+ p2at.p2at_node of
 | P2Tany () => exitlocmsg ("Shall not happen")
 | P2Tvar (d2var) => i0transform_d2var (sa, d2var)
 | P2Tempty () => exitlocmsg ("Shall not happen")
-| P2Tpat (p2at) => i0transform_p2at2para (sa, p2at)
-| P2Trec (labp2atlst) => exitlocmsg ("Shall not happen")
+| P2Tann (p2at, s2exp) => i0transform_p2at2para (sa, p2at)
+| P2Trec (kind, npf, labp2atlst) => exitlocmsg ("Shall not happen")
+| P2Tcon (d2con, npf, p2atlst) => exitlocmsg ("Not supported.\n")
 | P2Ti0nt (intrep) => exitlocmsg ("Shall not happen")
 | P2Tignored () => exitlocmsg ("Shall not happen")
 end
@@ -297,8 +300,9 @@ case+ p2at.p2at_node of
 | P2Tany () => None0 ()
 | P2Tvar (d2var) => Some0 (i0transform_d2var (sa, d2var))
 | P2Tempty () => None0 ()
-| P2Tpat (p2at) => i0transform_p2at2holder (sa, p2at)
-| P2Trec (labp2atlst) => exitlocmsg ("P2Trec is not supported yet.")
+| P2Tann (p2at, s2exp) => i0transform_p2at2holder (sa, p2at)
+| P2Trec (kind, npf, labp2atlst) => exitlocmsg ("P2Trec is not supported yet.")
+| P2Tcon (d2con, npf, p2atlst) => exitlocmsg ("todo")
 | P2Ti0nt (intrep) => exitlocmsg ("Shall not happen")
 | P2Tignored () => exitlocmsg ("Shall not happen")
 end
@@ -344,7 +348,7 @@ end
 // //
 | D2Eempty ((*void*)) => (nil0, list0_cons (INS0return (None0 ()), list0_nil ()))
 // //
-| D2Eexp (d2exp) => i0transform_d2exp_fbody (sa, d2exp, fmap)
+// | D2Eexp (d2exp) => i0transform_d2exp_fbody (sa, d2exp, fmap)
 // //
 | D2Elet (d2eclist, d2exp) => let
   val (i0declst1, inss1) = i0transform_d2eclist (sa, d2eclist, fmap)
@@ -427,6 +431,8 @@ end
 in
   (i0declst, list0_sing ins)
 end  // end of [D2Ecase]
+| D2Eann_seff (d2exp) => i0transform_d2exp_fbody (sa, d2exp, fmap)
+| D2Eann_type (d2exp, s2exp) => i0transform_d2exp_fbody (sa, d2exp, fmap)
 
 // //
 //   | D2Esing of (d2exp)
@@ -444,7 +450,7 @@ end  // end of [D2Ecase]
 //   | D2Eignored of ((*void*)) // HX: error-handling
 // //
 | _ => exitlocmsg (datcon_d2exp_node (node) + " todo")
-end
+end  // end of [i0transform_d2exp_fbody]
 
 implement i0transform_d2eclist (sa, d2eclist, fmap) =
 case+ d2eclist of
@@ -618,7 +624,7 @@ in
   in
     EXP0extfcall (name, i0explst)
   end
-  | D2Elam (p2atlst, d2exp) => 
+  | D2Elam_dyn (npf, p2atlst, d2exp) => 
     if (length p2atlst > 0) then 
       exitlocmsg ("lambda with parameters is not allowed")
   else let
@@ -626,7 +632,7 @@ in
   in
     EXP0lambody i0exp
   end
-  | D2Eexp (d2exp) => i0transform_d2exp_expvalue (sa, d2exp)
+  | D2Elam_sta (_, _, d2exp) => i0transform_d2exp_expvalue (sa, d2exp)
   | D2Eassgn (_, _) => exitlocmsg (
     "This should not happen. D2Eassgn is processed elsewhere")
 //   | D2Eignored of ((*void*)) // HX: error-handling
