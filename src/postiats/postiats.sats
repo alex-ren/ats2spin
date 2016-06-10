@@ -619,8 +619,10 @@ and d2exp_node =
 //
   | D2Eempty of ((*void*))
 //
-  | D2Eexp of (d2exp) // dummy
+//  | D2Eexp of (d2exp) // dummy
   | D2Eann_type of (d2exp, s2exp)
+  | D2Eann_seff of (d2exp)
+  | D2Eann_funclo of (d2exp)
 //
   | D2Elet of (d2eclist, d2exp)
 //
@@ -838,7 +840,7 @@ fun d2exp_empty (loc: loc_t): d2exp
 
 (* ****** ****** *)
 
-fun d2exp_exp (loc: loc_t, d2e: d2exp): d2exp
+// fun d2exp_exp (loc: loc_t, d2e: d2exp): d2exp
 
 (* ****** ****** *)
 

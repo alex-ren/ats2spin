@@ -557,7 +557,7 @@ val () = assertloc (length(jsvs) >= 2)
 val d2e = parse_d2exp (s2env, p2env, jsvs[0])
 //
 in
-  D2Eexp (d2e)
+  D2Eann_seff (d2e)
 end // end of [parse_D2Eann_seff]
 
 (* ****** ****** *)
@@ -586,7 +586,7 @@ val () = assertloc (length(jsvs) >= 2)
 val d2e = parse_d2exp (s2env, p2env, jsvs[0])
 //
 in
-  D2Eexp (d2e)
+  D2Eann_funclo (d2e)
 end // end of [parse_D2Eann_funclo]
 
 (* ****** ****** *)

@@ -40,8 +40,8 @@ val node = s2exp.s2exp_node
 in
 case+ node of
 | S2Ecst (s2cst) => let
-  val () = fprint (stderr_ref, "s2cst is ")
-  val () = fprint_s2cst (stderr_ref, s2cst)
+  // val () = fprint (stderr_ref, "s2cst is ")
+  // val () = fprint_s2cst (stderr_ref, s2cst)
   val () = fprint (stderr_ref, "\n")
   val name = (s2cst_get_name (s2cst)).tostring ()
 in
@@ -49,6 +49,7 @@ in
   | "int" => Some0 (s3type_int ())
   | "bool_t0ype" => Some0 (s3type_bool ())
   | "atsvoid_t0ype" => Some0 (s3type_unit ())
+  | "void" => Some0 (s3type_unit ())
   | str => exitlocmsg (str + " is not handled.\n")
 end
 //

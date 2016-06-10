@@ -9,6 +9,8 @@ staload "libats/ML/SATS/basis.sats"
 staload "./../postiats/postiats.sats"
 staload HT = "libats/ML/SATS/hashtblref.sats"
 
+val is_debug_typechecking: ref bool
+
 datatype s3rt =
 | S3SRTtype
 | S3SRTt0ype

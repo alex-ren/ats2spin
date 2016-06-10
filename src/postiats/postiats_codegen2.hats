@@ -1040,8 +1040,9 @@ case+ arg0 of
 | D2Ef0loat _ => "D2Ef0loat"
 | D2Es0tring _ => "D2Es0tring"
 | D2Eempty _ => "D2Eempty"
-| D2Eexp _ => "D2Eexp"
 | D2Eann_type _ => "D2Eann_type"
+| D2Eann_seff _ => "D2Eann_seff"
+| D2Eann_funclo _ => "D2Eann_funclo"
 | D2Elet _ => "D2Elet"
 | D2Eapplst _ => "D2Eapplst"
 | D2Eifopt _ => "D2Eifopt"
@@ -1166,10 +1167,13 @@ fun{}
 fprint_d2exp_node$D2Eempty: $d2ctype(fprint_d2exp_node<>)
 extern
 fun{}
-fprint_d2exp_node$D2Eexp: $d2ctype(fprint_d2exp_node<>)
+fprint_d2exp_node$D2Eann_type: $d2ctype(fprint_d2exp_node<>)
 extern
 fun{}
-fprint_d2exp_node$D2Eann_type: $d2ctype(fprint_d2exp_node<>)
+fprint_d2exp_node$D2Eann_seff: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
+fprint_d2exp_node$D2Eann_funclo: $d2ctype(fprint_d2exp_node<>)
 extern
 fun{}
 fprint_d2exp_node$D2Elet: $d2ctype(fprint_d2exp_node<>)
@@ -1236,8 +1240,9 @@ case+ arg0 of
 | D2Ef0loat _ => fprint_d2exp_node$D2Ef0loat<>(out, arg0)
 | D2Es0tring _ => fprint_d2exp_node$D2Es0tring<>(out, arg0)
 | D2Eempty _ => fprint_d2exp_node$D2Eempty<>(out, arg0)
-| D2Eexp _ => fprint_d2exp_node$D2Eexp<>(out, arg0)
 | D2Eann_type _ => fprint_d2exp_node$D2Eann_type<>(out, arg0)
+| D2Eann_seff _ => fprint_d2exp_node$D2Eann_seff<>(out, arg0)
+| D2Eann_funclo _ => fprint_d2exp_node$D2Eann_funclo<>(out, arg0)
 | D2Elet _ => fprint_d2exp_node$D2Elet<>(out, arg0)
 | D2Eapplst _ => fprint_d2exp_node$D2Eapplst<>(out, arg0)
 | D2Eifopt _ => fprint_d2exp_node$D2Eifopt<>(out, arg0)
@@ -1707,39 +1712,6 @@ fprint_d2exp_node$D2Eempty$rpar(out, _) = fprint_d2exp_node$rpar(out)
 //
 extern
 fun{}
-fprint_d2exp_node$D2Eexp$con: $d2ctype(fprint_d2exp_node<>)
-extern
-fun{}
-fprint_d2exp_node$D2Eexp$lpar: $d2ctype(fprint_d2exp_node<>)
-extern
-fun{}
-fprint_d2exp_node$D2Eexp$rpar: $d2ctype(fprint_d2exp_node<>)
-extern
-fun{}
-fprint_d2exp_node$D2Eexp$arg1: $d2ctype(fprint_d2exp_node<>)
-//
-implement{}
-fprint_d2exp_node$D2Eexp(out, arg0) = 
-{
-//
-val () = fprint_d2exp_node$D2Eexp$con<>(out, arg0)
-val () = fprint_d2exp_node$D2Eexp$lpar<>(out, arg0)
-val () = fprint_d2exp_node$D2Eexp$arg1<>(out, arg0)
-val () = fprint_d2exp_node$D2Eexp$rpar<>(out, arg0)
-//
-}
-implement{}
-fprint_d2exp_node$D2Eexp$con(out, _) = fprint(out, "D2Eexp")
-implement{}
-fprint_d2exp_node$D2Eexp$lpar(out, _) = fprint_d2exp_node$lpar(out)
-implement{}
-fprint_d2exp_node$D2Eexp$rpar(out, _) = fprint_d2exp_node$rpar(out)
-implement{}
-fprint_d2exp_node$D2Eexp$arg1(out, arg0) =
-  let val-D2Eexp(arg1) = arg0 in fprint_d2exp_node$carg(out, arg1) end
-//
-extern
-fun{}
 fprint_d2exp_node$D2Eann_type$con: $d2ctype(fprint_d2exp_node<>)
 extern
 fun{}
@@ -1783,6 +1755,72 @@ fprint_d2exp_node$D2Eann_type$arg1(out, arg0) =
 implement{}
 fprint_d2exp_node$D2Eann_type$arg2(out, arg0) =
   let val-D2Eann_type(_, arg2) = arg0 in fprint_d2exp_node$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_d2exp_node$D2Eann_seff$con: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
+fprint_d2exp_node$D2Eann_seff$lpar: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
+fprint_d2exp_node$D2Eann_seff$rpar: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
+fprint_d2exp_node$D2Eann_seff$arg1: $d2ctype(fprint_d2exp_node<>)
+//
+implement{}
+fprint_d2exp_node$D2Eann_seff(out, arg0) = 
+{
+//
+val () = fprint_d2exp_node$D2Eann_seff$con<>(out, arg0)
+val () = fprint_d2exp_node$D2Eann_seff$lpar<>(out, arg0)
+val () = fprint_d2exp_node$D2Eann_seff$arg1<>(out, arg0)
+val () = fprint_d2exp_node$D2Eann_seff$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_d2exp_node$D2Eann_seff$con(out, _) = fprint(out, "D2Eann_seff")
+implement{}
+fprint_d2exp_node$D2Eann_seff$lpar(out, _) = fprint_d2exp_node$lpar(out)
+implement{}
+fprint_d2exp_node$D2Eann_seff$rpar(out, _) = fprint_d2exp_node$rpar(out)
+implement{}
+fprint_d2exp_node$D2Eann_seff$arg1(out, arg0) =
+  let val-D2Eann_seff(arg1) = arg0 in fprint_d2exp_node$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_d2exp_node$D2Eann_funclo$con: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
+fprint_d2exp_node$D2Eann_funclo$lpar: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
+fprint_d2exp_node$D2Eann_funclo$rpar: $d2ctype(fprint_d2exp_node<>)
+extern
+fun{}
+fprint_d2exp_node$D2Eann_funclo$arg1: $d2ctype(fprint_d2exp_node<>)
+//
+implement{}
+fprint_d2exp_node$D2Eann_funclo(out, arg0) = 
+{
+//
+val () = fprint_d2exp_node$D2Eann_funclo$con<>(out, arg0)
+val () = fprint_d2exp_node$D2Eann_funclo$lpar<>(out, arg0)
+val () = fprint_d2exp_node$D2Eann_funclo$arg1<>(out, arg0)
+val () = fprint_d2exp_node$D2Eann_funclo$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_d2exp_node$D2Eann_funclo$con(out, _) = fprint(out, "D2Eann_funclo")
+implement{}
+fprint_d2exp_node$D2Eann_funclo$lpar(out, _) = fprint_d2exp_node$lpar(out)
+implement{}
+fprint_d2exp_node$D2Eann_funclo$rpar(out, _) = fprint_d2exp_node$rpar(out)
+implement{}
+fprint_d2exp_node$D2Eann_funclo$arg1(out, arg0) =
+  let val-D2Eann_funclo(arg1) = arg0 in fprint_d2exp_node$carg(out, arg1) end
 //
 extern
 fun{}

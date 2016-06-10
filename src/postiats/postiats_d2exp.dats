@@ -215,8 +215,8 @@ d2exp_make_node
 
 implement d2exp_expose_lam_dyn (d2exp) =
 case+ d2exp.d2exp_node of
-| D2Elam_sta (_, _, d2exp') => d2exp_expose_lam_dyn (d2exp')
-| D2Elam_dyn (_, _, d2exp') => d2exp
+| D2Elam_sta (_, _, d2exp1) => d2exp_expose_lam_dyn (d2exp1)
+| D2Elam_dyn (_, _, d2exp1) => d2exp1
 | _ => exitlocmsg ("This is not allowed.\n")
 
 (* ****** ****** *)
@@ -278,10 +278,10 @@ d2exp_s0tring
 
 (* ****** ****** *)
 //
-implement
-d2exp_exp
-  (loc, d2e) =
-  d2exp_make_node (loc, D2Eexp (d2e))
+// implement
+// d2exp_exp
+//   (loc, d2e) =
+//   d2exp_make_node (loc, D2Eexp (d2e))
 //
 (* ****** ****** *)
 //

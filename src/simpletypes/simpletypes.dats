@@ -14,6 +14,12 @@ staload "./simpletypes.sats"
 #include "./simpletypes_codegen2.hats"
 
 (* ************ ************* *)
+
+implement is_debug_typechecking = ref false
+
+#define isdebug (!is_debug_typechecking)
+
+(* ************ ************* *)
 implement myfprint_s3tkind (out, s3tkind) = fprint_s3tkind<> (out, s3tkind)
 
 implement fprint_val<s2cst> = fprint_s2cst
@@ -22,8 +28,6 @@ implement fprint_val<s3tkind> = myfprint_s3tkind
 
 implement fprint_val<s3element> = fprint_s3element
 implement fprint_val<s3type> = myfprint_s3type
-
-#define isdebug true
 
 implement{}
 fprint_s3type$S3TYPEref$arg1(out, arg0) = let 
@@ -176,7 +180,7 @@ implement s3typecheck_D2Cfundecs (tmap, d2ecl) = let
     val () = fprint! (stdout_ref, "===== s3typecheck_D2Cfundecs =====\n")
   in end
   val- D2Cfundecs (funknd, f2undeclst) = d2ecl.d2ecl_node
-  // clooect type information from function headers
+  // collect type information from function headers
   implement list_foldleft$fopr<s3typemap><f2undec> (acc, x) = let
     val _ = oftype_funhead_f2undec (x, acc)
   in acc end
@@ -253,6 +257,14 @@ implement s3typecheck_f2undec_body (f2undec, tmap) = let
   val rettype = s3type_get_rettype (funtype)
 
   val retexp = d2exp_expose_lam_dyn (f2undec.f2undec_def)
+  // val () = fprint (stderr_ref, "return type is ")
+  // val () = fprint_s3type (stderr_ref, rettype)
+  // val () = fprint (stderr_ref, "=== \n")
+
+  // val () = fprint (stderr_ref, "return exp is ")
+  // val () = fprint_d2exp (stderr_ref, retexp)
+  // val () = fprint (stderr_ref, "=== \n")
+
   val () = s3typecheck_d2exp (retexp, rettype, tmap)
 in end
 
@@ -317,7 +329,7 @@ in
   | P2Tann (p2at, s2exp) => let
     val ty_pat = oftype_p2at (p2at, tmap)
     val- tyopt = s3type_translate (s2exp)
-    val () = fprintln! (stdout_ref, "=======s2exp: ", s2exp)
+    // val () = fprintln! (stdout_ref, "=======s2exp: ", s2exp)
     val- Some0 (ty_exp) = tyopt
     val tcres = s3type_match (tmap, ty_pat, ty_exp)
     val ty = s3type_normalize (ty_pat)
@@ -573,7 +585,7 @@ in
 //
   | D2Eempty () => s3type_unit ()
 //
-  | D2Eexp (d2exp) => oftype_d2exp (d2exp, tmap)
+//  | D2Eexp (d2exp) => oftype_d2exp (d2exp, tmap)
 //
   | D2Eann_type (d2exp, s2exp) => let
     val s3type_d2exp = oftype_d2exp (d2exp, tmap)
@@ -582,6 +594,9 @@ in
   in
     s3type_d2exp
   end
+  | D2Eann_seff (d2exp1) => oftype_d2exp (d2exp1, tmap)
+//
+  | D2Eann_funclo (d2exp1) => oftype_d2exp (d2exp1, tmap)
 //
   | D2Elet (d2eclist, d2exp) => let
     val () = s3typecheck_d2eclist (d2eclist, tmap)
@@ -688,6 +703,9 @@ implement oftype_funhead_f2undec (f2undec, tmap) = let
   in end
   val fundef = f2undec.f2undec_def
   val funtype = oftype_funhead_d2exp (fundef, tmap)
+  // val () = fprint (stderr_ref, "funtype at " + $mylocation + " is ")
+  // val () = fprint_s3type (stderr_ref, funtype)
+  // val () = fprint (stderr_ref, "=== \n")
 
   val funvar = f2undec.f2undec_var
   val () = s3typemap_update_d2var (tmap, funvar, funtype)
@@ -718,6 +736,8 @@ in
 
     fun get_type_lamdyn_ret (d2exp: d2exp, tmap: s3typemap): s3type =
       case+ d2exp.d2exp_node of
+      | D2Eann_funclo (d2exp1) => get_type_lamdyn_ret (d2exp1, tmap)
+      | D2Eann_seff (d2exp1) => get_type_lamdyn_ret (d2exp1, tmap)
       | D2Eann_type (_, s2exp) => let
         val- Some0 (ty) = s3type_translate (s2exp)
       in ty end
@@ -830,12 +850,14 @@ in
   | (S3TYPEpoly (s2varlst1, s3type1), S3TYPEpoly (s2varlst2, s3type2)) =>
     s3type_match (tmap, s3type1, s3type2)
   | (left, right) => let
-    val () = fprint (stderr_ref, "\nleft is ")
-    val () = myfprint_s3type (stderr_ref, left)
-    val () = fprint (stderr_ref, "\n")
-    val () = fprint (stderr_ref, "right is ")
-    val () = myfprint_s3type (stderr_ref, right)
-    val () = fprint (stderr_ref, "\n")
+    val () = if isdebug then let
+      val () = fprint (stderr_ref, "\nleft is ")
+      val () = myfprint_s3type (stderr_ref, left)
+      val () = fprint (stderr_ref, "\n")
+      val () = fprint (stderr_ref, "right is ")
+      val () = myfprint_s3type (stderr_ref, right)
+      val () = fprint (stderr_ref, "\n")
+    in end
   in
     Some0 ("general mismatch: " +
        datcon_s3type (left) + " <> " + 
