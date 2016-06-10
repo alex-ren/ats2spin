@@ -29,6 +29,7 @@ all::
 
 all:: test_simpletypes_01_dats.json
 all:: test_simpletypes_02_dats.json
+all:: test_simpletypes_03_dats.json
 
 
 ######
@@ -47,6 +48,7 @@ clean:: ; $(RMF) *~
 cleanall:: clean
 cleanall:: ; $(RMF) test_simpletypes_01_dats.json
 cleanall:: ; $(RMF) test_simpletypes_02_dats.json
+cleanall:: ; $(RMF) test_simpletypes_03_dats.json
 
 ###### end of [Makefile] ######
 

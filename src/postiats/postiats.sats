@@ -291,8 +291,8 @@ datatype s2exp_node =
 (* This is for the return type of a function whose parameters use
 * reference type.
 *)
-| S2Ewthtype of (s2exp (*, todo: WTHS2EXPLST*))
-| S2Etop of (s2exp)
+| S2Ewthtype of (s2exp (*, todo: WTHS2EXPLST*)) // e.g. x: char? >> char 
+| S2Etop of (s2exp)  // used for uninitialized type, e.g. char?
 | S2Erefarg of (s2exp)
 | S2Eignored
 | S2Eerr

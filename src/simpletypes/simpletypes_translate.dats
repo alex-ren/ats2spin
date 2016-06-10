@@ -50,6 +50,8 @@ in
   | "bool_t0ype" => Some0 (s3type_bool ())
   | "atsvoid_t0ype" => Some0 (s3type_unit ())
   | "void" => Some0 (s3type_unit ())
+  | "char" => Some0 (s3type_char ())
+  | "char_t0ype" => Some0 (s3type_char ())
   | str => exitlocmsg (str + " is not handled.\n")
 end
 //
@@ -130,8 +132,12 @@ end
 (* This is for the return type of a function whose parameters use
 * reference type.
 *)
-| S2Ewthtype (s2exp (*, todo: WTHS2EXPLST*)) => exitlocmsg ("todo\n")
-| S2Etop (s2exp) => exitlocmsg ("Check what this is.\n")
+| S2Ewthtype (s2exp (*, todo: WTHS2EXPLST*)) => let
+  val s3type = s3type_translate (s2exp)
+in
+  s3type
+end
+| S2Etop (s2exp) => s3type_translate (s2exp)
 | S2Erefarg (s2exp) => let
   val- Some0 (s3type) = s3type_translate (s2exp)
 in
