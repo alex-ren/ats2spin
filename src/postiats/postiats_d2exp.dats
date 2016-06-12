@@ -50,6 +50,12 @@ fprint_d2exp_node$D2Eifopt$arg3(out, arg0) =
   let val-D2Eifopt(_, _, arg3) = arg0 
 in fprint_d2exp_node$carg<d2expopt>(out, arg3) end
 
+
+implement{}
+fprint_d2exp_node$D2Ecase$arg2(out, arg0) =
+  let val-D2Ecase(_, arg2, _) = arg0 
+in fprint_d2exp_node$carg<d2explst>(out, arg2) end
+
 implement{}
 fprint_d2exp_node$D2Ecase$arg3(out, arg0) =
   let val-D2Ecase(_, _, arg3) = arg0 

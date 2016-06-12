@@ -17,8 +17,6 @@ staload "./simpletypes.sats"
 
 implement is_debug_typechecking = ref false
 
-#define isdebug (!is_debug_typechecking)
-
 (* ************ ************* *)
 implement myfprint_s3tkind (out, s3tkind) = fprint_s3tkind<> (out, s3tkind)
 
@@ -135,6 +133,11 @@ extern fun s3typecheck_D2Cdcstdecs (s3typemap, d2ecl): void
 extern fun s3typecheck_D2Clocal (s3typemap, d2ecl): void
 extern fun s3typecheck_D2Cextcode (s3typemap, d2ecl): void
 extern fun s3typecheck_D2Cignored (s3typemap, d2ecl): void
+
+
+extern fun instantiate_one (s2varlst, s3type): s3type
+// instantiate all para type by S3TYPEref
+extern fun instantiate_all (s3type: s3type): s3type
 
 implement s3typecheck_d2ecl (d2ecl, tmap) = let
   val () = if isdebug then let
@@ -312,6 +315,69 @@ end
 
 (* ******************* ******************* *)
 
+implement instantiate_one (s2varlst, s3type) = let
+  val poly_para_map = s3poly_para_map_create ()
+  val poly_para_map = 
+    list0_foldleft<s2var><s3poly_para_map> (
+      s2varlst, poly_para_map, fopr) where {
+  fun fopr (res: s3poly_para_map, x: s2var):<cloref1> s3poly_para_map = let
+    val () = s3poly_para_map_insert (res, x, s3type_ref ())
+  in res end
+  }
+
+  val ret = s3type_instantiate (s3type, poly_para_map)
+in
+  ret
+end  // end of [instantiate_one]
+
+implement instantiate_all (s3type) = 
+case+ s3type of
+| S3TYPEfun (_, _, _, _) => s3type
+| S3TYPEpoly (s2varlst, s3type1) => let
+  val s3type2 = instantiate_one (s2varlst, s3type1)
+in
+  instantiate_all (s3type2)
+end
+| _ => exitlocmsg ("Check this.\n")
+// end of [instantiate_all]
+
+
+extern fun oftype_P2Tcon (p2at: p2at, tmap: s3typemap): s3type
+
+// This part is similar to oftype_D2Eapplst
+implement oftype_P2Tcon (p2at, tmap) = let
+  val loc = p2at.p2at_loc
+  val- P2Tcon (d2con, npf, p2atlst) = p2at.p2at_node
+  val s2exp = d2con_get_type (d2con)
+  val- Some0 s3type = s3type_translate (s2exp)
+  val s3type0 = instantiate_all (s3type)
+  val- S3TYPEfun (npf_ty, ty_args, ty_res, effect) = s3type0
+in
+  if (length (ty_args) <> length (p2atlst))
+  then exitlocmsg (
+    "Type mismatched: " + loc.tostring () + " different length.\n")
+  else let
+    val () = loop_type_checker (p2atlst, ty_args) where {
+    fun loop_type_checker (
+      p2atlst: p2atlst , s3typelst: s3typelst): void =
+    case+ (p2atlst, s3typelst) of
+    | (list_cons (p2at1, p2atlst1), cons0 (s3type1, s3typelst1)) => let
+      val ty_p2at = oftype_p2at (p2at1, tmap)
+      val tcres = s3type_match (tmap, ty_p2at, s3type1)
+    in
+      case+ tcres of
+      | Some0 msg => exitlocmsg ("type mismatch: " + msg + "\n")
+      | None0 () => loop_type_checker (p2atlst1, s3typelst1)
+    end
+    | (list_nil (), nil0 ()) => ()
+    | (_, _) => exitlocmsg (
+    "Type mismatched: " + loc.tostring () + " different length.\n")
+    }
+  in
+    ty_res
+  end
+end  // end of [oftype_P2Tcon]
+
 implement oftype_p2at (p2at, tmap) = let
   val () = if isdebug then let
     // val () = fprint! (stdout_ref, "===== oftype_p2at =====\n")
@@ -351,7 +417,7 @@ in
   in
     ty
   end
-  | P2Tcon (d2con, npf, p2atlst) => exitlocmsg ("Not supported.\n")
+  | P2Tcon (d2con, npf, p2atlst) => oftype_P2Tcon (p2at, tmap)
 //
   | P2Ti0nt (rep) => s3type_int ()
 //
@@ -423,20 +489,7 @@ fun oftype_D2Eapplst (
             , d2exparglst: d2exparglst
             , inner_types: s3typelst
             , loc: location_type): (s3type, s3typelst) = let
-    fun instantiate_one (s2varlst, s3type): s3type = let
-      val poly_para_map = s3poly_para_map_create ()
-      val poly_para_map = 
-        list0_foldleft<s2var><s3poly_para_map> (
-          s2varlst, poly_para_map, fopr) where {
-      fun fopr (res: s3poly_para_map, x: s2var):<cloref1> s3poly_para_map = let
-        val () = s3poly_para_map_insert (res, x, s3type_ref ())
-      in res end
-      }
 
-      val ret = s3type_instantiate (s3type, poly_para_map)
-    in
-      ret
-    end
     val- list_cons (args0, d2exparglst1) = d2exparglst
   in
     case+ args0 of
@@ -455,17 +508,7 @@ fun oftype_D2Eapplst (
     end
     | D2EXPARGdyn (npf, loc, d2explst(*args*)) => let
 
-      fun loop (polytype: s3type): s3type = let
-        val- S3TYPEpoly (s2varlst, s3type_body) = polytype
-        val s3type_body = instantiate_one (s2varlst, s3type_body)
-      in
-        case+ s3type_body of
-        | S3TYPEfun (_, _, _, _) => s3type_body
-        | S3TYPEpoly (_, _) => loop (s3type_body)
-        | _ => exitlocmsg ("Check this.\n")
-      end
-
-      val s3type_body = loop (s3type)
+      val s3type_body = instantiate_all (s3type)
     in
       loop_fun (s3type_body, d2exparglst, inner_types, loc)
     end
@@ -627,11 +670,76 @@ in
   end
   | D2Ecase (
       casekind
-      , d2exp(*test*)
+      , d2explst(*tests*)
       , c2laulst
-    ) => exitlocmsg ("todo\n")
-//
+    ) => let
+    val- list_cons (c2lau1, c2laulst1) = c2laulst
+
+    // handle first clause
+    val p2atlst = c2lau1.c2lau_patlst
+    fun loop (d2explst: d2explst
+              , p2atlst: p2atlst
+              , res: s3typelst): s3typelst =
+    case+ (d2explst, p2atlst) of
+    | (list_cons (d2exp1, d2explst1), list_cons (p2at1, p2atlst1)) => let
+      val ty_d2exp = oftype_d2exp (d2exp1, tmap)
+      val ty_p2at = oftype_p2at (p2at1, tmap)
+
+      val tcres = s3type_match (tmap, ty_d2exp, ty_p2at)
+    in
+      case+ tcres of
+      | Some0 msg => exitlocmsg ("Type mismatch: " + msg + "\n")
+      | None0 () => let
+        val res = cons0 (ty_d2exp, res)
+      in loop (d2explst1, p2atlst1, res) end
+    end
+    | (list_nil (), list_nil ()) => list0_reverse res
+    | (_, _) => exitlocmsg ("Type mismatch.\n")
+
+    
+    // handle test
+    val s3typelst = loop (d2explst, p2atlst, nil0 ())
+
+    // hande body
+    val body = c2lau1.c2lau_body
+    val ty_body = oftype_d2exp (body, tmap)
+    //
+    // handle the rest of the clauses
+    //
+    implement list_foldright$fopr<c2lau><int> (c2lau, res) = let
+      val p2atlst = c2lau.c2lau_patlst
+
+      fun loop (s3typelst: s3typelst
+                , p2atlst: p2atlst): void =
+      case+ (s3typelst, p2atlst) of
+      | (cons0 (s3type1, s3typelst1), list_cons (p2at1, p2atlst1)) => let
+        val ty_p2at = oftype_p2at (p2at1, tmap)
+
+        val tcres = s3type_match (tmap, s3type1, ty_p2at)
+      in
+        case+ tcres of
+        | Some0 msg => exitlocmsg ("Type mismatch: " + msg + "\n")
+        | None0 () => let
+        in loop (s3typelst1, p2atlst1) end
+      end
+      | (nil0 (), list_nil ()) => ()
+      | (_, _) => exitlocmsg ("Type mismatch.\n")
+      
+      // handle test
+      val () = loop (s3typelst, p2atlst)
+
+      // hande body
+      val body = c2lau.c2lau_body
+      val () = s3typecheck_d2exp (body, ty_body, tmap)
+    in 0 end
+
+    val _ = list_foldright<c2lau><int> (c2laulst1, 0)
+  in
+    ty_body
+  end  // end of [D2Ecase]
+  //
   | D2Esing (d2exp) => oftype_d2exp (d2exp, tmap)
+  //
   | D2Elist (npf, d2explst) => let
     implement list_foldright$fopr<d2exp><'(int, s3labeltypelst)> (d2exp, res) = let
       val s3type = oftype_d2exp (d2exp, tmap)

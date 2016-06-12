@@ -26,7 +26,9 @@ in
   | "bool" => Some0 (s3type_bool ())
   // todo add more type constructors here if needed
   | str => let
-    val () = fprint (stderr_ref, str + " is encountered. This is " + $mylocation + "\n")
+    val () = if isdebug then let
+      val () = fprint (stderr_ref, str + " is encountered. This is " + $mylocation + "\n")
+    in end
   in
     None0 ()
   end

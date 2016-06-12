@@ -637,7 +637,7 @@ and d2exp_node =
 
   | D2Ecase of (
       casekind
-      , d2exp(*test*)
+      , d2explst(*test*)
       , c2laulst
     ) (* end of [D2Ecase] *)
 //

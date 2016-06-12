@@ -11,6 +11,10 @@ staload HT = "libats/ML/SATS/hashtblref.sats"
 
 val is_debug_typechecking: ref bool
 
+#define isdebug (!is_debug_typechecking)
+
+(* ************* ************* *)
+
 datatype s3rt =
 | S3SRTtype
 | S3SRTt0ype
@@ -203,6 +207,8 @@ fun s3type_export (max: int, prog: d2eclist): '(d2eclist, s3typemap)
 (* ************* ************* *)
 
 fun s3type_translate_S3Eapp_con (s2cst): s3typeopt
+
+(* ************* ************* *)
 
 
 

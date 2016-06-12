@@ -402,13 +402,11 @@ val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 4)
 //
 val casekind = parse_casekind (jsvs[0])
-val- JSONarray (jsv2_arr) = jsvs[2]
-val () = assertloc (length (jsv2_arr) >= 1)
-val _test = parse_d2exp (s2env, p2env, jsv2_arr[0])
+val tests = parse_d2explst (s2env, p2env, jsvs[2])
 val c2laulst = parse_c2laulst (s2env, p2env, jsvs[3])
 //
 in
-  D2Ecase (casekind, _test, c2laulst)
+  D2Ecase (casekind, tests, c2laulst)
 end // end of [parse_D2Eifhead]
 
 

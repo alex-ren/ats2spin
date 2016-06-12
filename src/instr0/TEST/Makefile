@@ -75,5 +75,8 @@ cleanall:: ; $(RMF) test_instr0_12_dats.json
 cleanall:: ; $(RMF) test_instr0_13_dats.json
 cleanall:: ; $(RMF) test_instr0_14_dats.json
 cleanall:: ; $(RMF) test_instr0_15_dats.json
+cleanall:: ; $(RMF) test_instr0_16_dats.json
+cleanall:: ; $(RMF) test_instr0_17_dats.json
+cleanall:: ; $(RMF) test_instr0_18_dats.json
 
 ###### end of [Makefile] ######
