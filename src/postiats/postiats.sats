@@ -284,10 +284,13 @@ datatype s2exp_node =
 | S2Euni of (s2varlst, s2explst (*predicates*), s2exp (*body*))
 | S2Efun of (int (*npf*), s2explst (*args*), s2exp (*res*))
 | S2Eint of int
-| S2Eintinf of int
+(* The literal "4" in the following example is of S2Eintinf.
+ * prfun qq2 {x:int} .<>.(x: propy (4)): int = 3
+ *)
+| S2Eintinf of string
 | S2Einvar of s2exp
 | S2Esizeof of s2exp
-| S2Etyrec of (int (*knd*), int (*npf*), labs2explst)
+| S2Etyrec of (int (*knd: 0:flat, 1: boxed*), int (*npf*), labs2explst)
 (* This is for the return type of a function whose parameters use
 * reference type.
 *)
@@ -304,7 +307,7 @@ s2exp = '{
 
 and labs2exp = '{
 labs2exp_label = label
-, labs2exp_name = string
+, labs2exp_nameopt = option0 string
 , labs2exp_s2exp = s2exp
 }
 and labs2explst = list0 labs2exp

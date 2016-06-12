@@ -138,7 +138,7 @@ extern fun s3typecheck_D2Cignored (s3typemap, d2ecl): void
 
 implement s3typecheck_d2ecl (d2ecl, tmap) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3typecheck_d2ecl =====\n")
+    // val () = fprint! (stdout_ref, "===== s3typecheck_d2ecl =====\n")
   in end
   val d2ecl_node = d2ecl.d2ecl_node
 in
@@ -164,7 +164,7 @@ end
 //
 implement s3typecheck_D2Cimpdec (tmap, d2ecl) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3typecheck_D2Cimpdec =====\n")
+    // val () = fprint! (stdout_ref, "===== s3typecheck_D2Cimpdec =====\n")
   in end
   val- D2Cimpdec (knd, i2mpdec) = d2ecl.d2ecl_node
   val s3type_d2exp = i2mpdec.i2mpdec_def.oftype (tmap)
@@ -177,7 +177,7 @@ in end
 //
 implement s3typecheck_D2Cfundecs (tmap, d2ecl) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3typecheck_D2Cfundecs =====\n")
+    // val () = fprint! (stdout_ref, "===== s3typecheck_D2Cfundecs =====\n")
   in end
   val- D2Cfundecs (funknd, f2undeclst) = d2ecl.d2ecl_node
   // collect type information from function headers
@@ -196,7 +196,7 @@ in end
 //
 implement s3typecheck_D2Cvaldecs (tmap, d2ecl) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3typecheck_D2Cvaldecs =====\n")
+    // val () = fprint! (stdout_ref, "===== s3typecheck_D2Cvaldecs =====\n")
   in end
   val- D2Cvaldecs (valkind, v2aldeclst) = d2ecl.d2ecl_node
 
@@ -209,7 +209,7 @@ in end
 //
 implement s3typecheck_D2Cvardecs (tmap, d2ecl) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3typecheck_D2Cvardecs =====\n")
+    // val () = fprint! (stdout_ref, "===== s3typecheck_D2Cvardecs =====\n")
   in end
   val- D2Cvardecs (v2ardeclst) = d2ecl.d2ecl_node
 
@@ -222,7 +222,7 @@ in end
 //
 implement s3typecheck_D2Cdcstdecs (tmap, d2ecl) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3typecheck_D2Cdcstdecs =====\n")
+    // val () = fprint! (stdout_ref, "===== s3typecheck_D2Cdcstdecs =====\n")
   in end
   val- D2Cdcstdecs (n, d2cst) = d2ecl.d2ecl_node
 in
@@ -233,7 +233,7 @@ end
 //
 implement s3typecheck_D2Clocal (tmap, d2ecl) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3typecheck_D2Clocal =====\n")
+    // val () = fprint! (stdout_ref, "===== s3typecheck_D2Clocal =====\n")
   in end
   val- D2Clocal (head, body) = d2ecl.d2ecl_node
 
@@ -252,7 +252,7 @@ in end
 
 implement s3typecheck_f2undec_body (f2undec, tmap) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3typecheck_f2undec_body =====\n")
+    // val () = fprint! (stdout_ref, "===== s3typecheck_f2undec_body =====\n")
   in end
   val loc = f2undec.f2undec_loc
   val s3type = oftype_d2var (f2undec.f2undec_var, tmap, loc)
@@ -273,7 +273,7 @@ in end
 
 implement s3typecheck_d2exp (d2exp, s3type, tmap) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3typecheck_d2exp =====\n")
+    // val () = fprint! (stdout_ref, "===== s3typecheck_d2exp =====\n")
   in end
   val exp_type = d2exp.oftype (tmap)
   val tcres = s3type_match (tmap, exp_type, s3type)
@@ -288,7 +288,7 @@ end
 (* ******************* ******************* *)
 implement s3typecheck_v2aldec (v2aldec, tmap) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3typecheck_v2aldec =====\n")
+    // val () = fprint! (stdout_ref, "===== s3typecheck_v2aldec =====\n")
   in end
   val p2at = v2aldec.v2aldec_pat
   val ty_p2at = oftype_p2at (p2at, tmap)
@@ -300,7 +300,7 @@ in end
 
 implement s3typecheck_v2ardec (v2ardec, tmap) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3typecheck_v2ardec =====\n")
+    // val () = fprint! (stdout_ref, "===== s3typecheck_v2ardec =====\n")
   in end
   val ty_var = s3type_ref ()
   val () = s3typemap_update_d2var (tmap, v2ardec.v2ardec_name, ty_var)
@@ -314,7 +314,7 @@ end
 
 implement oftype_p2at (p2at, tmap) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== oftype_p2at =====\n")
+    // val () = fprint! (stdout_ref, "===== oftype_p2at =====\n")
   in end
   val loc = p2at.p2at_loc
   val node = p2at.p2at_node
@@ -368,9 +368,9 @@ in
   case+ s3typeopt of
   | None0 () => let
     val s2exp = d2cst_get_type (d2cst)
-    val () = fprint (stderr_ref, "s2exp is ")
-    val () = fprint_s2exp (stderr_ref, s2exp)
-    val () = fprint (stderr_ref, "\n")
+    // val () = fprint (stderr_ref, "s2exp is ")
+    // val () = fprint_s2exp (stderr_ref, s2exp)
+    // val () = fprint (stderr_ref, "\n")
     val- Some0 (s3type) = s3type_translate (s2exp)
     val () = s3typemap_update_d2cst (tmap, d2cst, s3type)
   in
@@ -400,7 +400,7 @@ fun oftype_D2Eapplst (
   , tmap: s3typemap
   , loc: location_type): s3type = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== oftype_D2Eapplst =====\n")
+    // val () = fprint! (stdout_ref, "===== oftype_D2Eapplst =====\n")
   in end
   val s3type_funty = oftype_d2exp (d2exp, tmap)
   val s3type_funty = s3type_normalize (s3type_funty)
@@ -559,7 +559,7 @@ end
 
 implement oftype_d2exp (d2exp, tmap) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== oftype_d2exp =====\n")
+    // val () = fprint! (stdout_ref, "===== oftype_d2exp =====\n")
   in end
   val node = d2exp.d2exp_node
   val loc = d2exp.d2exp_loc
@@ -705,7 +705,7 @@ end  // end of [oftype_d2exp]
 
 implement oftype_funhead_f2undec (f2undec, tmap) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== oftype_funhead_f2undec =====\n")
+    // val () = fprint! (stdout_ref, "===== oftype_funhead_f2undec =====\n")
   in end
   val fundef = f2undec.f2undec_def
   val funtype = oftype_funhead_d2exp (fundef, tmap)
@@ -721,7 +721,7 @@ end
 
 implement oftype_funhead_d2exp (d2exp, tmap) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== oftype_funhead_d2exp =====\n")
+    // val () = fprint! (stdout_ref, "===== oftype_funhead_d2exp =====\n")
   in end
   val node = d2exp.d2exp_node
 in
@@ -762,7 +762,7 @@ end
 
 implement s3type_match (tmap, left, right) = let
   val () = if isdebug then let
-    val () = fprint! (stdout_ref, "===== s3type_match =====\n")
+    // val () = fprint! (stdout_ref, "===== s3type_match =====\n")
   in end
   val tyleft = s3type_normalize (left)
   val tyright = s3type_normalize (right)
@@ -855,6 +855,8 @@ in
     else None0 ()
   | (S3TYPEpoly (s2varlst1, s3type1), S3TYPEpoly (s2varlst2, s3type2)) =>
     s3type_match (tmap, s3type1, s3type2)
+  | (S3TYPErefarg (left0), right) => s3type_match (tmap, left0, right)
+  | (left, S3TYPErefarg (right0)) => s3type_match (tmap, left, right0)
   | (left, right) => let
     val () = if isdebug then let
       val () = fprint (stderr_ref, "\nleft is ")

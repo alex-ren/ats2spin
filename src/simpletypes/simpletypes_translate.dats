@@ -22,9 +22,11 @@ in
   | "g0int_t0ype" => Some0 (s3type_int ())
   | "g1int_int_t0ype" => Some0 (s3type_int ())
   | "bool_bool_t0ype" => Some0 (s3type_bool ())
+  | "int" => Some0 (s3type_int ())
+  | "bool" => Some0 (s3type_bool ())
   // todo add more type constructors here if needed
   | str => let
-    val () = fprint (stderr_ref, str + " is encountered.\n")
+    val () = fprint (stderr_ref, str + " is encountered. This is " + $mylocation + "\n")
   in
     None0 ()
   end
@@ -42,16 +44,22 @@ case+ node of
 | S2Ecst (s2cst) => let
   // val () = fprint (stderr_ref, "s2cst is ")
   // val () = fprint_s2cst (stderr_ref, s2cst)
-  val () = fprint (stderr_ref, "\n")
+  // val () = fprint (stderr_ref, "\n")
   val name = (s2cst_get_name (s2cst)).tostring ()
 in
   case+ name of
   | "int" => Some0 (s3type_int ())
+  //
   | "bool_t0ype" => Some0 (s3type_bool ())
-  | "atsvoid_t0ype" => Some0 (s3type_unit ())
+  | "bool" => Some0 (s3type_bool ())
+  //
   | "void" => Some0 (s3type_unit ())
+  | "atsvoid_t0ype" => Some0 (s3type_unit ())
+  //
   | "char" => Some0 (s3type_char ())
   | "char_t0ype" => Some0 (s3type_char ())
+  //
+  | "pid" => Some0 (s3type_int ())
   | str => exitlocmsg (str + " is not handled.\n")
 end
 //

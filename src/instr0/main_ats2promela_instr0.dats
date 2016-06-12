@@ -67,7 +67,7 @@ implement main0 (argc, argv) = let
   in
     if option1 = "--debug" then let
       val () = is_debug := true
-      // val () = !is_debug_typechecking := true
+      val () = !is_debug_typechecking := true
     in end
   end
 

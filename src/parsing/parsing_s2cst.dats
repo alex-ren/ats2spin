@@ -92,9 +92,9 @@ in
 case+ opt of
 | ~Some_vt (s2c) => '(s2c, max)
 | ~None_vt ((*void*)) => let
-  val () = fprint (stderr_ref, "s2cst's stamp is ")
-  val () = fprint_stamp (stderr_ref, stamp)
-  val () = fprint (stderr_ref, "\n")
+  // val () = fprint (stderr_ref, "s2cst's stamp is ")
+  // val () = fprint_stamp (stderr_ref, stamp)
+  // val () = fprint (stderr_ref, "\n")
   val-~Some_vt(jsv_sym) =
     jsonval_get_field (jsv0, "s2cst_sym")
   val sym = parse_symbol (jsv_sym)
