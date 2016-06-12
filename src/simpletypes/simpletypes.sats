@@ -116,13 +116,6 @@ fun s3typemap_update_d2var (
 //   s3typemap: s3typemap, d2sym: d2sym, s3type: s3type): void
   
 
-fun s3typemap_get_type (d2cst): s3type
-fun s3typemap_get_type (d2var): s3type
-fun s3typemap_get_type (d2sym): s3type
-
-fun s3typemap_set_type (d2cst, s3type): void
-fun s3typemap_set_type (d2var, s3type): void
-
 (* ************* ************* *)
 
 // s3type is S3TYPEfun or S3TYPEpoly

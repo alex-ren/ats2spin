@@ -96,6 +96,7 @@ ATS2PROMELA_dyn := \
     i0idmap.dats \
     i0id.dats \
     i0stamp_allocator.dats \
+    i0type0.dats \
     dynloadall.dats
 
 
@@ -179,7 +180,7 @@ $(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d ./../postiats/codegen.dats
 
 ./../simpletypes/simpletypes_codegen2.hats: \
 ./../simpletypes/simpletypes.sats ./../simpletypes/codegen.dats; \
-$(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d codegen.dats
+$(PATSOPT) -DATS CODEGEN2 --codegen-2 -o $@ -d ./../simpletypes/codegen.dats
 
 ./instr0_codegen2.hats: \
 ./instr0.sats ./codegen.dats; \

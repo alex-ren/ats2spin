@@ -83,19 +83,19 @@ in
   end
 end  // end of [stamp_get_from_d2cst]
 
-implement stamp_get_from_d2sym (sa, d2sym) = let
-  val symbol = d2sym_get_name (d2sym)
-  val itmopt = $HT.hashtbl_search (sa.stamp_allocator_d2symmap, symbol)
-in
-  case+ itmopt of
-  | ~Some_vt (itm) => itm
-  | ~None_vt () => let
-    val c = stamp_allocate (sa)
-    val () = $HT.hashtbl_insert_any (sa.stamp_allocator_d2symmap, symbol, c)
-  in
-    c
-  end
-end  // end of [stamp_get_from_d2sym]
+// implement stamp_get_from_d2sym (sa, d2sym) = let
+//   val symbol = d2sym_get_name (d2sym)
+//   val itmopt = $HT.hashtbl_search (sa.stamp_allocator_d2symmap, symbol)
+// in
+//   case+ itmopt of
+//   | ~Some_vt (itm) => itm
+//   | ~None_vt () => let
+//     val c = stamp_allocate (sa)
+//     val () = $HT.hashtbl_insert_any (sa.stamp_allocator_d2symmap, symbol, c)
+//   in
+//     c
+//   end
+// end  // end of [stamp_get_from_d2sym]
 
 
 

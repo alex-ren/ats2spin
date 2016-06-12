@@ -96,6 +96,7 @@ ATS2PROMELA_dyn := \
     instr0/i0idmap.dats \
     instr0/i0id.dats \
     instr0/i0stamp_allocator.dats \
+    instr0/i0type0.dats \
     instr0/dynloadall.dats \
     promela/promela.dats \
     promela/promela_fprint.dats \

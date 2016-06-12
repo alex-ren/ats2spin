@@ -943,6 +943,340 @@ fprint_i0decl$DEC0gvar$arg1(out, arg0) =
 (* ****** ****** *)
 (* ****** ****** *)
 //
+extern
+fun{}
+fprint_type0$TYPE0int: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0char: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0bool: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0unit: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0fun: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0ref: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0msg: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0ignored: $d2ctype(fprint_type0<>)
+//
+(* ****** ****** *)
+//
+implement{}
+fprint_type0
+  (out, arg0) =
+(
+case+ arg0 of
+| TYPE0int _ => fprint_type0$TYPE0int<>(out, arg0)
+| TYPE0char _ => fprint_type0$TYPE0char<>(out, arg0)
+| TYPE0bool _ => fprint_type0$TYPE0bool<>(out, arg0)
+| TYPE0unit _ => fprint_type0$TYPE0unit<>(out, arg0)
+| TYPE0fun _ => fprint_type0$TYPE0fun<>(out, arg0)
+| TYPE0ref _ => fprint_type0$TYPE0ref<>(out, arg0)
+| TYPE0msg _ => fprint_type0$TYPE0msg<>(out, arg0)
+| TYPE0ignored _ => fprint_type0$TYPE0ignored<>(out, arg0)
+)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_type0$sep: (FILEref) -> void
+implement{}
+fprint_type0$sep(out) = fprint(out, ",")
+//
+extern
+fun{}
+fprint_type0$lpar: (FILEref) -> void
+implement{}
+fprint_type0$lpar(out) = fprint(out, "(")
+//
+extern
+fun{}
+fprint_type0$rpar: (FILEref) -> void
+implement{}
+fprint_type0$rpar(out) = fprint(out, ")")
+//
+extern
+fun{a:t0p}
+fprint_type0$carg: (FILEref, INV(a)) -> void
+implement{a}
+fprint_type0$carg(out, arg) = fprint_val<a>(out, arg)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_type0$TYPE0int$con: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0int$lpar: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0int$rpar: $d2ctype(fprint_type0<>)
+//
+implement{}
+fprint_type0$TYPE0int(out, arg0) = 
+{
+//
+val () = fprint_type0$TYPE0int$con<>(out, arg0)
+val () = fprint_type0$TYPE0int$lpar<>(out, arg0)
+val () = fprint_type0$TYPE0int$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_type0$TYPE0int$con(out, _) = fprint(out, "TYPE0int")
+implement{}
+fprint_type0$TYPE0int$lpar(out, _) = fprint_type0$lpar(out)
+implement{}
+fprint_type0$TYPE0int$rpar(out, _) = fprint_type0$rpar(out)
+//
+extern
+fun{}
+fprint_type0$TYPE0char$con: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0char$lpar: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0char$rpar: $d2ctype(fprint_type0<>)
+//
+implement{}
+fprint_type0$TYPE0char(out, arg0) = 
+{
+//
+val () = fprint_type0$TYPE0char$con<>(out, arg0)
+val () = fprint_type0$TYPE0char$lpar<>(out, arg0)
+val () = fprint_type0$TYPE0char$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_type0$TYPE0char$con(out, _) = fprint(out, "TYPE0char")
+implement{}
+fprint_type0$TYPE0char$lpar(out, _) = fprint_type0$lpar(out)
+implement{}
+fprint_type0$TYPE0char$rpar(out, _) = fprint_type0$rpar(out)
+//
+extern
+fun{}
+fprint_type0$TYPE0bool$con: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0bool$lpar: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0bool$rpar: $d2ctype(fprint_type0<>)
+//
+implement{}
+fprint_type0$TYPE0bool(out, arg0) = 
+{
+//
+val () = fprint_type0$TYPE0bool$con<>(out, arg0)
+val () = fprint_type0$TYPE0bool$lpar<>(out, arg0)
+val () = fprint_type0$TYPE0bool$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_type0$TYPE0bool$con(out, _) = fprint(out, "TYPE0bool")
+implement{}
+fprint_type0$TYPE0bool$lpar(out, _) = fprint_type0$lpar(out)
+implement{}
+fprint_type0$TYPE0bool$rpar(out, _) = fprint_type0$rpar(out)
+//
+extern
+fun{}
+fprint_type0$TYPE0unit$con: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0unit$lpar: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0unit$rpar: $d2ctype(fprint_type0<>)
+//
+implement{}
+fprint_type0$TYPE0unit(out, arg0) = 
+{
+//
+val () = fprint_type0$TYPE0unit$con<>(out, arg0)
+val () = fprint_type0$TYPE0unit$lpar<>(out, arg0)
+val () = fprint_type0$TYPE0unit$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_type0$TYPE0unit$con(out, _) = fprint(out, "TYPE0unit")
+implement{}
+fprint_type0$TYPE0unit$lpar(out, _) = fprint_type0$lpar(out)
+implement{}
+fprint_type0$TYPE0unit$rpar(out, _) = fprint_type0$rpar(out)
+//
+extern
+fun{}
+fprint_type0$TYPE0fun$con: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0fun$lpar: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0fun$rpar: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0fun$sep1: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0fun$arg1: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0fun$arg2: $d2ctype(fprint_type0<>)
+//
+implement{}
+fprint_type0$TYPE0fun(out, arg0) = 
+{
+//
+val () = fprint_type0$TYPE0fun$con<>(out, arg0)
+val () = fprint_type0$TYPE0fun$lpar<>(out, arg0)
+val () = fprint_type0$TYPE0fun$arg1<>(out, arg0)
+val () = fprint_type0$TYPE0fun$sep1<>(out, arg0)
+val () = fprint_type0$TYPE0fun$arg2<>(out, arg0)
+val () = fprint_type0$TYPE0fun$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_type0$TYPE0fun$con(out, _) = fprint(out, "TYPE0fun")
+implement{}
+fprint_type0$TYPE0fun$lpar(out, _) = fprint_type0$lpar(out)
+implement{}
+fprint_type0$TYPE0fun$rpar(out, _) = fprint_type0$rpar(out)
+implement{}
+fprint_type0$TYPE0fun$sep1(out, _) = fprint_type0$sep<>(out)
+implement{}
+fprint_type0$TYPE0fun$arg1(out, arg0) =
+  let val-TYPE0fun(arg1, _) = arg0 in fprint_type0$carg(out, arg1) end
+implement{}
+fprint_type0$TYPE0fun$arg2(out, arg0) =
+  let val-TYPE0fun(_, arg2) = arg0 in fprint_type0$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_type0$TYPE0ref$con: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0ref$lpar: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0ref$rpar: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0ref$arg1: $d2ctype(fprint_type0<>)
+//
+implement{}
+fprint_type0$TYPE0ref(out, arg0) = 
+{
+//
+val () = fprint_type0$TYPE0ref$con<>(out, arg0)
+val () = fprint_type0$TYPE0ref$lpar<>(out, arg0)
+val () = fprint_type0$TYPE0ref$arg1<>(out, arg0)
+val () = fprint_type0$TYPE0ref$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_type0$TYPE0ref$con(out, _) = fprint(out, "TYPE0ref")
+implement{}
+fprint_type0$TYPE0ref$lpar(out, _) = fprint_type0$lpar(out)
+implement{}
+fprint_type0$TYPE0ref$rpar(out, _) = fprint_type0$rpar(out)
+implement{}
+fprint_type0$TYPE0ref$arg1(out, arg0) =
+  let val-TYPE0ref(arg1) = arg0 in fprint_type0$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_type0$TYPE0msg$con: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0msg$lpar: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0msg$rpar: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0msg$arg1: $d2ctype(fprint_type0<>)
+//
+implement{}
+fprint_type0$TYPE0msg(out, arg0) = 
+{
+//
+val () = fprint_type0$TYPE0msg$con<>(out, arg0)
+val () = fprint_type0$TYPE0msg$lpar<>(out, arg0)
+val () = fprint_type0$TYPE0msg$arg1<>(out, arg0)
+val () = fprint_type0$TYPE0msg$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_type0$TYPE0msg$con(out, _) = fprint(out, "TYPE0msg")
+implement{}
+fprint_type0$TYPE0msg$lpar(out, _) = fprint_type0$lpar(out)
+implement{}
+fprint_type0$TYPE0msg$rpar(out, _) = fprint_type0$rpar(out)
+implement{}
+fprint_type0$TYPE0msg$arg1(out, arg0) =
+  let val-TYPE0msg(arg1) = arg0 in fprint_type0$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_type0$TYPE0ignored$con: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0ignored$lpar: $d2ctype(fprint_type0<>)
+extern
+fun{}
+fprint_type0$TYPE0ignored$rpar: $d2ctype(fprint_type0<>)
+//
+implement{}
+fprint_type0$TYPE0ignored(out, arg0) = 
+{
+//
+val () = fprint_type0$TYPE0ignored$con<>(out, arg0)
+val () = fprint_type0$TYPE0ignored$lpar<>(out, arg0)
+val () = fprint_type0$TYPE0ignored$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_type0$TYPE0ignored$con(out, _) = fprint(out, "TYPE0ignored")
+implement{}
+fprint_type0$TYPE0ignored$lpar(out, _) = fprint_type0$lpar(out)
+implement{}
+fprint_type0$TYPE0ignored$rpar(out, _) = fprint_type0$rpar(out)
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+datcon_type0
+  (arg0) =
+(
+case+ arg0 of
+| TYPE0int _ => "TYPE0int"
+| TYPE0char _ => "TYPE0char"
+| TYPE0bool _ => "TYPE0bool"
+| TYPE0unit _ => "TYPE0unit"
+| TYPE0fun _ => "TYPE0fun"
+| TYPE0ref _ => "TYPE0ref"
+| TYPE0msg _ => "TYPE0msg"
+| TYPE0ignored _ => "TYPE0ignored"
+)
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
 implement
 {}(*tmp*)
 datcon_i0exp

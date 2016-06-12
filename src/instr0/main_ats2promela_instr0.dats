@@ -127,7 +127,7 @@ implement main0 (argc, argv) = let
   }
 
   val sa = stamp_allocator_create ()
-  val i0prog = i0transform_d2eclst_global (sa, d2ecs_model)
+  val i0prog = i0transform_d2eclst_global (sa, d2ecs_model, tmap)
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 

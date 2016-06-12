@@ -10,6 +10,7 @@
 staload "libats/ML/SATS/basis.sats"
 
 staload "./../postiats/postiats.sats"
+staload "./../simpletypes/simpletypes.sats"
 
 staload "./../utils/emiter.sats"
 
@@ -24,18 +25,34 @@ staload "./../utils/emiter.sats"
 (* ********** ************ *)
 
 datatype type0 =
-| TYPE0_int
-| TYPE0_unit  // void
-| TYPE0_fun of (type0lst, type0)
+| TYPE0int
+| TYPE0char
+| TYPE0bool
+| TYPE0unit  // void
+| TYPE0fun of (type0lst, type0)
+| TYPE0ref of (type0)
+| TYPE0msg of (s2cst)
+| TYPE0ignored of ()
 where
 type0lst = list0 type0
+
+fun{} fprint_type0: fprint_type (type0)
+fun myfprint_type0: fprint_type (type0)
+overload fprint with myfprint_type0
+
+fun{} datcon_type0: type0 -> string
+
+fun type0_translate (s3type): type0
+fun type0_translate_s3typelst (s3typelst): type0lst
 
 abstype i0name = ptr
 fun i0name_make (s: symbol): i0name
 fun i0name_get_symbol (n: i0name): symbol
-fun eq_i0name_i0name (n1: i0name, n2: i0name):<fun0> bool
 fun fprint_i0name: (FILEref, i0name) -> void
 overload fprint with fprint_i0name
+
+fun eq_i0name_i0name (n1: i0name, n2: i0name):<fun0> bool
+overload = with eq_i0name_i0name
 
 fun emit_i0name (i0name): emit_unit
 fun tostring_i0name(i0name): string
@@ -66,14 +83,15 @@ datatype i0id_cat =
 
 abstype i0id = ptr
 
-fun i0id_make_sym (i0name, stamp): i0id
-fun i0id_make_cst (i0name, stamp, option0 string): i0id
-fun i0id_make_var (i0name, stamp): i0id
+fun i0id_make_sym (i0name): i0id
+fun i0id_make_cst (i0name, stamp, option0 string, type0): i0id
+fun i0id_make_var (i0name, stamp, type0): i0id
 fun i0id_is_sym (i0id): bool
 fun i0id_is_cst (i0id): bool
 fun i0id_is_var (i0id): bool
 fun i0id_get_name (i0id):<fun> i0name
 fun i0id_get_stamp (i0id):<fun> stamp
+fun i0id_get_type (i0id):<fun> s3type
 fun i0id_get_extdef (i0id): option0 string
 
 typedef i0idlst = list0 i0id
@@ -99,11 +117,17 @@ fun tostring_i0id_name (i0id): string
 
 datatype i0ins =
 | INS0decl of (i0id, option0 i0exp)
+//
 | INS0assign of (option0 i0exp, i0exp)
+//
 | INS0label of (i0id)
+//
 | INS0return of (option0 i0exp)
+//
 | INS0ifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))
+//
 | INS0random of (i0gbranchlst, i0inslstopt) 
+//
 | INS0goto of (i0id)
 //
 // Added for recursive functions
@@ -252,26 +276,29 @@ fun stamp_get_from_d2cst (
   , d2cst: d2cst
 ): stamp
 
-fun stamp_get_from_d2sym (
-  allocator: stamp_allocator
-  , d2sym: d2sym
-): stamp
+// fun stamp_get_from_d2sym (
+//   allocator: stamp_allocator
+//   , d2sym: d2sym
+// ): stamp
 
 (* ************ ************* *)
 
 fun i0transform_d2eclst_global (
   sa: stamp_allocator
   , d2ecs: d2eclist
+  , tmap: s3typemap
   ): i0prog
 
 fun i0transform_d2ecl_global (
   sa: stamp_allocator
   , d2ec: d2ecl
+  , tmap: s3typemap
   , fmap: i0funmap): i0declst
 
 fun i0transform_D2Cfundecs (
   sa: stamp_allocator
   , f2undeclst: f2undeclst
+  , tmap: s3typemap
   , fmap: i0funmap
   ): i0declst
 
@@ -284,14 +311,17 @@ fun i0transform_fundec (
   sa: stamp_allocator
   , group: i0idlst
   , f2undec: f2undec
+  , tmap: s3typemap
   , fmap: i0funmap): i0declst (*inner functions are included*)
                   
 fun i0transform_d2var (
   sa: stamp_allocator
+  , tmap: s3typemap
   , d2var: d2var): i0id
 
 fun i0transform_d2cst (
   sa: stamp_allocator
+  , tmap: s3typemap
   , d2cst: d2cst): i0id
 
 fun i0transform_d2sym (
@@ -300,14 +330,17 @@ fun i0transform_d2sym (
 
 fun i0transform_p2atlst2paralst (
   sa: stamp_allocator
+  , tmap: s3typemap
   , p2atlst: p2atlst): i0idlst
 
 fun i0transform_p2at2para (
   sa: stamp_allocator
+  , tmap: s3typemap
   , p2at: p2at): i0id
 
 fun i0transform_p2at2holder (
   sa: stamp_allocator
+  , tmap: s3typemap
   , p2at: p2at): option0 i0id
 
 (*
@@ -317,10 +350,12 @@ fun i0transform_p2at2holder (
 fun i0transform_d2exp_fbody (
   sa: stamp_allocator
   , e: d2exp
+  , tmap: s3typemap
   , fmap: i0funmap): (i0declst (*inner functions*), i0inslst)
 
 fun i0transform_d2exp_fname (
   sa: stamp_allocator
+  , tmap: s3typemap
   , e: d2exp): i0id
 
 (*
@@ -329,45 +364,55 @@ fun i0transform_d2exp_fname (
 *)
 fun i0transform_d2exp_expvalue (
   sa: stamp_allocator
+  , tmap: s3typemap
   , e: d2exp
 ): i0exp
 
 fun i0transform_d2exparglst (
   sa: stamp_allocator
+  , tmap: s3typemap
   , d2exparglst: d2exparglst): i0explst
 
 fun i0transform_d2explst_expvalue (
   sa: stamp_allocator
+  , tmap: s3typemap
   , d2explst: d2explst): i0explst
 
 fun i0transform_d2eclist (
   sa: stamp_allocator
   , d2eclist: d2eclist
+  , tmap: s3typemap
   , fmap: i0funmap): (i0declst, i0inslst)
 
 fun i0transform_d2ecl (
   sa: stamp_allocator
   , d2ecl: d2ecl
+  , tmap: s3typemap
   , fmap: i0funmap): (i0declst (*inner function*), i0inslst)
 
 fun i0transform_D2Cvaldecs (
   sa: stamp_allocator
+  , tmap: s3typemap
   , v2aldeclst: v2aldeclst): i0inslst
 
 fun i0transform_D2Cvardecs (
   sa: stamp_allocator
+  , tmap: s3typemap
   , v2ardeclst: v2ardeclst): i0inslst
 
 fun i0transform_v2aldec (
   sa: stamp_allocator
+  , tmap: s3typemap
   , v2aldec: v2aldec): i0ins (* INS0assign *)
 
 fun i0transform_v2aldec2guardexp (
   sa: stamp_allocator
+  , tmap: s3typemap
   , v2aldec: v2aldec): i0exp
 
 fun i0transform_v2ardec (
   sa: stamp_allocator
+  , tmap: s3typemap
   , v2aldec: v2ardec): i0ins (* INS0assign *)
 
 (* ********** *********** *)
