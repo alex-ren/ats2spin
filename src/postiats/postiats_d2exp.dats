@@ -93,9 +93,9 @@ fprint_d2exp_node$D2Efix$arg2(out, arg0) =
 in fprint_d2exp_node$carg<p2atlst>(out, arg2) end
 
 implement{}
-fprint_d2exp_node$D2Eextfcall$arg2(out, arg0) =
-  let val-D2Eextfcall(_, arg2) = arg0 
-in fprint_d2exp_node$carg<d2explst>(out, arg2) end
+fprint_d2exp_node$D2Eextfcall$arg3(out, arg0) =
+  let val-D2Eextfcall(_, _, arg3) = arg0 
+in fprint_d2exp_node$carg<d2explst>(out, arg3) end
 
 (* ****** ****** *)
 // for pretty print

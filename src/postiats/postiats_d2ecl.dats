@@ -253,10 +253,11 @@ v2aldec_make
 
 implement
 v2ardec_make
-  (loc, name, init) = '{
+  (loc, name, init, s2type) = '{
   v2ardec_loc= loc
 , v2ardec_name= name
 , v2ardec_init= init
+, v2ardec_type= s2type
 } (* end of [v2ardec_make] *)
 
 (* ****** ****** *)

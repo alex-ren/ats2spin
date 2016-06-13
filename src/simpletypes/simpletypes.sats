@@ -110,10 +110,16 @@ fun s3typemap_find_d2sym (s3typemap, d2sym): s3typeopt
 fun s3typemap_update_d2cst (
   s3typemap: s3typemap, d2cst: d2cst, s3type: s3type): void
 fun s3typemap_update_d2var (
-  s3typemap: s3typemap, d2var: d2var, s3type: s3type): void
+  s3typemap: s3typemap, loc: location_type, d2var: d2var, s3type: s3type): void
+
+// Create a new map, which has no S3TYPEref for d2cst and d2var.
+fun s3typemap_normalize (tmap: s3typemap): s3typemap
 
 // fun s3typemap_insert_d2sym (
 //   s3typemap: s3typemap, d2sym: d2sym, s3type: s3type): void
+
+fun fprint_s3typemap: fprint_type (s3typemap)
+overload fprint with fprint_s3typemap
   
 
 (* ************* ************* *)
@@ -150,6 +156,7 @@ fun s3typecheck_d2exp (d2exp, s3type, s3typemap): void
 
 symintr .oftype
 fun oftype_d2exp (d2exp: d2exp, tmap: s3typemap): s3type
+fun oftype_d2explst (d2explst: d2explst, tmap: s3typemap): s3typelst
 
 fun oftype_p2at (p2at: p2at, tmap: s3typemap): s3type
 

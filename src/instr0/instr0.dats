@@ -225,6 +225,11 @@ implement i0transform_d2var (sa, tmap, d2var) = let
   val i0name = i0name_make (name)
 
   val- Some0 s3type = s3typemap_find_d2var (tmap, d2var)
+
+  // val () = fprint (stderr_ref, "d2var is ")
+  // val () = fprint_d2var (stderr_ref, d2var)
+  // val () = fprint (stderr_ref, "\n")
+
   val type0 = type0_translate (s3type)
 in
   i0id_make_var (i0name, stamp, type0)
@@ -238,6 +243,9 @@ implement i0transform_d2cst (sa, tmap, d2cst) = let
             | None () => None0
             ): option0 string
   val i0name = i0name_make (name)
+  // val () = fprint (stderr_ref, "d2cst is ")
+  // val () = fprint_d2cst (stderr_ref, d2cst)
+  // val () = fprint (stderr_ref, "\n")
   val- Some0 s3type = s3typemap_find_d2cst (tmap, d2cst)
   val type0 = type0_translate (s3type)
 in
@@ -627,7 +635,7 @@ in
 // //
 //   | D2Elam of (p2atlst, d2exp)
 //   | D2Efix of (d2var, p2atlst, d2exp)
-  | D2Eextfcall (name, d2explst) => let
+  | D2Eextfcall (s2exp, name, d2explst) => let
     val i0explst = i0transform_d2explst_expvalue (sa, tmap, d2explst)
   in
     EXP0extfcall (name, i0explst)

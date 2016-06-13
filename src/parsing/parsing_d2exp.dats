@@ -594,10 +594,11 @@ parse_D2Eextfcall (s2env, p2env, jsv0) = let
 //
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 3)
+val s2exp = parse_s2exp (s2env, jsvs[0])
 val fname = parse_string (jsvs[1])
 val d2es = parse_d2explst (s2env, p2env, jsvs[2])
 in
-  D2Eextfcall (fname, d2es)
+  D2Eextfcall (s2exp, fname, d2es)
 end
 
 implement

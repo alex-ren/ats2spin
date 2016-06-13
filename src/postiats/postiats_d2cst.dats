@@ -127,7 +127,8 @@ implement
 fprint_d2cst
   (out, d2c) =
 (
-  fprint! (out, d2c.name(), "(", d2c.stamp(), "):(", d2c.type(), ")")
+  // fprint! (out, d2c.name(), "(", d2c.stamp(), "):(", d2c.type(), ")")
+  fprint! (out, d2c.name(), "(", d2c.stamp(), ")")
 ) (* end of [fprint_d2cst] *)
 
 (* ****** ****** *)

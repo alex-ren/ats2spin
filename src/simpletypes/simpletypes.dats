@@ -298,15 +298,31 @@ implement s3typecheck_v2aldec (v2aldec, tmap) = let
   val def = v2aldec.v2aldec_def
   val ty_def = oftype_d2exp (def, tmap)
   val tcres = s3type_match (tmap, ty_p2at, ty_def)
-in end 
+in
+  case+ tcres of
+  | None0 () => ()
+  | Some0 (msg) => 
+      exitlocmsg ("Type mismatch d2exp: " + msg + "\n" +
+      v2aldec.v2aldec_loc.tostring ())
+end
 
 
 implement s3typecheck_v2ardec (v2ardec, tmap) = let
   val () = if isdebug then let
     // val () = fprint! (stdout_ref, "===== s3typecheck_v2ardec =====\n")
   in end
-  val ty_var = s3type_ref ()
-  val () = s3typemap_update_d2var (tmap, v2ardec.v2ardec_name, ty_var)
+  val ty_var = (case+ v2ardec.v2ardec_type of
+               | Some0 s2exp => let
+                 val s3typeopt = s3type_translate (s2exp)
+               in
+                 case+ s3typeopt of
+                 | Some0 s3type => s3type
+                 | None0 () => exitlocmsg ("Check this.\n")
+               end
+               | None0 () => s3type_ref ()
+               ): s3type
+  val () = s3typemap_update_d2var (
+    tmap, v2ardec.v2ardec_loc, v2ardec.v2ardec_name, ty_var)
 in
   case+ v2ardec.v2ardec_init of
   | Some d2exp => s3typecheck_d2exp (d2exp, ty_var, tmap)
@@ -390,7 +406,7 @@ in
 //
   | P2Tvar (d2var) => let
     val ty = s3type_ref ()
-    val () = s3typemap_update_d2var (tmap, d2var, ty)
+    val () = s3typemap_update_d2var (tmap, loc, d2var, ty)
   in ty end
 //
   | P2Tempty () => s3type_unit ()
@@ -430,6 +446,9 @@ end
 
 implement oftype_d2cst (d2cst, tmap, loc) = let
   val s3typeopt = s3typemap_find_d2cst (tmap, d2cst)
+  // val () = fprint (stderr_ref, "d2cst in oftype_d2cst is ")
+  // val () = fprint_d2cst (stderr_ref, d2cst)
+  // val () = fprint (stderr_ref, "\n")
 in
   case+ s3typeopt of
   | None0 () => let
@@ -447,7 +466,7 @@ end
 
 implement oftype_d2var (d2var, tmap, loc) = let
   val vartype = s3type_ref ()
-  val () = s3typemap_update_d2var (tmap, d2var, vartype)
+  val () = s3typemap_update_d2var (tmap, loc, d2var, vartype)
 in
   vartype
 end
@@ -799,30 +818,51 @@ in
     ret
   end
   | D2Efix (d2var, p2atlst, d2exp) => exitlocmsg ("Not supported.\n")
-  | D2Eextfcall (string, d2explst) => s3type_ref ()
+  | D2Eextfcall (s2exp, name, d2explst) => let
+    val s3typeopt = s3type_translate (s2exp)
+    val s3typelst = oftype_d2explst (d2explst, tmap)
+  in 
+    case+ s3typeopt of
+    | Some0 s3type => s3type
+    | None0 () => exitlocmsg ("Check this.\n")
+  end
   | D2Eassgn (d2exp1, d2exp2) => let
     val ty1 = oftype_d2exp (d2exp1, tmap)
     val ty2 = oftype_d2exp (d2exp2, tmap)
     val tcres = s3type_match (tmap, ty1, ty2)
-    val ret = s3type_normalize (ty1)
   in
-    ty1
+    case+ tcres of
+    | None0 () => s3type_unit ()
+    | Some0 (msg) => 
+        exitlocmsg ("Type mismatch d2exp: " + msg + "\n" +
+        d2exp.d2exp_loc.tostring ())
   end
   | D2Eignored ((*void*)) => exitlocmsg ("Check this.\n")
 end  // end of [oftype_d2exp]
+
+implement oftype_d2explst (d2explst, tmap) = let
+  implement list_foldright$fopr<d2exp><s3typelst> (d2exp, res) = let
+    val s3type = oftype_d2exp (d2exp, tmap)
+  in
+    cons0 (s3type, res)
+  end
+in
+  list_foldright<d2exp><s3typelst> (d2explst, nil0 ())
+end
 
 implement oftype_funhead_f2undec (f2undec, tmap) = let
   val () = if isdebug then let
     // val () = fprint! (stdout_ref, "===== oftype_funhead_f2undec =====\n")
   in end
   val fundef = f2undec.f2undec_def
+  val loc = f2undec.f2undec_loc
   val funtype = oftype_funhead_d2exp (fundef, tmap)
   // val () = fprint (stderr_ref, "funtype at " + $mylocation + " is ")
   // val () = fprint_s3type (stderr_ref, funtype)
   // val () = fprint (stderr_ref, "=== \n")
 
   val funvar = f2undec.f2undec_var
-  val () = s3typemap_update_d2var (tmap, funvar, funtype)
+  val () = s3typemap_update_d2var (tmap, loc, funvar, funtype)
 in
   funtype
 end

@@ -1,5 +1,4 @@
 (*
-** Start Date: 03/09/2016
 ** Author: Zhiqiang ren
 *)
 
@@ -21,10 +20,15 @@ staload "{$JSONC}/SATS/json_ML.sats"
 
 staload "./../parsing/parsing.sats"
 staload "./../postiats/postiats.sats"
-staload "./simpletypes.sats"
+staload "./../simpletypes/simpletypes.sats"
+staload "./../instr0/instr0.sats"
+staload "./promela.sats"
+staload "./../utils/emiter.sats"
 
 dynload "./../parsing/dynloadall.dats"
 dynload "./../postiats/dynloadall.dats"
+dynload "./../simpletypes/dynloadall.dats"
+dynload "./../instr0/dynloadall.dats"
 dynload "./dynloadall.dats"
 
 
@@ -126,6 +130,80 @@ implement main0 (argc, argv) = let
   val () = fprint (stdout_ref, tmap)
   }
   
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== transform postiats to instr0 ================\n\n")
+  }
+
+  val sa = stamp_allocator_create ()
+  val i0prog = i0transform_d2eclst_global (sa, d2ecs_model, tmap)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== level instr0 ==============================\n\n")
+  val () = fprint (stdout_ref, i0prog)
+  }
+
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== optimizing tailcall on instr0 ================\n\n")
+  }
+
+  val i0prog = i0optimize_tailcall (sa, i0prog)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== level instr0 after tail call optimization =====================\n\n")
+  val () = fprint (stdout_ref, i0prog)
+  }
+
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== moving declarations on instr0 ================\n\n")
+  }
+
+  val i0prog = i0optimize_collect_decs (i0prog)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== level instr0 after declarations movement =====================\n\n")
+  val () = fprint (stdout_ref, i0prog)
+  }
+  
+  (* ************** ************** *)
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== transform instr0 to promela ================\n\n")
+  }
+
+  val pml_prog = pmltransform_i0prog (i0prog)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== level promela AST ==============================\n\n")
+  val () = fprint (stdout_ref, pml_prog)
+  }
+
+  (* ************** ************** *)
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== emitting promela ================\n\n")
+  }
+
+  val eu = emit_pml_program (pml_prog)
+  
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== level promela ==============================\n\n")
+  }
+  val () = fprint_emit_unit (stdout_ref, eu)
+
   (* ************** ************** *)
 
   val () = if fopen > 0 then fileref_close (inpref)

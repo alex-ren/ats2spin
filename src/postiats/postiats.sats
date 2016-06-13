@@ -655,7 +655,7 @@ and d2exp_node =
                    , s2explst (*predicates in the statics*)
                    , d2exp)
   | D2Efix of (d2var, p2atlst, d2exp)
-  | D2Eextfcall of (string, d2explst)
+  | D2Eextfcall of (s2exp, string, d2explst)
   | D2Eassgn of (d2exp, d2exp)
 //
   | D2Eignored of ((*void*)) // HX: error-handling
@@ -715,6 +715,7 @@ and v2ardec = '{
   v2ardec_loc= loc_t
 , v2ardec_name= d2var
 , v2ardec_init= d2expopt
+, v2ardec_type= s2expopt
 } (* end of [v2ardec] *)
 
 and v2aldeclst = List0 (v2aldec)
@@ -918,7 +919,7 @@ fun v2aldec_make (loc_t, p2t0: p2at, def: d2exp): v2aldec
 
 (* ****** ****** *)
 
-fun v2ardec_make (loc_t, name: d2var, init: d2expopt): v2ardec
+fun v2ardec_make (loc_t, name: d2var, init: d2expopt, s2type: s2expopt): v2ardec
 
 (* ****** ****** *)
 //

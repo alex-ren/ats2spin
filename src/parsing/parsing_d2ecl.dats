@@ -4,10 +4,10 @@
 
 (* ****** ****** *)
 //
-#include
-"share/atspre_define.hats"
-#include
-"share/atspre_staload.hats"
+#include "share/atspre_define.hats"
+#include "share/atspre_staload.hats"
+
+#include "share/HATS/atspre_staload_libats_ML.hats"
 //
 (* ****** ****** *)
 
@@ -210,6 +210,20 @@ in
   end
 end
 
+fun parse_v2ardec_type (s2env: s2parsingenv
+                        , jsv: jsonval): s2expopt = let
+//
+val-JSONarray(jsvs) = jsv
+val len = length jsvs
+in
+  if len = 0 then None0 ()
+  else let
+    val s2exp = parse_s2exp (s2env, jsvs[0])
+  in
+    Some0 s2exp
+  end
+end
+
 implement
 parse_v2ardec
   (s2env, p2env, jsv0) = let
@@ -220,13 +234,16 @@ val-~Some_vt(dvar) =
   jsonval_get_field (jsv0, "v2ardec_dvar")
 val-~Some_vt(init) = 
   jsonval_get_field (jsv0, "v2ardec_init")
+val-~Some_vt(s2exp) = 
+  jsonval_get_field (jsv0, "v2ardec_type")
 //
 val loc  = parse_location (loc)
 val name = parse_d2var0 (p2env.parsingenv_d2varmap, dvar)
 val init  = parse_v2ardec_init (s2env, p2env, init)
+val s2exp  = parse_v2ardec_type (s2env, s2exp)
 //
 in
-  v2ardec_make (loc, name, init)
+  v2ardec_make (loc, name, init, s2exp)
 end // end of [parse_v2ardec]
 
 (* ****** ****** *)

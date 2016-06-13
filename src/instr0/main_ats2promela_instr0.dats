@@ -123,6 +123,14 @@ implement main0 (argc, argv) = let
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
+    "\n\n## ======== type information ================\n\n")
+  val () = fprint (stdout_ref, tmap)
+  }
+  
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
     "\n\n## ======== transform postiats to instr0 ================\n\n")
   }
 
