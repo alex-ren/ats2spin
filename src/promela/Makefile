@@ -222,9 +222,9 @@ depend:: ; $(PATSOPT) --output-a .depend --depgen -d $(ATS2PROMELA_dyn)
 ######
 
 test_%: TEST/test_%_dats.json
-	./ats2promela_promela $< 
-# > $(patsubst %.json, %.promela, $<)
-# cat $(patsubst %.json, %.promela, $<)
+	./ats2promela_promela $< > $(patsubst %.json, %.pml, $<)
+	cat $(patsubst %.json, %.pml, $<)
+	spin -u1000 $(patsubst %.json, %.pml, $<)
 
 debug_%: TEST/test_%_dats.json
 	./ats2promela_promela $< --debug

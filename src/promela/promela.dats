@@ -25,15 +25,21 @@ fun pml_name_make_startwith_prefix (i0id: i0id, pre: string):
   option0 (pml_name) = let
   val fullname_str = tostring_i0id (i0id)
   val opt = fullname_str.removePrefix (pre)
-  val stamp = i0id_get_stamp i0id
 in
-  case+ opt of
-  | Some (name_str) => let
-    val pml_name = pml_name_make (name_str, stamp, PMLTYPE_todo)
+  if (i0id_is_sym (i0id)) then None0 ()
+  else let 
+    // val () = fprintln! (stderr_ref, "begin p =====")
+    val stamp = i0id_get_stamp i0id
+    // val () = fprintln! (stderr_ref, "end p =====")
   in
-    Some0 (pml_name)
+    case+ opt of
+    | Some (name_str) => let
+      val pml_name = pml_name_make (name_str, stamp, PMLTYPE_todo)
+    in
+      Some0 (pml_name)
+    end
+    | None () => None0 ()
   end
-  | None () => None0 ()
 end
 
 fun pml_name_make_inline (i0id: i0id): option0 (pml_name) = 
@@ -156,7 +162,10 @@ end
 
 implement pmltransform_i0id (i0id) = let
   val name = tostring_i0id (i0id)
+  // val () = fprintln! (stderr_ref, "begin =====")
   val stamp = i0id_get_stamp i0id
+  // val () = fprintln! (stderr_ref, "end =====")
+
   val type = pmltransform_i0type ()
 in
   pml_name_make (name, stamp, type)
