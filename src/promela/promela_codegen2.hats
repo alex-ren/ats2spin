@@ -29,7 +29,7 @@ fun{}
 fprint_pml_type$PMLTYPE_uname: $d2ctype(fprint_pml_type<>)
 extern
 fun{}
-fprint_pml_type$PMLTYPE_todo: $d2ctype(fprint_pml_type<>)
+fprint_pml_type$PMLTYPE_ignore: $d2ctype(fprint_pml_type<>)
 //
 (* ****** ****** *)
 //
@@ -47,7 +47,7 @@ case+ arg0 of
 | PMLTYPE_mtype _ => fprint_pml_type$PMLTYPE_mtype<>(out, arg0)
 | PMLTYPE_chan _ => fprint_pml_type$PMLTYPE_chan<>(out, arg0)
 | PMLTYPE_uname _ => fprint_pml_type$PMLTYPE_uname<>(out, arg0)
-| PMLTYPE_todo _ => fprint_pml_type$PMLTYPE_todo<>(out, arg0)
+| PMLTYPE_ignore _ => fprint_pml_type$PMLTYPE_ignore<>(out, arg0)
 )
 //
 (* ****** ****** *)
@@ -321,29 +321,29 @@ fprint_pml_type$PMLTYPE_uname$arg1(out, arg0) =
 //
 extern
 fun{}
-fprint_pml_type$PMLTYPE_todo$con: $d2ctype(fprint_pml_type<>)
+fprint_pml_type$PMLTYPE_ignore$con: $d2ctype(fprint_pml_type<>)
 extern
 fun{}
-fprint_pml_type$PMLTYPE_todo$lpar: $d2ctype(fprint_pml_type<>)
+fprint_pml_type$PMLTYPE_ignore$lpar: $d2ctype(fprint_pml_type<>)
 extern
 fun{}
-fprint_pml_type$PMLTYPE_todo$rpar: $d2ctype(fprint_pml_type<>)
+fprint_pml_type$PMLTYPE_ignore$rpar: $d2ctype(fprint_pml_type<>)
 //
 implement{}
-fprint_pml_type$PMLTYPE_todo(out, arg0) = 
+fprint_pml_type$PMLTYPE_ignore(out, arg0) = 
 {
 //
-val () = fprint_pml_type$PMLTYPE_todo$con<>(out, arg0)
-val () = fprint_pml_type$PMLTYPE_todo$lpar<>(out, arg0)
-val () = fprint_pml_type$PMLTYPE_todo$rpar<>(out, arg0)
+val () = fprint_pml_type$PMLTYPE_ignore$con<>(out, arg0)
+val () = fprint_pml_type$PMLTYPE_ignore$lpar<>(out, arg0)
+val () = fprint_pml_type$PMLTYPE_ignore$rpar<>(out, arg0)
 //
 }
 implement{}
-fprint_pml_type$PMLTYPE_todo$con(out, _) = fprint(out, "PMLTYPE_todo")
+fprint_pml_type$PMLTYPE_ignore$con(out, _) = fprint(out, "PMLTYPE_ignore")
 implement{}
-fprint_pml_type$PMLTYPE_todo$lpar(out, _) = fprint_pml_type$lpar(out)
+fprint_pml_type$PMLTYPE_ignore$lpar(out, _) = fprint_pml_type$lpar(out)
 implement{}
-fprint_pml_type$PMLTYPE_todo$rpar(out, _) = fprint_pml_type$rpar(out)
+fprint_pml_type$PMLTYPE_ignore$rpar(out, _) = fprint_pml_type$rpar(out)
 //
 (* ****** ****** *)
 (* ****** ****** *)
@@ -2266,7 +2266,7 @@ case+ arg0 of
 | PMLTYPE_mtype _ => "PMLTYPE_mtype"
 | PMLTYPE_chan _ => "PMLTYPE_chan"
 | PMLTYPE_uname _ => "PMLTYPE_uname"
-| PMLTYPE_todo _ => "PMLTYPE_todo"
+| PMLTYPE_ignore _ => "PMLTYPE_ignore"
 )
 //
 (* ****** ****** *)

@@ -35,7 +35,12 @@ in
     case+ opt of
     | Some (name_str) => let
       val type0 = i0id_get_type (i0id)
+
+      // val () = fprintln! (stderr_ref, "begin p =====")
+      // val () = fprint_i0id (stderr_ref, i0id)
+      // val () = fprintln! (stderr_ref, "end p =====")
       val pml_type = pmltransform_i0type (type0)
+
       val pml_name = pml_name_make (name_str, stamp, pml_type)
     in
       Some0 (pml_name)
@@ -170,6 +175,11 @@ implement pmltransform_i0id (i0id) = let
   // val () = fprintln! (stderr_ref, "end =====")
 
   val type0 = i0id_get_type (i0id)
+
+  // val () = fprintln! (stderr_ref, "begin p2 =====")
+  // val () = fprint_i0id (stderr_ref, i0id)
+  // val () = fprintln! (stderr_ref, "end p2 =====")
+
   val pml_type = pmltransform_i0type (type0)
 in
   pml_name_make (name, stamp, pml_type)
@@ -365,7 +375,7 @@ case+ type0 of
 | TYPE0char () => PMLTYPE_byte
 | TYPE0bool () => PMLTYPE_short
 | TYPE0unit () => exitlocmsg ("Check this.\n")
-| TYPE0fun (type0lst, type0) => exitlocmsg ("Check this.\n")
+| TYPE0fun (type0lst, type0) => PMLTYPE_ignore
 | TYPE0ref (type0) => pmltransform_i0type (type0)
 | TYPE0symbol (symbol) => let
   val name = symbol.tostring ()

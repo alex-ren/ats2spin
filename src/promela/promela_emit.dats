@@ -185,16 +185,16 @@ end
 
 implement emit_pml_type (pml_type) =
 case+ pml_type of
-| PMLTYPE_bit () => exitlocmsg ("not supported")
-| PMLTYPE_bool () => exitlocmsg ("not supported")
-| PMLTYPE_byte () => exitlocmsg ("not supported")
-| PMLTYPE_pid () => exitlocmsg ("not supported")
-| PMLTYPE_short () => exitlocmsg ("not supported")
-| PMLTYPE_int () => exitlocmsg ("not supported")
-| PMLTYPE_mtype () => exitlocmsg ("not supported")
-| PMLTYPE_chan () => exitlocmsg ("not supported")
+| PMLTYPE_bit () => emit_text ("bit")
+| PMLTYPE_bool () => emit_text ("bool")
+| PMLTYPE_byte () => emit_text ("byte")
+| PMLTYPE_pid () => emit_text ("pid")
+| PMLTYPE_short () => emit_text ("short")
+| PMLTYPE_int () => emit_text ("int")
+| PMLTYPE_mtype () => exitlocmsg ("not supported\n")
+| PMLTYPE_chan () => exitlocmsg ("not supported\n")
 | PMLTYPE_uname pml_uname => exitlocmsg ("not supported")
-| PMLTYPE_todo () => emit_text ("int")
+| PMLTYPE_ignore () => exitlocmsg ("Should not happen.\n")
 
 implement emit_pml_stmnt (pml_stmnt) = let
   #define st pml_stmnt

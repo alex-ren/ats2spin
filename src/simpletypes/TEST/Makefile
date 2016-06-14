@@ -33,6 +33,7 @@ all:: test_simpletypes_03_dats.json
 all:: test_simpletypes_04_dats.json
 all:: test_simpletypes_05_dats.json
 all:: test_simpletypes_06_dats.json
+all:: test_simpletypes_07_dats.json
 
 
 ######
@@ -55,6 +56,7 @@ cleanall:: ; $(RMF) test_simpletypes_03_dats.json
 cleanall:: ; $(RMF) test_simpletypes_04_dats.json
 cleanall:: ; $(RMF) test_simpletypes_05_dats.json
 cleanall:: ; $(RMF) test_simpletypes_06_dats.json
+cleanall:: ; $(RMF) test_simpletypes_07_dats.json
 
 ###### end of [Makefile] ######
 

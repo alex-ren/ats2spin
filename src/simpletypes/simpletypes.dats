@@ -878,9 +878,20 @@ in
                , s2explst (*predicates in the statics*)
                , d2exp) => let
     val ty = oftype_funhead_d2exp (d2exp, tmap)
-    val ret = S3TYPEpoly (s2varlst, ty)
+
+    val s2varlst1 = list0_foldright<s2var><s2varlst> (
+      s2varlst, fopr, nil0 ()) where {
+    fun fopr (s2var: s2var, res: s2varlst):<cloref1> s2varlst = let
+      val s2rt = s2var_get_sort (s2var)
+    in
+      if s2rt_is_type (s2rt) then cons0 (s2var, res)
+      else res
+    end
+    }
   in
-    ret
+    case+ s2varlst1 of
+    | cons0 (_, _) => S3TYPEpoly (s2varlst1, ty)
+    | nil0 () => ty
   end
   | D2Elam_dyn (npf, p2atlst, d2exp) => let
     implement list_foldright$fopr<p2at><s3typelst> (p2at, res) = let

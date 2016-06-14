@@ -30,7 +30,7 @@ datatype pml_type =
 | PMLTYPE_mtype
 | PMLTYPE_chan
 | PMLTYPE_uname of pml_uname (* user defined types *)
-| PMLTYPE_todo
+| PMLTYPE_ignore
 
 fun{} datcon_pml_type (pml_type): string
 fun{} fprint_pml_type : (FILEref, pml_type) -> void // a function template

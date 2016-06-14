@@ -207,6 +207,7 @@ testall:: test_simpletypes_03
 testall:: test_simpletypes_04
 testall:: test_simpletypes_05
 testall:: test_simpletypes_06
+testall:: test_simpletypes_07
 
 # ######
 
