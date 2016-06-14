@@ -963,7 +963,7 @@ fun{}
 fprint_type0$TYPE0ref: $d2ctype(fprint_type0<>)
 extern
 fun{}
-fprint_type0$TYPE0msg: $d2ctype(fprint_type0<>)
+fprint_type0$TYPE0symbol: $d2ctype(fprint_type0<>)
 extern
 fun{}
 fprint_type0$TYPE0ignored: $d2ctype(fprint_type0<>)
@@ -981,7 +981,7 @@ case+ arg0 of
 | TYPE0unit _ => fprint_type0$TYPE0unit<>(out, arg0)
 | TYPE0fun _ => fprint_type0$TYPE0fun<>(out, arg0)
 | TYPE0ref _ => fprint_type0$TYPE0ref<>(out, arg0)
-| TYPE0msg _ => fprint_type0$TYPE0msg<>(out, arg0)
+| TYPE0symbol _ => fprint_type0$TYPE0symbol<>(out, arg0)
 | TYPE0ignored _ => fprint_type0$TYPE0ignored<>(out, arg0)
 )
 //
@@ -1198,36 +1198,36 @@ fprint_type0$TYPE0ref$arg1(out, arg0) =
 //
 extern
 fun{}
-fprint_type0$TYPE0msg$con: $d2ctype(fprint_type0<>)
+fprint_type0$TYPE0symbol$con: $d2ctype(fprint_type0<>)
 extern
 fun{}
-fprint_type0$TYPE0msg$lpar: $d2ctype(fprint_type0<>)
+fprint_type0$TYPE0symbol$lpar: $d2ctype(fprint_type0<>)
 extern
 fun{}
-fprint_type0$TYPE0msg$rpar: $d2ctype(fprint_type0<>)
+fprint_type0$TYPE0symbol$rpar: $d2ctype(fprint_type0<>)
 extern
 fun{}
-fprint_type0$TYPE0msg$arg1: $d2ctype(fprint_type0<>)
+fprint_type0$TYPE0symbol$arg1: $d2ctype(fprint_type0<>)
 //
 implement{}
-fprint_type0$TYPE0msg(out, arg0) = 
+fprint_type0$TYPE0symbol(out, arg0) = 
 {
 //
-val () = fprint_type0$TYPE0msg$con<>(out, arg0)
-val () = fprint_type0$TYPE0msg$lpar<>(out, arg0)
-val () = fprint_type0$TYPE0msg$arg1<>(out, arg0)
-val () = fprint_type0$TYPE0msg$rpar<>(out, arg0)
+val () = fprint_type0$TYPE0symbol$con<>(out, arg0)
+val () = fprint_type0$TYPE0symbol$lpar<>(out, arg0)
+val () = fprint_type0$TYPE0symbol$arg1<>(out, arg0)
+val () = fprint_type0$TYPE0symbol$rpar<>(out, arg0)
 //
 }
 implement{}
-fprint_type0$TYPE0msg$con(out, _) = fprint(out, "TYPE0msg")
+fprint_type0$TYPE0symbol$con(out, _) = fprint(out, "TYPE0symbol")
 implement{}
-fprint_type0$TYPE0msg$lpar(out, _) = fprint_type0$lpar(out)
+fprint_type0$TYPE0symbol$lpar(out, _) = fprint_type0$lpar(out)
 implement{}
-fprint_type0$TYPE0msg$rpar(out, _) = fprint_type0$rpar(out)
+fprint_type0$TYPE0symbol$rpar(out, _) = fprint_type0$rpar(out)
 implement{}
-fprint_type0$TYPE0msg$arg1(out, arg0) =
-  let val-TYPE0msg(arg1) = arg0 in fprint_type0$carg(out, arg1) end
+fprint_type0$TYPE0symbol$arg1(out, arg0) =
+  let val-TYPE0symbol(arg1) = arg0 in fprint_type0$carg(out, arg1) end
 //
 extern
 fun{}
@@ -1270,7 +1270,7 @@ case+ arg0 of
 | TYPE0unit _ => "TYPE0unit"
 | TYPE0fun _ => "TYPE0fun"
 | TYPE0ref _ => "TYPE0ref"
-| TYPE0msg _ => "TYPE0msg"
+| TYPE0symbol _ => "TYPE0symbol"
 | TYPE0ignored _ => "TYPE0ignored"
 )
 //

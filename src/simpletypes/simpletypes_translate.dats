@@ -26,9 +26,9 @@ in
   | "bool" => Some0 (s3type_bool ())
   // todo add more type constructors here if needed
   | str => let
-    val () = if isdebug then let
-      val () = fprint (stderr_ref, str + " is encountered. This is " + $mylocation + "\n")
-    in end
+    // val () = if isdebug then let
+    //   val () = fprint (stderr_ref, str + " is encountered. This is " + $mylocation + "\n")
+    // in end
   in
     None0 ()
   end
@@ -61,8 +61,7 @@ in
   | "char" => Some0 (s3type_char ())
   | "char_t0ype" => Some0 (s3type_char ())
   //
-  | "pid" => Some0 (s3type_int ())
-  | str => exitlocmsg (str + " is not handled.\n")
+  | _ => Some0 (S3TYPEcon (s2cst, nil0 ()))
 end
 //
 | S2Evar (s2var) => Some0 (S3TYPEvar (s2var))

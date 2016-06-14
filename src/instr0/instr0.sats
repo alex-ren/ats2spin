@@ -31,7 +31,7 @@ datatype type0 =
 | TYPE0unit  // void
 | TYPE0fun of (type0lst, type0)
 | TYPE0ref of (type0)
-| TYPE0msg of (s2cst)
+| TYPE0symbol of (symbol)  // from S3TYPEcon
 | TYPE0ignored of ()
 where
 type0lst = list0 type0
@@ -91,7 +91,7 @@ fun i0id_is_cst (i0id): bool
 fun i0id_is_var (i0id): bool
 fun i0id_get_name (i0id):<fun> i0name
 fun i0id_get_stamp (i0id):<fun> stamp
-fun i0id_get_type (i0id):<fun> s3type
+fun i0id_get_type (i0id):<fun> type0
 fun i0id_get_extdef (i0id): option0 string
 
 typedef i0idlst = list0 i0id

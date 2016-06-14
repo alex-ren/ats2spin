@@ -29,12 +29,14 @@ in
   if (i0id_is_sym (i0id)) then None0 ()
   else let 
     // val () = fprintln! (stderr_ref, "begin p =====")
-    val stamp = i0id_get_stamp i0id
+    val stamp = i0id_get_stamp (i0id)
     // val () = fprintln! (stderr_ref, "end p =====")
   in
     case+ opt of
     | Some (name_str) => let
-      val pml_name = pml_name_make (name_str, stamp, PMLTYPE_todo)
+      val type0 = i0id_get_type (i0id)
+      val pml_type = pmltransform_i0type (type0)
+      val pml_name = pml_name_make (name_str, stamp, pml_type)
     in
       Some0 (pml_name)
     end
@@ -104,7 +106,8 @@ in
   | Some0 (pml_name) => pmltransform_inline (pml_name, i0fundef)
   | None0 () => if pml_name_is_init (i0id) then
                   pmltransform_init (i0fundef)
-                else exitlocmsg ("Not supported.")
+                else exitlocmsg ("Only proctype$, inline$, and pml$init \
+are supported.\n")
 end
 end
 
@@ -355,7 +358,16 @@ in
   ret
 end
 
-implement pmltransform_i0type () = PMLTYPE_todo
+implement pmltransform_i0type (type0) =
+case+ type0 of
+| TYPE0int () => PMLTYPE_int
+| TYPE0char () => PMLTYPE_byte
+| TYPE0bool () => PMLTYPE_short
+| TYPE0unit () => exitlocmsg ("Check this.\n")
+| TYPE0fun (type0lst, type0) => exitlocmsg ("Check this.\n")
+| TYPE0ref (type0) => pmltransform_i0type (type0)
+| TYPE0msg (s2cst) => exitlocmsg ("Check this.\n")
+| TYPE0ignored () => exitlocmsg ("Check this.\n")
 
 implement pmltransform_i0exp2pml_anyexp (i0exp) =
 case+ i0exp of

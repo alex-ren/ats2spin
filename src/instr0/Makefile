@@ -237,6 +237,7 @@ testall:: test_instr0_15
 testall:: test_instr0_16
 testall:: test_instr0_17
 testall:: test_instr0_18
+testall:: test_instr0_19
 
 # ######
 

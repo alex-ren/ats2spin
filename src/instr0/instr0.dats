@@ -166,6 +166,7 @@ fun f2undec_is_recursive (f: f2undec): bool = let
     | D2Eempty () => false
     | D2Eann_seff (d2exp) => d2exp_has_tailcall (d2exp, fvar)
     | D2Eann_type (d2exp, s2exp) => d2exp_has_tailcall (d2exp, fvar)
+    | D2Evar (d2var) => false
     | _ => exitlocmsg (datcon_d2exp_node node + " is not supported")
   end
 in

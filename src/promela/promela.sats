@@ -325,7 +325,7 @@ fun pmltransform_init (i0fundef: i0fundef): pml_module
 fun pmltransform_i0id (i0id: i0id): pml_name
 fun pmltransform_i0inslst (is_inline: bool, i0inslst: i0inslst): pml_steplst
 
-fun pmltransform_i0type (): pml_type
+fun pmltransform_i0type (type0): pml_type
 
 // i0exp is not inline function invocation.
 fun pmltransform_i0exp2pml_anyexp (i0exp): pml_anyexp

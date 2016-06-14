@@ -17,6 +17,7 @@ staload "./instr0.sats"
 (* ************ ************* *)
 implement fprint_val<type0> = myfprint_type0
 implement fprint_val<s2cst> = fprint_s2cst
+implement fprint_val<symbol> = fprint_symbol
 
 implement myfprint_type0 (out, type0) = fprint_type0<> (out, type0)
 
@@ -55,7 +56,7 @@ end
 | S3TYPEprop () =>
   exitlocmsg ("S3TYPEprop not supported.\n")
 //
-| S3TYPEcon (s2cst, s3typelst) => TYPE0msg (s2cst)
+| S3TYPEcon (s2cst, s3typelst) => TYPE0symbol (s2cst_get_name (s2cst))
 | S3TYPEfun (npfref
              , s3typelst (*args*)
              , s3type (*res*)

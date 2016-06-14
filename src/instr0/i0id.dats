@@ -55,6 +55,12 @@ case+ i0id of
 | ID0cst (i0name, stamp, _, _) => stamp
 | ID0var (i0name, stamp, _) => stamp
 
+implement i0id_get_type (i0id) = 
+case+ i0id of
+| ID0sym (i0name) => $effmask_all (exitlocmsg ("Symbol has no type.\n"))
+| ID0cst (i0name, stamp, _, ty) => ty
+| ID0var (i0name, stamp, ty) => ty
+
 implement i0id_get_extdef (i0id) =
 case+ i0id of
 | ID0cst (i0name, stamp, extdef_opt, _) => extdef_opt
