@@ -169,9 +169,10 @@ implement pmltransform_i0id (i0id) = let
   val stamp = i0id_get_stamp i0id
   // val () = fprintln! (stderr_ref, "end =====")
 
-  val type = pmltransform_i0type ()
+  val type0 = i0id_get_type (i0id)
+  val pml_type = pmltransform_i0type (type0)
 in
-  pml_name_make (name, stamp, type)
+  pml_name_make (name, stamp, pml_type)
 end
 
 implement pmltransform_i0inslst (is_inline, i0inslst) = let
@@ -366,7 +367,13 @@ case+ type0 of
 | TYPE0unit () => exitlocmsg ("Check this.\n")
 | TYPE0fun (type0lst, type0) => exitlocmsg ("Check this.\n")
 | TYPE0ref (type0) => pmltransform_i0type (type0)
-| TYPE0msg (s2cst) => exitlocmsg ("Check this.\n")
+| TYPE0symbol (symbol) => let
+  val name = symbol.tostring ()
+in
+  case+ name of
+  | "pid" => PMLTYPE_pid ()
+  | str => exitlocmsg (str + " is countered. Check this.\n")
+end
 | TYPE0ignored () => exitlocmsg ("Check this.\n")
 
 implement pmltransform_i0exp2pml_anyexp (i0exp) =
