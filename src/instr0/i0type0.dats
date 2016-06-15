@@ -83,3 +83,8 @@ in
   res
 end
 
+implement type0_is_ref (type0) =
+case+ type0 of
+| TYPE0ref (type0) => true
+| _ => false
+

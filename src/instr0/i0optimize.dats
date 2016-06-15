@@ -66,12 +66,29 @@ else let
   val fnames = i0fundef_get_group (i0fundef)
   val fname = i0fundef_get_id (i0fundef)
 
+  fun aux_remove_ref (i0idlst: i0idlst): i0idlst = let
+    val i0idlst = 
+      list0_foldright<i0id><i0idlst> (i0idlst, fopr, nil0 ()) where {
+    fun fopr (i0id: i0id, res: i0idlst):<cloref1> i0idlst = let
+      val type0 = i0id_get_type (i0id)
+    in
+      if type0_is_ref (type0) then res
+      else cons0 (i0id, res)
+    end
+    }
+  in
+    i0idlst
+  end
+
   // grab all the parameters from all the functions
   val group_paralst = list0_foldleft<i0id><list0(i0id)> (
                 fnames, list0_nil (), fopr) where {
   fun fopr (res: i0idlst, i0id: i0id):<cloref1> i0idlst = let
     val i0fundef = i0funmap_search0 (i0funmap, i0id)
     val paralst = i0fundef_get_paralst (i0fundef)
+
+    // remove reference para
+    val paralst = aux_remove_ref (paralst)
   in
     list0_append (res, paralst)
   end
@@ -83,10 +100,16 @@ else let
   val para_pair_lst = list0_foldright<i0id><list0 para_old_new> (
                     cur_paralst, fopr, nil) where {
     fun fopr (i0id:i0id, res: list0 para_old_new):<cloref1> list0 para_old_new = let
-      val new_i0id = i0id_copy (i0id, sa)
-      val res = list0_cons (@(i0id, new_i0id), res)
+      val type0 = i0id_get_type (i0id)
     in
-      res
+      // for reference arg, two i0id's are identical.
+      if type0_is_ref (type0) then let
+        val res = list0_cons (@(i0id, i0id), res)
+      in res end
+      else let
+        val new_i0id = i0id_copy (i0id, sa)
+        val res = list0_cons (@(i0id, new_i0id), res)
+      in res end
     end
   }
 
@@ -94,6 +117,19 @@ else let
                      para_pair_lst, lam (p, res) => p.1 :: res, nil)   
 
   // build an extra instruction for initialization
+  // remove reference args from para_pair_lst
+  val para_pair_lst = 
+      list0_foldright<para_old_new><list0 para_old_new> (
+      para_pair_lst, fopr, nil0 ()) where {
+  fun fopr (para_pair: para_old_new
+           , res: list0 para_old_new):<cloref1> list0 para_old_new = let
+    val type0 = i0id_get_type (para_pair.0)
+  in
+    if type0_is_ref (type0) then res
+    else cons0 (para_pair, res)
+  end
+  }
+
   val ins_init = INS0init_loop (group_paralst, para_pair_lst)
 
   // build tags for all the functions in the group

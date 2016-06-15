@@ -42,6 +42,8 @@ overload fprint with myfprint_type0
 
 fun{} datcon_type0: type0 -> string
 
+fun type0_is_ref (type0): bool
+
 fun type0_translate (s3type): type0
 fun type0_translate_s3typelst (s3typelst): type0lst
 
