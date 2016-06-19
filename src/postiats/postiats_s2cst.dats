@@ -30,7 +30,7 @@ s2cst_struct = @{
   s2cst_name= symbol
 , s2cst_stamp= stamp
 , s2cst_sort = s2rt
-, s2cst_dconlst = d2conlst
+, s2cst_dconlst = dconlst
 } (* end of [s2cst_struct] *)
 
 (* ****** ****** *)
@@ -47,7 +47,7 @@ in (* in of [local] *)
 
 implement
 s2cst_make
-  (name, stamp, s2rt, d2conlst) = let
+  (name, stamp, s2rt, dconlst) = let
 //
 val (
   pfat, pfgc | p
@@ -56,7 +56,7 @@ val (
 val () = p->s2cst_name := name
 val () = p->s2cst_stamp := stamp
 val () = p->s2cst_sort := s2rt
-val () = p->s2cst_dconlst := d2conlst
+val () = p->s2cst_dconlst := dconlst
 //
 in
   $UN.castvwtp0{s2cst}((pfat, pfgc | p))
@@ -95,6 +95,18 @@ in
   p->s2cst_stamp
 end // end of [let]
 ) (* end of [s2cst_get_stamp] *)
+
+
+implement
+s2cst_get_dconlst
+  (d2c) = $effmask_ref
+(
+let
+  val (vbox _ | p) = ref_get_viewptr (d2c)
+in
+  p->s2cst_dconlst
+end // end of [let]
+) (* end of [s2cst_get_dconlst] *)
 
 end // end of [local]
 

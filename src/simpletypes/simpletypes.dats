@@ -1147,8 +1147,14 @@ implement s3type_collect_datatype (s2env, d2env, tmap) = let
   fun fopr (res: s3datatypelst
     , pair: @(stamp, s2cst)):<cloref1> s3datatypelst = let
     val s2cst = pair.1
+    val dconlst = s2cst_get_dconlst (s2cst)
   in
-    nil0 ()
+    if length (dconlst) = 0 then res
+    else let
+      // todo
+    in
+      nil0 ()
+    end
   end
   }
 

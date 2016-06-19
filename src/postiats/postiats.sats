@@ -218,6 +218,7 @@ fun s2cst_make (name: symbol
 fun s2cst_get_name (s2cst):<> symbol
 fun s2cst_get_stamp (s2cst):<> stamp
 fun s2cst_get_sort (s2cst):<> s2rt
+fun s2cst_get_dconlst (s2cst):<> dconlst
 //
 (* ****** ****** *)
 //

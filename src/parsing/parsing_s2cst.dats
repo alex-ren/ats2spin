@@ -121,13 +121,13 @@ case+ opt of
   val-JSONarray(jsvs_dconlst) = jsv_dconlst
 in
   if (length (jsvs_dconlst) > 0) then let
-    fun parse_d2con_stamp (jsv0: jsonval):<cloref1> stamp = let
+    fun parse_dcon_stamp (jsv0: jsonval):<cloref1> stamp = let
       val-~Some_vt (jsv_stamp) = jsonval_get_field (jsv0, "d2con_stamp")
       val stamp = parse_stamp (jsv_stamp)
     in
       stamp
     end
-    val dconlst = parse_list0<stamp> (jsvs_dconlst[0], parse_d2con_stamp)
+    val dconlst = parse_list0<stamp> (jsvs_dconlst[0], parse_dcon_stamp)
     val s2c = s2cst_make (sym, stamp, srt, dconlst)
     val ((*void*)) = the_s2cstmap_insert (s2cstmap, s2c)
   in
