@@ -17,12 +17,18 @@ staload "{$JSONC}/SATS/json_ML.sats"
 
 (* ****** ****** *)
 
+staload _ = "./parsing.dats"
+
+(* ****** ****** *)
+
 extern
 fun the_s2cstmap_create (): s2cstmap
 extern
 fun the_s2cstmap_find (s2cstmap, stamp): s2cstopt_vt
 extern
 fun the_s2cstmap_insert (s2cstmap: s2cstmap, s2c: s2cst): void
+extern
+fun s2cstmap_listize1_ (s2cstmap: s2cstmap): list0 @(stamp, s2cst)
 
 (* ****** ****** *)
 
@@ -34,6 +40,8 @@ staload _(*anon*) = "libats/DATS/hashfun.dats"
 staload _(*anon*) = "libats/DATS/linmap_list.dats"
 staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
 staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
+(* for qstruct_insert *)
+staload _(*anon*) = "libats/DATS/qlist.dats"
 //
 implement $HT.hash_key<stamp> (x) = hash_stamp (x)
 
@@ -48,6 +56,8 @@ in
   s2cstmap
 end
 
+(* **************** **************** *)
+
 implement
 the_s2cstmap_find
   (s2cstmap, k0) = let
@@ -55,6 +65,8 @@ the_s2cstmap_find
 in
   $HT.hashtbl_search (s2cstmap, k0)
 end // end of [the_s2cstmap_find]
+
+(* **************** **************** *)
 
 implement
 the_s2cstmap_insert
@@ -66,6 +78,10 @@ val- ~None_vt ((*void*)) = $HT.hashtbl_insert (s2cstmap, k0, s2c0)
 in
   // nothing
 end // end of [the_s2cstmap_insert]
+
+(* **************** **************** *)
+
+implement s2cstmap_listize1_ (s2cstmap) = hashtbl_listize1(s2cstmap)
 
 end  // end of [local]
 
@@ -100,10 +116,30 @@ case+ opt of
   val sym = parse_symbol (jsv_sym)
   val-~Some_vt(jsv_srt) = jsonval_get_field (jsv0, "s2cst_srt")
   val srt = parse_s2rt (jsv_srt)
-  val s2c = s2cst_make (sym, stamp, srt)
-  val ((*void*)) = the_s2cstmap_insert (s2cstmap, s2c)
+
+  val-~Some_vt(jsv_dconlst) = jsonval_get_field (jsv0, "s2cst_dconlst")
+  val-JSONarray(jsvs_dconlst) = jsv_dconlst
 in
-  '(s2c, max)
+  if (length (jsvs_dconlst) > 0) then let
+    fun parse_d2con_stamp (jsv0: jsonval):<cloref1> stamp = let
+      val-~Some_vt (jsv_stamp) = jsonval_get_field (jsv0, "d2con_stamp")
+      val stamp = parse_stamp (jsv_stamp)
+    in
+      stamp
+    end
+    val dconlst = parse_list0<stamp> (jsvs_dconlst[0], parse_d2con_stamp)
+    val s2c = s2cst_make (sym, stamp, srt, dconlst)
+    val ((*void*)) = the_s2cstmap_insert (s2cstmap, s2c)
+  in
+    '(s2c, max)
+  end
+  else let
+    val dconlst = nil0 ()
+    val s2c = s2cst_make (sym, stamp, srt, dconlst)
+    val ((*void*)) = the_s2cstmap_insert (s2cstmap, s2c)
+  in
+    '(s2c, max)
+  end
 end
 end // end of [parse_s2cst]
 //
@@ -138,6 +174,9 @@ in
   '(s2cstmap, max)
 end // end of [parse_s2cstmap]
 
+(* **************** **************** *)
+
+implement s2cstmap_listize1 (s2cstmap) = s2cstmap_listize1_ (s2cstmap)
 
 
 

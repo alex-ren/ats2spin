@@ -7,6 +7,7 @@
 
 staload "./../utils/utils.dats"
 
+staload "./../parsing/parsing.sats"
 staload "./../postiats/postiats.sats"
 staload "./simpletypes.sats"
 
@@ -1133,6 +1134,27 @@ in
   s3typelst1
 end
 
+(* **************** **************** *)
+
+implement s3type_collect_datatype (s2env, d2env, tmap) = let
+  val s2cstmap = s2env.s2parsingenv_s2cstmap
+  val s2varmap = s2env.s2parsingenv_s2varmap
+
+  val s2stamp_cst_lst = s2cstmap_listize1 (s2cstmap)
+
+  val s3datatypelst = list0_foldleft<@(stamp, s2cst)><s3datatypelst> (
+    s2stamp_cst_lst, nil0 (), fopr) where {
+  fun fopr (res: s3datatypelst
+    , pair: @(stamp, s2cst)):<cloref1> s3datatypelst = let
+    val s2cst = pair.1
+  in
+    nil0 ()
+  end
+  }
+
+in
+  s3datatypelst
+end
         
         
 

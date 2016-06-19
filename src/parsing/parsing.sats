@@ -100,6 +100,8 @@ fun parse_s2cst0 (s2cstmap: s2cstmap, jsv: jsonval): s2cst
 
 fun parse_s2cstmap (max: int, jsv: jsonval): '(s2cstmap, int(*max stamp*))
 
+fun s2cstmap_listize1 (s2cstmap: s2cstmap): list0 @(stamp, s2cst)
+
 (* ****** ****** *)
 
 fun parse_s2rt (jsv: jsonval): s2rt
@@ -173,6 +175,9 @@ typedef parsingenv = '{
   , parsingenv_d2conmap = d2conmap
   , parsingenv_d2varmap = d2varmap
 }
+
+typedef d2parsingenv = parsingenv
+
 fun parsingenv_make (d2cstmap, d2conmap, d2varmap): parsingenv
 
 fun parse_d2sym (jsv: jsonval): d2sym

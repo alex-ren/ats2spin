@@ -189,10 +189,11 @@ testall:: all
 #
 testall:: ; $(MAKE) -C TEST
 #
-testall:: test_postiats_01
-testall:: test_postiats_02
 testall:: test_parsing_01
 
+testall:: test_postiats_01
+testall:: test_postiats_02
+testall:: test_postiats_03
 # ######
 
 cleanlocal:: ; $(RMF) *_?ats.c

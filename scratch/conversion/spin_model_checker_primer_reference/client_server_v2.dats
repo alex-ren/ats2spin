@@ -98,14 +98,16 @@ channeg1_send
 
 (* ****** ****** *)
 
-datavtype
-ss_client =
-  | DENY of (chnil)
-  | DENY of (channeg1(chnil), chnil)
-  | HOLD of (channeg1(chnil), ss_client)
-  | GRANT of (channeg1(ss_grant), chnil)
+// datavtype
+// ss_client =
+//   | DENY // of (chnil)
+//   | DENY // of (channeg1(chnil), chnil)
+//   | HOLD // of (channeg1(chnil), ss_client)
+//   | GRANT // of (channeg1(ss_grant), chnil)
+absvtype ss_client = ptr
 //
-and ss_grant = RETURN1 of (chnil)
+// and ss_grant = RETURN1 // of (chnil)
+absvtype ss_grant = ptr
 //
 (* ****** ****** *)
 //

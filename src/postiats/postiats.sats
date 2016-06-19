@@ -198,6 +198,8 @@ typedef s2cstlst = list0 (s2cst)
 typedef s2cstopt = option0 (s2cst)
 vtypedef s2cstopt_vt = Option_vt (s2cst)
 
+typedef dconlst = list0 stamp
+
 (* ****** ****** *)
 
 fun
@@ -206,7 +208,10 @@ overload fprint with fprint_s2cst
 
 (* ****** ****** *)
 
-fun s2cst_make (name: symbol, stamp: stamp, s2rt: s2rt): s2cst
+fun s2cst_make (name: symbol
+  , stamp: stamp
+  , s2rt: s2rt
+  , dconlst: dconlst): s2cst
 
 (* ****** ****** *)
 //

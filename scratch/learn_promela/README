@@ -1,16 +1,30 @@
 
+Spin Commands
+------------------------------
 The followings are some commands ispin uses to do simulation and verification.
 
-Simulation
->> spin -p -s -r -X -v -n123 -l -g -u10000 temp.pml
+1. Simulation
 
-Verification
->> spin -a  temp.pml
->> gcc -DMEMLIM=1024 -O2 -DXUSAFE -DSAFETY -DNOCLAIM -w -o pan pan.c
->> ./pan -m10000 
+    ```Bash
+    spin -p -s -r -X -v -n123 -l -g -u10000 temp.pml
+    ```
+2. Verification
 
-
-
-================================
+    ```Bash
+    spin -a  temp.pml
+    gcc -DMEMLIM=1024 -O2 -DXUSAFE -DSAFETY -DNOCLAIM -w -o pan pan.c
+    ./pan -m10000
+    ```
+Description of Test Files
+--------------------------------------
+1. `usertype_with_channel.pml`
+    This file is for trying the usage of user defined type with channel operations.
+2. `test_promela_02.dats`
+    This file is for testing the usage of starting new processes in the init.
+3. `test_promela_03.dats`
+    This file is for testing the usage of extfcall.
+4. `test_promela_04.dats`
+    This file is for testing the inclusion of Promela code in ATS.
+5. `test_promela_05.dats`
 
 

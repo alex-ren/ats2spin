@@ -30,6 +30,7 @@ s2cst_struct = @{
   s2cst_name= symbol
 , s2cst_stamp= stamp
 , s2cst_sort = s2rt
+, s2cst_dconlst = d2conlst
 } (* end of [s2cst_struct] *)
 
 (* ****** ****** *)
@@ -46,7 +47,7 @@ in (* in of [local] *)
 
 implement
 s2cst_make
-  (name, stamp, s2rt) = let
+  (name, stamp, s2rt, d2conlst) = let
 //
 val (
   pfat, pfgc | p
@@ -55,6 +56,7 @@ val (
 val () = p->s2cst_name := name
 val () = p->s2cst_stamp := stamp
 val () = p->s2cst_sort := s2rt
+val () = p->s2cst_dconlst := d2conlst
 //
 in
   $UN.castvwtp0{s2cst}((pfat, pfgc | p))

@@ -7,6 +7,8 @@
 staload "libats/ML/SATS/basis.sats"
 
 staload "./../postiats/postiats.sats"
+staload "./../parsing/parsing.sats"
+
 staload HT = "libats/ML/SATS/hashtblref.sats"
 
 val is_debug_typechecking: ref bool
@@ -209,6 +211,32 @@ fun s3type_export (max: int, prog: d2eclist): '(d2eclist, s3typemap)
 fun s3type_translate_S3Eapp_con (s2cst): s3typeopt
 
 (* ************* ************* *)
+
+typedef s3ctor =
+'{
+  s3ctor_ctor = d2con
+  , s3ctor_s3typelst = s3typelst
+}
+
+typedef s3ctorlst = list0 s3ctor
+
+typedef s3datatype =
+'{
+  s3datatype_s2cst = s2cst
+  , s3datatype_s2varlst = s2varlst
+  , s3datatype_ctorlst = s3ctorlst
+}
+
+typedef s3datatypelst = list0 s3datatype
+
+fun s3type_collect_datatype (
+  s2parsingenv
+  , d2parsingenv
+  , s3typemap): s3datatypelst
+
+
+
+
 
 
 

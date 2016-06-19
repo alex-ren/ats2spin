@@ -27,9 +27,11 @@ all::
 
 ######
 
+all:: test_parsing_01_dats.json
+
 all:: test_postiats_01_dats.json
 all:: test_postiats_02_dats.json
-all:: test_parsing_01_dats.json
+all:: test_postiats_03_dats.json
 
 
 ######
@@ -46,9 +48,11 @@ RMF=rm -f
 clean:: ; $(RMF) *~
 
 cleanall:: clean
+cleanall:: ; $(RMF) test_parsing_01_dats.json
+
 cleanall:: ; $(RMF) test_postiats_01_dats.json
 cleanall:: ; $(RMF) test_postiats_02_dats.json
-cleanall:: ; $(RMF) test_parsing_01_dats.json
+cleanall:: ; $(RMF) test_postiats_03_dats.json
 
 ###### end of [Makefile] ######
 
