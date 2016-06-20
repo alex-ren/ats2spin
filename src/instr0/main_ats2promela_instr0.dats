@@ -103,7 +103,7 @@ implement main0 (argc, argv) = let
 
   (* ************** ************** *)
 
-  val '(d2ecs_model, max) = parse_d2eclist_export (jsv)
+  val '(d2ecs_model, max, s2env, d2env) = parse_d2eclist_export (jsv)
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 

@@ -161,6 +161,8 @@ fun parse_d2con0 (s2env: s2parsingenv
 fun parse_d2conmap (max: int, s2env: s2parsingenv, jsv: jsonval)
   : '(d2conmap, int)
 
+fun d2conmap_find (d2conmap: d2conmap, stamp: stamp): d2conopt
+
 (* ****** ****** *)
 
 typedef d2varmap = $HT.hashtbl (stamp, d2var)
@@ -200,7 +202,8 @@ fun parse_d2eclist (s2parsingenv, parsingenv, jsv: jsonval): d2eclist
 
 (* ****** ****** *)
 
-fun parse_d2eclist_export (jsv0: jsonval): '(d2eclist, int)
+fun parse_d2eclist_export (jsv0: jsonval)
+  : '(d2eclist, int, s2parsingenv, parsingenv)
 
 (* ****** ****** *)
 

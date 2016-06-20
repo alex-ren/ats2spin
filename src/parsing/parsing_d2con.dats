@@ -67,6 +67,7 @@ in
   // nothing
 end // end of [the_d2conmap_insert]
 
+
 end  // end of [local]
 
 (* ****** ****** *)
@@ -135,6 +136,14 @@ val max = loop (max, s2env, d2conmap, jsvs)
 in
   '(d2conmap, max)
 end // end of [parse_d2conmap]
+
+implement d2conmap_find (d2conmap, stamp) = let
+  val d2conopt = the_d2conmap_find (d2conmap, stamp)
+in
+  case+ d2conopt of
+  | ~Some_vt (d2con) => Some0 d2con
+  | ~None_vt () => None0 ()
+end  // end of [d2conmap_find]
 
 
 

@@ -102,7 +102,7 @@ implement main0 (argc, argv) = let
 
   (* ************** ************** *)
 
-  val '(d2ecs_model, max) = parse_d2eclist_export (jsv)
+  val '(d2ecs_model, max, s2env, d2env) = parse_d2eclist_export (jsv)
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
@@ -118,6 +118,22 @@ implement main0 (argc, argv) = let
   }
   val '(d2eclist, tmap) = s3type_export (max, d2ecs_model)
 
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== collecting datatype information ================\n\n")
+  }
+  val s3datatypelst = s3type_collect_datatype (s2env, d2env, tmap)
+
+  (* ************** ************** *)
+
+  // val () = if is_debug then {
+  // val () = fprint (stdout_ref, 
+  //   "\n\n## ======== datatype information ================\n\n")
+  // // val () = fprint (stdout_ref, tmap)
+  // }
+  
   (* ************** ************** *)
 
   val () = if is_debug then {

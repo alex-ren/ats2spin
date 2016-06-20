@@ -396,7 +396,12 @@ in
   (list0_append (i0declst1, i0declst2)
   , list0_sing (INS0ifbranch (i0exp, inss1, inss2)))
 end
-| D2Ecase (casekind, d2exp, c2laulst) => let
+| D2Ecase (casekind, d2explst, c2laulst) => let
+val- cons(d2exp, d2explst1) = d2explst
+val node = d2exp.d2exp_node
+in
+case+ node of
+| D2Eintrep (intrep) => let
   implement 
   list_foldright$fopr<c2lau><'(i0declst, i0gbranchlst, option0 i0inslst)> (
     c2lau, res) = let
@@ -446,6 +451,9 @@ end
   val ins = INS0random (gbranchlst, inssopt)
 in
   (i0declst, list0_sing ins)
+end  // end of [D2Eintrep]
+| D2Evar (d2var) => exitlocmsg ("todo\n")
+| _ => exitlocmsg (datcon_d2exp_node (node) + " is not allowed.\n")
 end  // end of [D2Ecase]
 | D2Eann_seff (d2exp) => i0transform_d2exp_fbody (sa, d2exp, tmap, fmap)
 | D2Eann_type (d2exp, s2exp) => i0transform_d2exp_fbody (sa, d2exp, tmap, fmap)

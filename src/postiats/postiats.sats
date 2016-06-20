@@ -479,7 +479,7 @@ fun d2sym_get_name (d2sym):<> symbol
 abstype d2con_type = ptr
 typedef d2con = d2con_type
 typedef d2conlst = List0 (d2con)
-typedef d2conopt = Option (d2con)
+typedef d2conopt = option0 (d2con)
 vtypedef d2conopt_vt = Option_vt (d2con)
 
 (* ****** ****** *)

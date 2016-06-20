@@ -1139,21 +1139,125 @@ end
 implement s3type_collect_datatype (s2env, d2env, tmap) = let
   val s2cstmap = s2env.s2parsingenv_s2cstmap
   val s2varmap = s2env.s2parsingenv_s2varmap
+  val d2conmap = d2env.parsingenv_d2conmap
 
   val s2stamp_cst_lst = s2cstmap_listize1 (s2cstmap)
 
   val s3datatypelst = list0_foldleft<@(stamp, s2cst)><s3datatypelst> (
-    s2stamp_cst_lst, nil0 (), fopr) where {
-  fun fopr (res: s3datatypelst
+    s2stamp_cst_lst, nil0 (), fopr0) where {
+  fun fopr0 (res: s3datatypelst
     , pair: @(stamp, s2cst)):<cloref1> s3datatypelst = let
     val s2cst = pair.1
     val dconlst = s2cst_get_dconlst (s2cst)
   in
-    if length (dconlst) = 0 then res
+    if length (dconlst) = 0 then res  // Not datatype
     else let
-      // todo
+      val s2rt_ctor = s2cst_get_sort (s2cst)
+
+      val s2rtlst = 
+        (
+        case+ s2rt_ctor of
+        | S2RTfun (s2rtlst, s2rt) => let
+          // filter out non-type s2rt
+          val s2rtlst = list0_filter (s2rtlst, lam x => s2rt_is_type x)
+        in
+          s2rtlst
+        end
+        | _ => nil0 ()
+        ): s2rtlst
+
+      // grab the first constructor
+      val- cons0 (dcon1, dconlst1) = dconlst
+      val d2conopt = d2conmap_find (d2conmap, dcon1)
+      val- Some0 (d2con) = d2conopt
+      val s2exp_d2con = d2con_get_type (d2con)
+      val s2exp_d2con_node = s2exp_d2con.s2exp_node
+      val '(s2varlst, fun_node) = 
+        (
+        case- s2exp_d2con_node of
+        | S2Euni (s2varlst, _, s2exp_fun) => '(s2varlst, s2exp_fun.s2exp_node)
+        | S2Efun (_, _, _) => '(nil0 (), s2exp_d2con_node)
+        ): '(s2varlst, s2exp_node)
+
+      // filter out non-type variables
+      val s2varlst = list0_filter (s2varlst
+        , lam s2var => s2rt_is_type (s2var_get_sort (s2var)))
+      // The following is not allowed.
+      // constructor cannot have its own type variable.
+      // datatype foo =
+      // | {a:t@ype} ctor1 of a
+      // Such checking cannot prevent mutual recursion.
+      val () = assertloc (length (s2rtlst) = length (s2varlst))
+
+      (* ************** ************** *)
+
+      val s3ctorlst = list0_foldright<stamp><s3ctorlst> (
+        dconlst, fopr1, nil0 ()) where {
+      fun fopr1 (dcon: stamp, res: s3ctorlst):<cloref1> s3ctorlst = let
+
+        val () = $tempenver(s2cst)  // Handling a bug for ATS.
+        val d2conopt = d2conmap_find (d2conmap, dcon)
+        val- Some0 (d2con) = d2conopt
+        val s2exp_d2con = d2con_get_type (d2con)
+        val s2exp_d2con_node = s2exp_d2con.s2exp_node
+        val '(s2varlst, fun_node) = 
+          (
+          case- s2exp_d2con_node of
+          | S2Euni (s2varlst, _, s2exp_fun) => '(s2varlst, s2exp_fun.s2exp_node)
+          | S2Efun (_, _, _) => '(nil0 (), fun_node)
+          ): '(s2varlst, s2exp_node)
+
+        // filter out non-type variables
+        val s2varlst = list0_filter (s2varlst
+          , lam s2var => s2rt_is_type (s2var_get_sort (s2var)))
+        // The following is not allowed.
+        // constructor cannot have its own type variable.
+        // datatype foo =
+        // | {a:t@ype} ctor1 of a
+        // Such checking cannot prevent mutual recursion.
+        val () = assertloc (length (s2rtlst) = length (s2varlst))
+
+        val- S2Efun (npf, s2explst_args, s3exp_res) = fun_node
+        val s3typelst = list0_foldright<s2exp><s3typelst> (
+          s2explst_args, fopr2, nil0 ()) where {
+        fun fopr2 (s2exp: s2exp, res: s3typelst):<cloref1> s3typelst = let
+          val s2rt = s2exp.s2exp_sort
+        in
+          if (s2rt_is_type (s2rt)) then let
+            val- Some0 (s3type) = s3type_translate (s2exp)
+          in
+            case+ s3type of
+            // No recursion
+            | S3TYPEcon (s2cst1, _) => let
+              val () = assertloc (s2cst != s2cst1)
+            in
+              cons0 (s3type, res)
+            end
+            | _ => cons0 (s3type, res)
+          end
+          else res
+        end
+        }
+
+        val s3ctor = '{
+          s3ctor_ctor = d2con
+          , s3ctor_s3typelst = s3typelst
+        }
+        val res = cons0 (s3ctor, res)
+      in
+        res
+      end
+      }
+
+      val s3datatype = '{
+        s3datatype_s2cst = s2cst
+        , s3datatype_s2varlst = s2varlst
+        , s3datatype_ctorlst = s3ctorlst
+      }
+
+      val res = cons0 (s3datatype, res)
     in
-      nil0 ()
+      res
     end
   end
   }

@@ -32,15 +32,15 @@ datatype type0 =
 | TYPE0fun of (type0lst, type0)
 | TYPE0ref of (type0)
 | TYPE0symbol of (symbol)  // from S3TYPEcon
-| TYPE0datatype of (type0ctrorlst)
+| TYPE0datatype of (type0ctorlst)
 | TYPE0ignored of ()
 where
 type0lst = list0 type0
 
 and
-type0ctror = '(symbol, type0lst)
+type0ctor = '(symbol, type0lst)
 and
-type0ctrorlst = list0 type0ctror
+type0ctorlst = list0 type0ctor
 
 (* ********** ************ *)
 

@@ -18,6 +18,11 @@ staload "./instr0.sats"
 implement fprint_val<type0> = myfprint_type0
 implement fprint_val<s2cst> = fprint_s2cst
 implement fprint_val<symbol> = fprint_symbol
+implement fprint_val<type0ctor> (out, tc) = let
+  val () = fprint_symbol (out, tc.0)
+  val () = fprint_val (out, tc.1)
+in
+end
 
 implement myfprint_type0 (out, type0) = fprint_type0<> (out, type0)
 

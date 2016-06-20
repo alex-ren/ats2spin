@@ -53,7 +53,10 @@ val p2env = parsingenv_make (d2cstmap, d2conmap, d2varmap)
 
 //
 in
-  '(parse_d2eclist (s2env, p2env, jsv_d2eclst), max)
+  '(parse_d2eclist (s2env, p2env, jsv_d2eclst)
+  , max
+  , s2env
+  , p2env)
 end // end of [parse_d2eclist_export]
   
 (* ****** ****** *)
