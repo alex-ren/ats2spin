@@ -397,63 +397,63 @@ in
   , list0_sing (INS0ifbranch (i0exp, inss1, inss2)))
 end
 | D2Ecase (casekind, d2explst, c2laulst) => let
-val- cons(d2exp, d2explst1) = d2explst
-val node = d2exp.d2exp_node
+  val- cons(d2exp, d2explst1) = d2explst
+  val node = d2exp.d2exp_node
 in
-case+ node of
-| D2Eintrep (intrep) => let
-  implement 
-  list_foldright$fopr<c2lau><'(i0declst, i0gbranchlst, option0 i0inslst)> (
-    c2lau, res) = let
-    val- list_cons (pat, list_nil ()) = c2lau.c2lau_patlst
-    val d2exp = c2lau.c2lau_body
-    // must be a "let" expression
-    val- D2Elet (d2eclist, d2exp) = d2exp.d2exp_node
+  case+ node of
+  | D2Eintrep (intrep) => let
+    implement 
+    list_foldright$fopr<c2lau><'(i0declst, i0gbranchlst, option0 i0inslst)> (
+      c2lau, res) = let
+      val- list_cons (pat, list_nil ()) = c2lau.c2lau_patlst
+      val d2exp = c2lau.c2lau_body
+      // must be a "let" expression
+      val- D2Elet (d2eclist, d2exp) = d2exp.d2exp_node
+    in
+      case+ pat.p2at_node of
+      // else branch
+      | P2Tany () => let
+        val (i0declst1, inss1) = i0transform_d2eclist (sa, d2eclist, tmap, fmap)
+        val (i0declst2, inss2) = i0transform_d2exp_fbody (sa, d2exp, tmap, fmap)
+        val i0declst = list0_append (i0declst1, i0declst2)
+        val inss = list0_append (inss1, inss2)
+        val res_i0declst = list0_append (i0declst, res.0)
+      in
+        '(res_i0declst, res.1, Some0 inss)
+      end
+      | _ => let
+        // The first dec must be guard
+        val- cons (d2ec, d2eclst1) = d2eclist
+        // turn d2ec into i0exp
+        val- D2Cvaldecs (
+          valkind, list_cons (v2aldec, list_nil ())) = d2ec.d2ecl_node
+        val i0exp = i0transform_v2aldec2guardexp (sa, tmap, v2aldec)
+  
+        // val inss = i0transform_D2Cvaldecs (sa, v2aldeclst)
+  
+  
+        val (i0declst1, inss1) = i0transform_d2eclist (sa, d2eclst1, tmap, fmap)
+        val (i0declst2, inss2) = i0transform_d2exp_fbody (sa, d2exp, tmap, fmap)
+        val i0declst = list0_append (i0declst1, i0declst2)
+        val inss = list0_append (inss1, inss2)
+  
+        val res_i0declst = list0_append (i0declst, res.0)
+        val gbranch = i0gbranch_make (i0exp, inss)
+        val res_gbranchlst = gbranch :: res.1
+      in
+        '(res_i0declst, res_gbranchlst, res.2)
+      end
+    end
+    val '(i0declst, gbranchlst, inssopt) = 
+      list_foldright<c2lau><'(i0declst, i0gbranchlst, option0 i0inslst)> (
+        c2laulst, '(nil0, nil0, None0))
+  
+    val ins = INS0random (gbranchlst, inssopt)
   in
-    case+ pat.p2at_node of
-    // else branch
-    | P2Tany () => let
-      val (i0declst1, inss1) = i0transform_d2eclist (sa, d2eclist, tmap, fmap)
-      val (i0declst2, inss2) = i0transform_d2exp_fbody (sa, d2exp, tmap, fmap)
-      val i0declst = list0_append (i0declst1, i0declst2)
-      val inss = list0_append (inss1, inss2)
-      val res_i0declst = list0_append (i0declst, res.0)
-    in
-      '(res_i0declst, res.1, Some0 inss)
-    end
-    | _ => let
-      // The first dec must be guard
-      val- cons (d2ec, d2eclst1) = d2eclist
-      // turn d2ec into i0exp
-      val- D2Cvaldecs (
-        valkind, list_cons (v2aldec, list_nil ())) = d2ec.d2ecl_node
-      val i0exp = i0transform_v2aldec2guardexp (sa, tmap, v2aldec)
-
-      // val inss = i0transform_D2Cvaldecs (sa, v2aldeclst)
-
-
-      val (i0declst1, inss1) = i0transform_d2eclist (sa, d2eclst1, tmap, fmap)
-      val (i0declst2, inss2) = i0transform_d2exp_fbody (sa, d2exp, tmap, fmap)
-      val i0declst = list0_append (i0declst1, i0declst2)
-      val inss = list0_append (inss1, inss2)
-
-      val res_i0declst = list0_append (i0declst, res.0)
-      val gbranch = i0gbranch_make (i0exp, inss)
-      val res_gbranchlst = gbranch :: res.1
-    in
-      '(res_i0declst, res_gbranchlst, res.2)
-    end
-  end
-  val '(i0declst, gbranchlst, inssopt) = 
-    list_foldright<c2lau><'(i0declst, i0gbranchlst, option0 i0inslst)> (
-      c2laulst, '(nil0, nil0, None0))
-
-  val ins = INS0random (gbranchlst, inssopt)
-in
-  (i0declst, list0_sing ins)
-end  // end of [D2Eintrep]
-| D2Evar (d2var) => exitlocmsg ("todo\n")
-| _ => exitlocmsg (datcon_d2exp_node (node) + " is not allowed.\n")
+    (i0declst, list0_sing ins)
+  end  // end of [D2Eintrep]
+  | D2Evar (d2var) => exitlocmsg ("todo\n")
+  | _ => exitlocmsg (datcon_d2exp_node (node) + " is not allowed.\n")
 end  // end of [D2Ecase]
 | D2Eann_seff (d2exp) => i0transform_d2exp_fbody (sa, d2exp, tmap, fmap)
 | D2Eann_type (d2exp, s2exp) => i0transform_d2exp_fbody (sa, d2exp, tmap, fmap)

@@ -55,4 +55,6 @@ Description of Test Files
     This file is for testing the usage of "case" expression with datatype.
 19. `test_instr0_19.dats`
     This file is for testing the usage of abstract types.
+20. `test_instr0_20.dats`
+    This file is for testing the usage of "case RANDOM" with message receiving operation.
 
