@@ -4,6 +4,7 @@
 #include "share/atspre_define.hats"
 #include "share/HATS/atspre_staload_libats_ML.hats"
 
+staload UN = "prelude/SATS/unsafe.sats"
 
 staload "./../utils/utils.dats"
 
@@ -18,13 +19,41 @@ staload "./instr0.sats"
 implement fprint_val<type0> = myfprint_type0
 implement fprint_val<s2cst> = fprint_s2cst
 implement fprint_val<symbol> = fprint_symbol
-implement fprint_val<type0ctor> (out, tc) = let
-  val () = fprint_symbol (out, tc.0)
-  val () = fprint_val (out, tc.1)
-in
-end
 
 implement myfprint_type0 (out, type0) = fprint_type0<> (out, type0)
+
+(* ************ ************* *)
+
+implement eq_type0_type0 (ty1, ty2) =
+case+ (ty1, ty2) of
+| (TYPE0int (), TYPE0int ()) => true
+| (TYPE0char (), TYPE0char ()) => true
+| (TYPE0bool (), TYPE0bool ()) => true
+| (TYPE0unit (), TYPE0unit ()) => true
+| (TYPE0fun (_, _), TYPE0fun (_, _)) => 
+    $effmask_all (exitlocmsg ("not supported\n"))
+| (TYPE0ref ty1, TYPE0ref ty2) => eq_type0_type0 (ty1, ty2)
+| (TYPE0name (s2cst1), TYPE0name (s2cst2)) => s2cst1 = s2cst2
+| (_, _) => false
+
+implement neq_type0_type0 (ty1, ty2) = ~ eq_type0_type0 (ty1, ty2)
+
+//
+overload = with eq_type0_type0
+overload != with neq_type0_type0
+//
+(* ****** ****** *)
+//
+implement hash_type0 (t: type0) =
+case+ t of
+| TYPE0int () => $UN.cast{ulint} (1)
+| TYPE0char () => $UN.cast{ulint} (2)
+| TYPE0bool () => $UN.cast{ulint} (3)
+| TYPE0unit () => $UN.cast{ulint} (4)
+| TYPE0fun (type0lst, type0) => $effmask_all (exitlocmsg ("not supported\n"))
+| TYPE0ref (type0) => $UN.cast{ulint} (100) + hash_type0 (type0)
+| TYPE0name (s2cst) => hash_stamp (s2cst_get_stamp (s2cst))
+| TYPE0ignored () => $UN.cast{ulint} (0)
 
 (* ************ ************* *)
 
@@ -61,7 +90,7 @@ end
 | S3TYPEprop () =>
   exitlocmsg ("S3TYPEprop not supported.\n")
 //
-| S3TYPEcon (s2cst, s3typelst) => TYPE0symbol (s2cst_get_name (s2cst))
+| S3TYPEcon (s2cst, s3typelst) => TYPE0name (s2cst)
 | S3TYPEfun (npfref
              , s3typelst (*args*)
              , s3type (*res*)

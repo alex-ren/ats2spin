@@ -223,11 +223,14 @@ typedef s3ctorlst = list0 s3ctor
 typedef s3datatype =
 '{
   s3datatype_s2cst = s2cst
+  // type variables, e.g.
+  // mylist0 (a:t@ype, b:t@ype)
   , s3datatype_s2varlst = s2varlst
   , s3datatype_ctorlst = s3ctorlst
 }
 
 typedef s3datatypelst = list0 s3datatype
+
 
 fun s3type_collect_datatype (
   s2parsingenv

@@ -123,10 +123,34 @@ implement main0 (argc, argv) = let
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
+    "\n\n## ======== collecting datatype information ================\n\n")
+  }
+  val s3datatypelst = s3type_collect_datatype (s2env, d2env, tmap)
+
+  (* ************** ************** *)
+
+  // val () = if is_debug then {
+  // val () = fprint (stdout_ref, 
+  //   "\n\n## ======== datatype information ================\n\n")
+  // // val () = fprint (stdout_ref, tmap)
+  // }
+  
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
     "\n\n## ======== type information ================\n\n")
   val () = fprint (stdout_ref, tmap)
   }
   
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== process datatype information ================\n\n")
+  }
+  val datatype0map = datatype0map_translate (s3datatypelst)
+
   (* ************** ************** *)
 
   val () = if is_debug then {

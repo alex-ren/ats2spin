@@ -97,6 +97,7 @@ ATS2PROMELA_dyn := \
     i0id.dats \
     i0stamp_allocator.dats \
     i0type0.dats \
+    i0datatype0.dats \
     dynloadall.dats
 
 

@@ -31,16 +31,55 @@ datatype type0 =
 | TYPE0unit  // void
 | TYPE0fun of (type0lst, type0)
 | TYPE0ref of (type0)
-| TYPE0symbol of (symbol)  // from S3TYPEcon
-| TYPE0datatype of (type0ctorlst)
+| TYPE0name of (s2cst)  // from abstype and datatype
+// | TYPE0datatype of (s2cst, type0ctorlst)  // from datatype
 | TYPE0ignored of ()
 where
 type0lst = list0 type0
 
 and
-type0ctor = '(symbol, type0lst)
+type0ctor = '(d2con (*constructor*), list0 '(int(*mapped position*), type0))
+
 and
 type0ctorlst = list0 type0ctor
+
+typedef datatype0info = 
+'{ datatype0info_name = s2cst
+ , datatype0info_marshall = type0lst
+ , datatype0info_ctors = type0ctorlst
+}
+
+(* ********** ************ *)
+//
+// fun
+// compare_type0_type0
+//   : (type0, type0) -<fun0> int
+// overload compare with compare_type0_type0
+
+fun
+eq_type0_type0 : (type0, type0) -<fun0> bool
+fun
+neq_type0_type0 : (type0, type0) -<fun0> bool
+fun
+compare_type0_type0 : (type0, type0) -<fun0> int
+//
+overload = with eq_type0_type0
+overload != with neq_type0_type0
+//
+(* ****** ****** *)
+//
+fun
+hash_type0 (s: type0):<> ulint
+
+(* ********** ************ *)
+
+abstype datatype0map = ptr
+
+fun datatype0map_find (datatype0map, s2cst): option0 datatype0info
+
+fun datatype0map_insert (datatype0map, s2cst, datatype0info): void
+
+fun datatype0map_translate (s3datatypelst): datatype0map
 
 (* ********** ************ *)
 

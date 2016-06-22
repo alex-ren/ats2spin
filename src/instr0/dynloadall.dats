@@ -15,6 +15,7 @@ dynload "./i0id.dats"
 dynload "./i0idmap.dats"
 dynload "./i0stamp_allocator.dats"
 dynload "./i0type0.dats"
+dynload "./i0datatype0.dats"
 
 //
 (* ****** ****** *)

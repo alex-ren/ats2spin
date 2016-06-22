@@ -167,11 +167,12 @@ fun f2undec_is_recursive (f: f2undec): bool = let
     | D2Eann_seff (d2exp) => d2exp_has_tailcall (d2exp, fvar)
     | D2Eann_type (d2exp, s2exp) => d2exp_has_tailcall (d2exp, fvar)
     | D2Evar (d2var) => false
+    | D2Ei0nt (_) => false
     | _ => exitlocmsg (datcon_d2exp_node node + " is not supported")
   end
 in
   d2exp_has_tailcall (fbody, fvar)
-end
+end  // end of [f2undec_is_recursive]
 
 implement
 i0transform_D2Cfundecs (sa, f2undeclst, tmap, fmap) = let
@@ -452,7 +453,8 @@ in
   in
     (i0declst, list0_sing ins)
   end  // end of [D2Eintrep]
-  | D2Evar (d2var) => exitlocmsg ("todo\n")
+  | D2Evar (d2var) => 
+    exitlocmsg ("todo\n")
   | _ => exitlocmsg (datcon_d2exp_node (node) + " is not allowed.\n")
 end  // end of [D2Ecase]
 | D2Eann_seff (d2exp) => i0transform_d2exp_fbody (sa, d2exp, tmap, fmap)
