@@ -1167,6 +1167,10 @@ implement s3type_collect_datatype (s2env, d2env, tmap) = let
         ): s2rtlst
 
       // grab the first constructor
+      // val () = fprint (stderr_ref, "=========== s3type_collect_one_datatype: ")
+      // val () = fprint_s2cst (stderr_ref, s2cst)
+      // val () = fprintln! (stderr_ref)
+
       val- cons0 (dcon1, dconlst1) = dconlst
       val d2conopt = d2conmap_find (d2conmap, dcon1)
       val- Some0 (d2con) = d2conopt
@@ -1204,7 +1208,7 @@ implement s3type_collect_datatype (s2env, d2env, tmap) = let
           (
           case- s2exp_d2con_node of
           | S2Euni (s2varlst, _, s2exp_fun) => '(s2varlst, s2exp_fun.s2exp_node)
-          | S2Efun (_, _, _) => '(nil0 (), fun_node)
+          | S2Efun (_, _, _) => '(nil0 (), s2exp_d2con_node)
           ): '(s2varlst, s2exp_node)
 
         // filter out non-type variables
@@ -1266,6 +1270,24 @@ in
   s3datatypelst
 end
         
+// typedef s3ctor =
+// '{
+//   s3ctor_ctor = d2con
+//   , s3ctor_s3typelst = s3typelst
+// }
+implement fprint_val<s3ctor> (out, ctor) = let
+  val () = fprint_d2con (out, ctor.s3ctor_ctor)
+  val () = fprint (out, "(")
+  val () = fprint (out, ctor.s3ctor_s3typelst)
+  val () = fprint (out, ")")
+in end
+
+
+
+implement fprint_s3datatype (out, dt) = let
+  val () = fprint_s2cst (out, dt.s3datatype_s2cst)
+  val () = fprint (out, dt.s3datatype_ctorlst)
+in end
         
 
   

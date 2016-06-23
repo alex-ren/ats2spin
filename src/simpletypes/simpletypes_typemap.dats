@@ -125,7 +125,6 @@ $HT.equal_key_key<symbol> (k1, k2) = eq_symbol_symbol (k1, k2)
 (* *********** ***********) 
 in (* in of [local] *)
 
-
 implement s3typemap_create (base) = let
   val s3typemap_stampmap =  
     $HT.hashtbl_make_nil<stamp, s3type_entity> (i2sz(2048))
@@ -133,15 +132,17 @@ implement s3typemap_create (base) = let
     $HT.hashtbl_make_nil<symbol, s3type> (i2sz(2048))
 
   // add types for symbols
-  val () = $HT.hashtbl_insert_any (
+  val vt = $HT.hashtbl_insert (
        s3typemap_symbolmap
        , symbol_make ("true_bool")
        , s3type_bool () )
+  val () = option_vt_free (vt)
 
-  val () = $HT.hashtbl_insert_any (
+  val vt = $HT.hashtbl_insert (
        s3typemap_symbolmap
        , symbol_make ("false_bool")
        , s3type_bool () )
+  val () = option_vt_free (vt)
 in
   '{ s3typemap_stampmap = s3typemap_stampmap
   , s3typemap_symbolmap = s3typemap_symbolmap
@@ -156,8 +157,10 @@ case+ $HT.hashtbl_search (tmap.s3typemap_stampmap, stamp) of
 
 implement
 s3typemap_update_stamp
-  (tmap, stamp, entity) = 
-  $HT.hashtbl_insert_any (tmap.s3typemap_stampmap, stamp, entity)
+  (tmap, stamp, entity) = let
+  val vt = $HT.hashtbl_insert (tmap.s3typemap_stampmap, stamp, entity)
+  val () = option_vt_free (vt)
+in end
 
 (* ************* ************* *)
 
@@ -215,7 +218,8 @@ implement  s3typemap_normalize (tmap) = let
                     S3TYPE_ENTITYvar (d2var, s3type', loc)
                   end
                   )
-    val () = $HT.hashtbl_insert_any (s3typemap_stampmap, key, entity')
+    val vt = $HT.hashtbl_insert (s3typemap_stampmap, key, entity')
+    val () = option_vt_free (vt)
   in end
   }
 
@@ -223,7 +227,8 @@ implement  s3typemap_normalize (tmap) = let
   val () = hashtbl_foreach_cloref<symbol, s3type> (symbolmap, fwork) where {
   fun fwork (key: symbol, itm: &s3type):<cloref1> void = let
     val s3type = s3type_normalize (itm)
-    val () = $HT.hashtbl_insert_any (s3typemap_symbolmap, key, s3type)
+    val vt = $HT.hashtbl_insert (s3typemap_symbolmap, key, s3type)
+    val () = option_vt_free (vt)
   in end
   }
 

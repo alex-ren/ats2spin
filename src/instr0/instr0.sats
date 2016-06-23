@@ -38,7 +38,7 @@ where
 type0lst = list0 type0
 
 and
-type0ctor = '(d2con (*constructor*), list0 '(int(*mapped position*), type0))
+type0ctor = '(d2con (*constructor*), list0 ('(int (*mapped position*), type0)))
 
 and
 type0ctorlst = list0 type0ctor
@@ -80,6 +80,8 @@ fun datatype0map_find (datatype0map, s2cst): option0 datatype0info
 fun datatype0map_insert (datatype0map, s2cst, datatype0info): void
 
 fun datatype0map_translate (s3datatypelst): datatype0map
+
+fun fprint_datatype0map: fprint_type (datatype0map)
 
 (* ********** ************ *)
 

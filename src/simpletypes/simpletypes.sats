@@ -231,6 +231,8 @@ typedef s3datatype =
 
 typedef s3datatypelst = list0 s3datatype
 
+fun fprint_s3datatype: fprint_type (s3datatype)
+
 
 fun s3type_collect_datatype (
   s2parsingenv

@@ -7,6 +7,7 @@
 //
 #include "share/atspre_define.hats"
 #include "share/atspre_staload.hats"
+#include "share/HATS/atspre_staload_libats_ML.hats"
 //
 (* ****** ****** *)
 
@@ -125,6 +126,9 @@ implement main0 (argc, argv) = let
     "\n\n## ======== collecting datatype information ================\n\n")
   }
   val s3datatypelst = s3type_collect_datatype (s2env, d2env, tmap)
+  // implement fprint_val<s3datatype> = fprint_s3datatype
+  // val () = fprintln! (stderr_ref, "s3datatypelst is \n", s3datatypelst)
+
 
   (* ************** ************** *)
 
