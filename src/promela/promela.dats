@@ -12,6 +12,7 @@ staload "./../utils/utils.dats"
 
 staload "./promela.sats"
 staload "./../instr0/instr0.sats"
+staload "./../postiats/postiats.sats"
 
 #include "./../instr0/instr0_codegen2.hats"
 
@@ -377,8 +378,8 @@ case+ type0 of
 | TYPE0unit () => exitlocmsg ("Check this.\n")
 | TYPE0fun (type0lst, type0) => PMLTYPE_ignore
 | TYPE0ref (type0) => pmltransform_i0type (type0)
-| TYPE0symbol (symbol) => let
-  val name = symbol.tostring ()
+| TYPE0name (s2cst) => let
+  val name = (s2cst_get_name (s2cst)).tostring ()
 in
   case+ name of
   | "pid" => PMLTYPE_pid ()
@@ -469,6 +470,9 @@ in
 end
 | EXP0lambody _ => exitlocmsg (
   "This should not happen. Run should be processed else where")
+| EXP0matchtag (i0id, d2con) => let
+  // todo
+  // i0id . tag == d2con
 
 implement pmltransform_i0explst2pml_anyexplst (i0explst) = let
   val ret = list0_foldright<i0exp> (i0explst, fopr, nil0) where {
