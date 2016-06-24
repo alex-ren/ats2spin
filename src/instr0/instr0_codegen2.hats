@@ -21,6 +21,9 @@ fprint_i0exp$EXP0extfcall: $d2ctype(fprint_i0exp<>)
 extern
 fun{}
 fprint_i0exp$EXP0lambody: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0matchtag: $d2ctype(fprint_i0exp<>)
 //
 (* ****** ****** *)
 //
@@ -36,6 +39,7 @@ case+ arg0 of
 | EXP0app _ => fprint_i0exp$EXP0app<>(out, arg0)
 | EXP0extfcall _ => fprint_i0exp$EXP0extfcall<>(out, arg0)
 | EXP0lambody _ => fprint_i0exp$EXP0lambody<>(out, arg0)
+| EXP0matchtag _ => fprint_i0exp$EXP0matchtag<>(out, arg0)
 )
 //
 (* ****** ****** *)
@@ -323,6 +327,52 @@ implement{}
 fprint_i0exp$EXP0lambody$arg1(out, arg0) =
   let val-EXP0lambody(arg1) = arg0 in fprint_i0exp$carg(out, arg1) end
 //
+extern
+fun{}
+fprint_i0exp$EXP0matchtag$con: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0matchtag$lpar: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0matchtag$rpar: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0matchtag$sep1: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0matchtag$arg1: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0matchtag$arg2: $d2ctype(fprint_i0exp<>)
+//
+implement{}
+fprint_i0exp$EXP0matchtag(out, arg0) = 
+{
+//
+val () = fprint_i0exp$EXP0matchtag$con<>(out, arg0)
+val () = fprint_i0exp$EXP0matchtag$lpar<>(out, arg0)
+val () = fprint_i0exp$EXP0matchtag$arg1<>(out, arg0)
+val () = fprint_i0exp$EXP0matchtag$sep1<>(out, arg0)
+val () = fprint_i0exp$EXP0matchtag$arg2<>(out, arg0)
+val () = fprint_i0exp$EXP0matchtag$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_i0exp$EXP0matchtag$con(out, _) = fprint(out, "EXP0matchtag")
+implement{}
+fprint_i0exp$EXP0matchtag$lpar(out, _) = fprint_i0exp$lpar(out)
+implement{}
+fprint_i0exp$EXP0matchtag$rpar(out, _) = fprint_i0exp$rpar(out)
+implement{}
+fprint_i0exp$EXP0matchtag$sep1(out, _) = fprint_i0exp$sep<>(out)
+implement{}
+fprint_i0exp$EXP0matchtag$arg1(out, arg0) =
+  let val-EXP0matchtag(arg1, _) = arg0 in fprint_i0exp$carg(out, arg1) end
+implement{}
+fprint_i0exp$EXP0matchtag$arg2(out, arg0) =
+  let val-EXP0matchtag(_, arg2) = arg0 in fprint_i0exp$carg(out, arg2) end
+//
 (* ****** ****** *)
 (* ****** ****** *)
 //
@@ -349,6 +399,9 @@ fun{}
 fprint_i0ins$INS0goto: $d2ctype(fprint_i0ins<>)
 extern
 fun{}
+fprint_i0ins$INS0exception: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
 fprint_i0ins$INS0init_loop: $d2ctype(fprint_i0ins<>)
 extern
 fun{}
@@ -368,6 +421,7 @@ case+ arg0 of
 | INS0ifbranch _ => fprint_i0ins$INS0ifbranch<>(out, arg0)
 | INS0random _ => fprint_i0ins$INS0random<>(out, arg0)
 | INS0goto _ => fprint_i0ins$INS0goto<>(out, arg0)
+| INS0exception _ => fprint_i0ins$INS0exception<>(out, arg0)
 | INS0init_loop _ => fprint_i0ins$INS0init_loop<>(out, arg0)
 | INS0tail_jump _ => fprint_i0ins$INS0tail_jump<>(out, arg0)
 )
@@ -695,6 +749,32 @@ fprint_i0ins$INS0goto$rpar(out, _) = fprint_i0ins$rpar(out)
 implement{}
 fprint_i0ins$INS0goto$arg1(out, arg0) =
   let val-INS0goto(arg1) = arg0 in fprint_i0ins$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_i0ins$INS0exception$con: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0exception$lpar: $d2ctype(fprint_i0ins<>)
+extern
+fun{}
+fprint_i0ins$INS0exception$rpar: $d2ctype(fprint_i0ins<>)
+//
+implement{}
+fprint_i0ins$INS0exception(out, arg0) = 
+{
+//
+val () = fprint_i0ins$INS0exception$con<>(out, arg0)
+val () = fprint_i0ins$INS0exception$lpar<>(out, arg0)
+val () = fprint_i0ins$INS0exception$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_i0ins$INS0exception$con(out, _) = fprint(out, "INS0exception")
+implement{}
+fprint_i0ins$INS0exception$lpar(out, _) = fprint_i0ins$lpar(out)
+implement{}
+fprint_i0ins$INS0exception$rpar(out, _) = fprint_i0ins$rpar(out)
 //
 extern
 fun{}
@@ -1290,6 +1370,7 @@ case+ arg0 of
 | EXP0app _ => "EXP0app"
 | EXP0extfcall _ => "EXP0extfcall"
 | EXP0lambody _ => "EXP0lambody"
+| EXP0matchtag _ => "EXP0matchtag"
 )
 //
 (* ****** ****** *)
@@ -1308,6 +1389,7 @@ case+ arg0 of
 | INS0ifbranch _ => "INS0ifbranch"
 | INS0random _ => "INS0random"
 | INS0goto _ => "INS0goto"
+| INS0exception _ => "INS0exception"
 | INS0init_loop _ => "INS0init_loop"
 | INS0tail_jump _ => "INS0tail_jump"
 )

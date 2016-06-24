@@ -137,9 +137,11 @@ abstype i0id = ptr
 fun i0id_make_sym (i0name): i0id
 fun i0id_make_cst (i0name, stamp, option0 string, type0): i0id
 fun i0id_make_var (i0name, stamp, type0): i0id
+fun i0id_make_con (i0name, stamp, type0): i0id
 fun i0id_is_sym (i0id): bool
 fun i0id_is_cst (i0id): bool
 fun i0id_is_var (i0id): bool
+fun i0id_is_con (i0id): bool
 fun i0id_get_name (i0id):<fun> i0name
 fun i0id_get_stamp (i0id):<fun> stamp
 fun i0id_get_type (i0id):<fun> type0
@@ -180,6 +182,7 @@ datatype i0ins =
 | INS0random of (i0gbranchlst, i0inslstopt) 
 //
 | INS0goto of (i0id)
+| INS0exception of ()  // indicating runtime exception
 //
 // Added for recursive functions
 | INS0init_loop of (
@@ -197,6 +200,7 @@ and i0exp =
 | EXP0app of (i0id, i0explst)
 | EXP0extfcall of (string, i0explst)
 | EXP0lambody of (i0exp)
+| EXP0matchtag of (i0id, d2con)
 
 where
 i0inslst = list0 i0ins
@@ -334,20 +338,48 @@ fun stamp_get_from_d2cst (
 
 (* ************ ************* *)
 
+abstype i0aliasmap = ptr
+typedef i0aliasinfo =
+'{ i0aliasinfo_i0id = i0id
+ , i0aliasinfo_src = i0id
+ , i0aliasinfo_member = int
+}
+
+fun i0aliasinfo_create (i0id: i0id, src: i0id, member: int): i0aliasinfo
+
+(* ************ ************* *)
+
+fun i0aliasmap_create (): i0aliasmap
+fun i0aliasmap_find (i0aliasmap, i0id): option0 i0aliasinfo
+fun i0aliasinfo_insert (i0aliasmap, i0id, i0aliasinfo): void
+
+(* ************ ************* *)
+
+abstype i0transform_env = ptr
+fun i0transform_env_create (datatype0map): i0transform_env
+fun i0transform_env_get_datatype0map (i0transform_env): datatype0map
+fun i0transform_env_get_aliasmap (i0transform_env): i0aliasmap
+
+(* ************ ************* *)
+
+
 fun i0transform_d2eclst_global (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , d2ecs: d2eclist
   , tmap: s3typemap
   ): i0prog
 
 fun i0transform_d2ecl_global (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , d2ec: d2ecl
   , tmap: s3typemap
   , fmap: i0funmap): i0declst
 
 fun i0transform_D2Cfundecs (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , f2undeclst: f2undeclst
   , tmap: s3typemap
   , fmap: i0funmap
@@ -360,6 +392,7 @@ fun i0transform_D2Cfundecs (
 *)
 fun i0transform_fundec (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , group: i0idlst
   , f2undec: f2undec
   , tmap: s3typemap
@@ -367,11 +400,13 @@ fun i0transform_fundec (
                   
 fun i0transform_d2var (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , d2var: d2var): i0id
 
 fun i0transform_d2cst (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , d2cst: d2cst): i0id
 
@@ -381,16 +416,19 @@ fun i0transform_d2sym (
 
 fun i0transform_p2atlst2paralst (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , p2atlst: p2atlst): i0idlst
 
 fun i0transform_p2at2para (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , p2at: p2at): i0id
 
 fun i0transform_p2at2holder (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , p2at: p2at): option0 i0id
 
@@ -400,12 +438,14 @@ fun i0transform_p2at2holder (
 *)
 fun i0transform_d2exp_fbody (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , e: d2exp
   , tmap: s3typemap
   , fmap: i0funmap): (i0declst (*inner functions*), i0inslst)
 
 fun i0transform_d2exp_fname (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , e: d2exp): i0id
 
@@ -415,54 +455,64 @@ fun i0transform_d2exp_fname (
 *)
 fun i0transform_d2exp_expvalue (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , e: d2exp
 ): i0exp
 
 fun i0transform_d2exparglst (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , d2exparglst: d2exparglst): i0explst
 
 fun i0transform_d2explst_expvalue (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , d2explst: d2explst): i0explst
 
 fun i0transform_d2eclist (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , d2eclist: d2eclist
   , tmap: s3typemap
   , fmap: i0funmap): (i0declst, i0inslst)
 
 fun i0transform_d2ecl (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , d2ecl: d2ecl
   , tmap: s3typemap
   , fmap: i0funmap): (i0declst (*inner function*), i0inslst)
 
 fun i0transform_D2Cvaldecs (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , v2aldeclst: v2aldeclst): i0inslst
 
 fun i0transform_D2Cvardecs (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , v2ardeclst: v2ardeclst): i0inslst
 
 fun i0transform_v2aldec (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , v2aldec: v2aldec): i0ins (* INS0assign *)
 
 fun i0transform_v2aldec2guardexp (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , v2aldec: v2aldec): i0exp
 
 fun i0transform_v2ardec (
   sa: stamp_allocator
+  , i0env: i0transform_env
   , tmap: s3typemap
   , v2aldec: v2ardec): i0ins (* INS0assign *)
 

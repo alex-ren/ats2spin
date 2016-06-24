@@ -155,6 +155,7 @@ implement main0 (argc, argv) = let
     "\n\n## ======== process datatype information ================\n\n")
   }
   val datatype0map = datatype0map_translate (s3datatypelst)
+  val i0env = i0transform_env_create (datatype0map)
 
   val () = if is_debug then {
   val () = fprint_datatype0map (stdout_ref, datatype0map)
@@ -168,7 +169,7 @@ implement main0 (argc, argv) = let
   }
 
   val sa = stamp_allocator_create ()
-  val i0prog = i0transform_d2eclst_global (sa, d2ecs_model, tmap)
+  val i0prog = i0transform_d2eclst_global (sa, i0env, d2ecs_model, tmap)
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 

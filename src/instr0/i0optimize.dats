@@ -179,6 +179,7 @@ else let
         | EXP0var _ => ins
         | EXP0extfcall _ => ins
         | EXP0lambody _ => exitlocmsg ("This should not happen.")
+        | EXP0matchtag (_, _) => ins
         | EXP0app (i0id, i0explst) => let
           val tag_id_opt = i0idmap_search (map_fname_tag, i0id)
         in
@@ -259,6 +260,7 @@ else let
       end
     end  // end of [INS0randome]
     | INS0goto (_) => ins
+    | INS0exception () => ins
     | INS0init_loop (_, _) => exitlocmsg ("Impossible.")
     | INS0tail_jump (_, _) => exitlocmsg ("Impossible.")
     // end of [transform_return2jump]
@@ -386,6 +388,7 @@ implement i0optimize_collect_decs_fundef (i0fundef) = let
       end
     end  // end of [INS0randome]
     | INS0goto (i0id) => loop (i0inslst1, res1, i0ins :: res2)
+    | INS0exception () => loop (i0inslst1, res1, i0ins :: res2)
     | INS0init_loop (
       i0idlst (*all variables*)
       , tuplst (*list0 (@(i0id, i0id))*) 

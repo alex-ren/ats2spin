@@ -27,6 +27,28 @@ implement fprint_val<stamp> = fprint_stamp
 implement fprint_val<type0> = myfprint_type0
 
 
+// type0ctor = '(d2con (*constructor*)
+//               , list0 ('(int (*mapped position*), type0)))
+implement fprint_val<'(int, type0)> (out, p) = let
+  val () = fprint (out, "(")
+  val () = fprint! (out, p.0, ", ")
+  val () = myfprint_type0 (out, p.1)
+  val () = fprint (out, ")")
+in end
+
+implement fprint_val<type0ctor> (out, ctor) = let
+  val () = fprint_d2con (out, ctor.0)
+  val () = fprint (out, ": ")
+
+  implement
+  {}(*tmp*)
+  fprint_list$sep
+    (out) = fprint_string (out, ", ")
+  // end of [fprint_list$sep]
+  val () = fprint (out, ctor.1)
+in
+end
+
 // typedef datatype0info = 
 // '{ datatype0info_name = s2cst
 //  , datatype0info_marshall = type0lst
@@ -36,6 +58,16 @@ implement fprint_val<datatype0info> (out, dtinfo) = let
   val () = fprint_s2cst (out, dtinfo.datatype0info_name)
   val () = fprint (out, "(")
   val () = fprint (out, dtinfo.datatype0info_marshall)
+  val () = fprint (out, "\n")
+
+  implement
+  {}(*tmp*)
+  fprint_list$sep
+    (out) = fprint_string (out, "\n")
+  // end of [fprint_list$sep]
+
+  val () = fprint (out, dtinfo.datatype0info_ctors)
+  val () = fprint (out, "\n")
   val () = fprint (out, ")")
 in end
 
@@ -162,6 +194,27 @@ in
   ret
 end
 
+(* ****************** ****************** *)
+
+assume i0aliasmap = $HT.hashtbl (stamp, i0aliasinfo)
+implement i0aliasmap_create () =
+  $HT.hashtbl_make_nil<stamp, i0aliasinfo> (i2sz (2048))
+
+implement i0aliasmap_find (map, i0id) = let
+  val itmopt = $HT.hashtbl_search (map, i0id_get_stamp (i0id))
+in
+  case+ itmopt of
+  | ~Some_vt (itm) => Some0 itm
+  | ~None_vt () => None0 ()
+end
+
+implement i0aliasinfo_insert (map, i0id, i0aliasinfo) = let
+  val opt = $HT.hashtbl_insert (map, i0id_get_stamp (i0id), i0aliasinfo)
+  val () = option_vt_free (opt)
+in end
+
+
+
 end  // end of [local]
 
 (* ****************** ****************** *)
@@ -241,9 +294,9 @@ implement datatype0map_translate (s3datatypelst) = let
       // Assign position to each type in the constructor.
 
       typedef typoslst = list0 '(int, type0)
-      val typoslst = list0_foldright<s3type><typoslst> (
-        s3ctor.s3ctor_s3typelst, fopr, nil0 ()) where {
-      fun fopr (s3type: s3type, res: typoslst):<cloref1> typoslst = let
+      val typoslst = list0_foldleft<s3type><typoslst> (
+        s3ctor.s3ctor_s3typelst, nil0 (), fopr) where {
+      fun fopr (res: typoslst, s3type: s3type):<cloref1> typoslst = let
         val type0 = type0_translate (s3type)
         val- Some0 (pos) = type0_int_map_find0 (timap1, type0)
         val typos = '(pos, type0)
@@ -251,6 +304,7 @@ implement datatype0map_translate (s3datatypelst) = let
         val () = type0_int_map_insert0 (timap1, type0, pos + 1)
       in res end
       }
+      val typoslst = list0_reverse (typoslst)
 
       val type0ctor = '(s3ctor.s3ctor_ctor, typoslst)
       val res = cons0 (type0ctor, res)
@@ -295,6 +349,14 @@ implement datatype0map_translate (s3datatypelst) = let
   end
   }
 in dtmap end
+
+(* **************** **************** *)
+
+implement i0aliasinfo_create (i0id, src, member) =
+'{ i0aliasinfo_i0id = i0id
+  , i0aliasinfo_src = src
+  , i0aliasinfo_member = member
+}
 
 
 
