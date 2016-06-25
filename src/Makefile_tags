@@ -4,18 +4,18 @@ RMF=rm -rf
 
 tags:
 	$(RMF) MYTAGS tags
-	find $(PWD)/parsing/ -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
-	find $(PWD)/parsing/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
-	find $(PWD)/postiats/ -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
-	find $(PWD)/postiats/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
-	find $(PWD)/simpletypes/ -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
-	find $(PWD)/simpletypes/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
-	find $(PWD)/instr0/ -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
-	find $(PWD)/instr0/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
-	find $(PWD)/promela/ -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
-	find $(PWD)/promela/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
-	find $(PWD)/utils/ -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
-	find $(PWD)/utils/ -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
+	find $(PWD)/parsing/ -maxdepth 1 -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
+	find $(PWD)/parsing/ -maxdepth 1 -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
+	find $(PWD)/postiats/ -maxdepth 1 -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
+	find $(PWD)/postiats/ -maxdepth 1 -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
+	find $(PWD)/simpletypes/ -maxdepth 1 -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
+	find $(PWD)/simpletypes/ -maxdepth 1 -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
+	find $(PWD)/instr0/ -maxdepth 1 -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
+	find $(PWD)/instr0/ -maxdepth 1 -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
+	find $(PWD)/promela/ -maxdepth 1 -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
+	find $(PWD)/promela/ -maxdepth 1 -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
+	find $(PWD)/utils/ -maxdepth 1 -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
+	find $(PWD)/utils/ -maxdepth 1 -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
 	find $(PWD) -maxdepth 1 -name "*.sats" -exec patsopt --output-a MYTAGS --taggen -s {} \;
 	find $(PWD) -maxdepth 1 -name "*.dats" -exec patsopt --output-a MYTAGS --taggen -d {} \;
 	java -jar $(PATSHOMERELOC)/ats-lang-tools.jar --input MYTAGS -c --output tags

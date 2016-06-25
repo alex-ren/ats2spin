@@ -273,6 +273,16 @@ in
   i0id_make_cst (i0name, stamp, extdef_opt, type0)
 end
 
+implement i0transform_d2con (sa, i0env, tmap, d2con) = let
+  val stamp = stamp_get_from_d2con (sa, d2con)
+  val name = d2con_get_name (d2con)
+  val i0name = i0name_make (name)
+  val- Some0 s3type = s3typemap_find_d2con (tmap, d2con)
+  val type0 = type0_translate (s3type)
+in
+  i0id_make_con (i0name, stamp, type0)
+end
+
 implement i0transform_d2sym (sa, d2sym) = let
   // val stamp = stamp_get_from_d2sym (sa, d2sym)
   val name = d2sym_get_name (d2sym)

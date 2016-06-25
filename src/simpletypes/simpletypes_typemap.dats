@@ -17,11 +17,13 @@ staload "./simpletypes.sats"
 
 datatype s3type_entity =
 | S3TYPE_ENTITYcst of (d2cst, s3type)
+| S3TYPE_ENTITYcon of (d2con, s3type)
 | S3TYPE_ENTITYvar of (d2var, s3type, location_type)
 
 fun s3type_entity_get_type (entity: s3type_entity): s3type =
 case+ entity of
 | S3TYPE_ENTITYcst (d2cst, s3type) => s3type
+| S3TYPE_ENTITYcon (d2con, s3type) => s3type
 | S3TYPE_ENTITYvar (d2var, s3type, loc) => s3type
 
 typedef s3type_entity_opt = option0 s3type_entity
@@ -212,6 +214,11 @@ implement  s3typemap_normalize (tmap) = let
                   in
                     S3TYPE_ENTITYcst (d2cst, s3type')
                   end
+                  | S3TYPE_ENTITYcon (d2con, s3type) => let
+                    val s3type' = s3type_normalize (s3type)
+                  in
+                    S3TYPE_ENTITYcon (d2con, s3type')
+                  end
                   | S3TYPE_ENTITYvar (d2var, s3type, loc) => let
                     val s3type' = s3type_normalize (s3type)
                   in
@@ -259,6 +266,12 @@ implement fprint_s3typemap (out, tmap) = let
       val () = myfprint_s3type (out, s3type)
       val () = fprint (out, "\n\n")
     in () end
+    | S3TYPE_ENTITYcon (d2con, s3type) => let
+      val () = fprint_d2con (out, d2con)
+      val () = fprint (out, ": ")
+      val () = myfprint_s3type (out, s3type)
+      val () = fprint (out, "\n\n")
+    in () end
     | S3TYPE_ENTITYvar (d2var, s3type, loc) => let
       val () = fprint_d2var (out, d2var)
       val () = fprint (out, ": (")
@@ -282,6 +295,13 @@ in
   | None0 () => None0 ()
 end
 
+implement s3typemap_find_d2con (tmap, d2con) = let
+  val entity_opt = s3typemap_find_stamp (tmap, d2con_get_stamp (d2con))
+in
+  case+ entity_opt of
+  | Some0 entity => Some0 (s3type_entity_get_type (entity))
+  | None0 () => None0 ()
+end
 
 implement s3typemap_find_d2var (tmap, d2var) = let
   val entity_opt = s3typemap_find_stamp (tmap, d2var_get_stamp (d2var))

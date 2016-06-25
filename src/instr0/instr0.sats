@@ -200,7 +200,7 @@ and i0exp =
 | EXP0app of (i0id, i0explst)
 | EXP0extfcall of (string, i0explst)
 | EXP0lambody of (i0exp)
-| EXP0matchtag of (i0id, d2con)
+| EXP0matchtag of (i0id (*datatype element*), i0id (*constructor id*))
 
 where
 i0inslst = list0 i0ins
@@ -331,6 +331,11 @@ fun stamp_get_from_d2cst (
   , d2cst: d2cst
 ): stamp
 
+fun stamp_get_from_d2con (
+  allocator: stamp_allocator
+  , d2con: d2con
+): stamp
+
 // fun stamp_get_from_d2sym (
 //   allocator: stamp_allocator
 //   , d2sym: d2sym
@@ -409,6 +414,12 @@ fun i0transform_d2cst (
   , i0env: i0transform_env
   , tmap: s3typemap
   , d2cst: d2cst): i0id
+
+fun i0transform_d2con (
+  sa: stamp_allocator
+  , i0env: i0transform_env
+  , tmap: s3typemap
+  , d2con: d2con): i0id
 
 fun i0transform_d2sym (
   sa: stamp_allocator

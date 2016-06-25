@@ -107,10 +107,15 @@ typedef s3typeopt = option0 (s3type)
 fun s3typemap_create (base: int): s3typemap
 fun s3typemap_find_d2cst (s3typemap, d2cst): s3typeopt
 fun s3typemap_find_d2var (s3typemap, d2var): s3typeopt
+fun s3typemap_find_d2con (s3typemap, d2con): s3typeopt
 fun s3typemap_find_d2sym (s3typemap, d2sym): s3typeopt
 
 fun s3typemap_update_d2cst (
   s3typemap: s3typemap, d2cst: d2cst, s3type: s3type): void
+
+fun s3typemap_update_d2con (
+  s3typemap: s3typemap, d2con: d2con, s3type: s3type): void
+
 fun s3typemap_update_d2var (
   s3typemap: s3typemap, loc: location_type, d2var: d2var, s3type: s3type): void
 

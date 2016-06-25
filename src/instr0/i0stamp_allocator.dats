@@ -31,6 +31,7 @@ in (* in of [local] *)
 assume stamp_allocator = '{
   stamp_allocator_d2varmap = $HT.hashtbl (stamp, stamp)  // (oldstamp, newstamp)
   , stamp_allocator_d2cstmap = $HT.hashtbl(stamp, stamp)
+  , stamp_allocator_d2conmap = $HT.hashtbl(stamp, stamp)
   , stamp_allocator_d2symmap = $HT.hashtbl(symbol, stamp)
   , stamp_allocator_counter = ref int
 }
@@ -38,11 +39,13 @@ assume stamp_allocator = '{
 implement stamp_allocator_create () = let
   val d2varmap = $HT.hashtbl_make_nil<stamp, stamp> (i2sz (2048))
   val d2cstmap = $HT.hashtbl_make_nil<stamp, stamp> (i2sz (2048))
+  val d2conmap = $HT.hashtbl_make_nil<stamp, stamp> (i2sz (2048))
   val d2symmap = $HT.hashtbl_make_nil<symbol, stamp> (i2sz (2048))
   val counter = ref<int> (0)
 in
   '{ stamp_allocator_d2varmap = d2varmap
    , stamp_allocator_d2cstmap = d2cstmap
+   , stamp_allocator_d2conmap = d2conmap
    , stamp_allocator_d2symmap = d2symmap
    , stamp_allocator_counter = counter
    }
@@ -82,6 +85,21 @@ in
     c
   end
 end  // end of [stamp_get_from_d2cst]
+
+
+implement stamp_get_from_d2con (sa, d2con) = let
+  val stamp = d2con_get_stamp (d2con)
+  val itmopt = $HT.hashtbl_search (sa.stamp_allocator_d2conmap, stamp)
+in
+  case+ itmopt of
+  | ~Some_vt (itm) => itm
+  | ~None_vt () => let
+    val c = stamp_allocate (sa)
+    val () = $HT.hashtbl_insert_any (sa.stamp_allocator_d2conmap, stamp, c)
+  in
+    c
+  end
+end  // end of [stamp_get_from_d2con]
 
 // implement stamp_get_from_d2sym (sa, d2sym) = let
 //   val symbol = d2sym_get_name (d2sym)
