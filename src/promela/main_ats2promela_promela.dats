@@ -107,9 +107,10 @@ in end
   // symbol_manager
   val () = the_symbol_mgr_initialize ()
   //
-  (* ******************* ***************** *)
 
-  val '(d2ecs_json, max) = parse_d2eclist_export (jsv)
+  (* *********** ************* *)
+  val '(d2ecs_json, max, s2env, d2env) = parse_d2eclist_export (jsv)
+
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== preprocessed content ==============================\n\n")
@@ -138,7 +139,7 @@ in end
 
   (* ************** ************** *)
 
-  val '(d2ecs_model, max) = parse_d2eclist_export (jsv)
+  val '(d2ecs_model, max, s2env, d2env) = parse_d2eclist_export (jsv)
 
   val d2ecs = list_append (d2ecs_json, d2ecs_model)
 
@@ -163,6 +164,9 @@ in end
     "\n\n## ======== collecting datatype information ================\n\n")
   }
   val s3datatypelst = s3type_collect_datatype (s2env, d2env, tmap)
+  // implement fprint_val<s3datatype> = fprint_s3datatype
+  // val () = fprintln! (stderr_ref, "s3datatypelst is \n", s3datatypelst)
+
 
   (* ************** ************** *)
 
@@ -184,11 +188,24 @@ in end
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
+    "\n\n## ======== process datatype information ================\n\n")
+  }
+  val datatype0map = datatype0map_translate (s3datatypelst)
+  val i0env = i0transform_env_create (datatype0map)
+
+  val () = if is_debug then {
+  val () = fprint_datatype0map (stdout_ref, datatype0map)
+  }
+
+  (* ************** ************** *)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
     "\n\n## ======== transform postiats to instr0 ================\n\n")
   }
 
   val sa = stamp_allocator_create ()
-  val i0prog = i0transform_d2eclst_global (sa, d2ecs, tmap)
+  val i0prog = i0transform_d2eclst_global (sa, i0env, d2ecs, tmap)
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
@@ -232,7 +249,7 @@ in end
     "\n\n## ======== transform instr0 to promela ================\n\n")
   }
 
-  val pml_prog = pmltransform_i0prog (i0prog)
+  val pml_prog = pmltransform_i0prog (datatype0map, i0prog)
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 

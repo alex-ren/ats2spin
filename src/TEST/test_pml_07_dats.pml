@@ -19,12 +19,12 @@ inline foo_0(x_1) {
 }
 init {
 atomic {
-  int y_6;
-  int x_7;
-  x_7 = 2;
-  printf("old x is %d", x_7);
-  foo_0(x_7);
-  printf("new x is %d", x_7)
+  int y_4;
+  int x_5;
+  x_5 = 2;
+  printf("old x is %d", x_5);
+  foo_0(x_5);
+  printf("new x is %d", x_5)
 }
 }
 

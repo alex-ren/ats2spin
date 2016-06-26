@@ -12,81 +12,81 @@
 
 // End of header
 
-inline foo2_1(x_13, y_12) {
+inline foo2_1(x_11, y_10) {
   int x_2;
   int y_3;
-  int x_6;
+  int x_5;
+  int y_6;
   int y_7;
-  int y_8;
+  int x_14;
+  int y_15;
+  int x_4;
   int x_16;
   int y_17;
-  int x_4;
-  int x_18;
-  int y_19;
-  x_6 = x_13;
-  y_7 = y_12;
-  foo2_15:
-  y_8 = (y_7) + (1);
-  printf("y is %d", y_8);
+  x_5 = x_11;
+  y_6 = y_10;
+  foo2_13:
+  y_7 = (y_6) + (1);
+  printf("y is %d", y_7);
   if 
-  :: (y_8) < (100) -> 
-    x_16 = x_6;
-    y_17 = y_8;
-    x_2 = x_16;
-    y_3 = y_17;
-    goto foo1_14
+  :: (y_7) < (100) -> 
+    x_14 = x_5;
+    y_15 = y_7;
+    x_2 = x_14;
+    y_3 = y_15;
+    goto foo1_12
   :: else  -> 
     
   fi;
-  foo1_14:
+  foo1_12:
   x_4 = (x_2) + (1);
   printf("x is %d", x_4);
-  x_18 = x_4;
-  y_19 = y_3;
-  x_6 = x_18;
-  y_7 = y_19;
-  goto foo2_15
+  x_16 = x_4;
+  y_17 = y_3;
+  x_5 = x_16;
+  y_6 = y_17;
+  goto foo2_13
 }
-inline foo1_0(x_21, y_20) {
+inline foo1_0(x_19, y_18) {
   int x_2;
   int y_3;
-  int x_6;
-  int y_7;
+  int x_5;
+  int y_6;
   int x_4;
+  int x_22;
+  int y_23;
+  int y_7;
   int x_24;
   int y_25;
-  int y_8;
-  int x_26;
-  int y_27;
-  x_2 = x_21;
-  y_3 = y_20;
-  foo1_22:
+  x_2 = x_19;
+  y_3 = y_18;
+  foo1_20:
   x_4 = (x_2) + (1);
   printf("x is %d", x_4);
-  x_24 = x_4;
-  y_25 = y_3;
-  x_6 = x_24;
-  y_7 = y_25;
-  goto foo2_23;
-  foo2_23:
-  y_8 = (y_7) + (1);
-  printf("y is %d", y_8);
+  x_22 = x_4;
+  y_23 = y_3;
+  x_5 = x_22;
+  y_6 = y_23;
+  goto foo2_21;
+  foo2_21:
+  y_7 = (y_6) + (1);
+  printf("y is %d", y_7);
   if 
-  :: (y_8) < (100) -> 
-    x_26 = x_6;
-    y_27 = y_8;
-    x_2 = x_26;
-    y_3 = y_27;
-    goto foo1_22
+  :: (y_7) < (100) -> 
+    x_24 = x_5;
+    y_25 = y_7;
+    x_2 = x_24;
+    y_3 = y_25;
+    goto foo1_20
   :: else  -> 
     
   fi
 }
 init {
 atomic {
-  int x_11;
-  x_11 = 1;
-  foo1_0(x_11, 1)
+  int x_9;
+  x_9 = 1;
+  foo1_0(x_9, 1)
 }
 }
 

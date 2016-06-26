@@ -513,7 +513,8 @@ in
         '(res_i0declst, res.1, Some0 inss)
       end
       | P2Tcon (d2con, npf, p2atlst) => let
-        val i0exp = EXP0matchtag (i0idsrc, d2con)
+        val i0id_d2con = i0transform_d2con (sa, i0env, tmap, d2con)
+        val i0exp = EXP0matchtag (i0idsrc, i0id_d2con)
   
 // type0ctor = '(d2con (*constructor*), list0 ('(int (*mapped position*), type0)))
 // 
@@ -716,6 +717,8 @@ end
 | None () => INS0decl (i0id, None0)
 end
 
+(* ***************** ***************** *)
+
 implement i0transform_d2exp_expvalue (sa, i0env, tmap, d2exp) = let
   val node = d2exp.d2exp_node
 in
@@ -783,6 +786,8 @@ in
   | D2Eassgn (_, _) => exitlocmsg (
     "This should not happen. D2Eassgn is processed elsewhere")
 //   | D2Eignored of ((*void*)) // HX: error-handling
+  | D2Eann_type (d2exp, s2exp) => 
+      i0transform_d2exp_expvalue (sa, i0env, tmap, d2exp)
   | _ => exitlocmsg (datcon_d2exp_node (node) + " not allowed")
 // //
 end  // end of [i0transform_d2exp_expvalue]

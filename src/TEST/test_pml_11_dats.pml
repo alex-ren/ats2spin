@@ -27,16 +27,16 @@ proctype foo1_0(int x_1) {
   y_3 = g_get();
   g_set((x_1) + (y_3))
 }
-proctype foo2_6() {
+proctype foo2_5() {
   (g_get()) > (0);
   printf("g is %d in foo2", g_get())
 }
 init {
 atomic {
-  int pid1_10;
-  int pid2_12;
-  pid1_10 = run foo1_0(1);
-  pid2_12 = run foo2_6()
+  pid pid1_8;
+  pid pid2_10;
+  pid1_8 = run foo1_0(1);
+  pid2_10 = run foo2_5()
 }
 }
 

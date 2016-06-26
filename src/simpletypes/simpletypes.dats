@@ -367,7 +367,9 @@ implement oftype_P2Tcon (p2at, tmap) = let
   val- P2Tcon (d2con, npf, p2atlst) = p2at.p2at_node
   val s2exp = d2con_get_type (d2con)
   val- Some0 s3type = s3type_translate (s2exp)
-  todo // 
+
+  val () = s3typemap_update_d2con (tmap, d2con, s3type)
+
   val s3type0 = instantiate_all (s3type)
   val- S3TYPEfun (npf_ty, ty_args, ty_res, effect) = s3type0
 in

@@ -11,14 +11,31 @@ staload "./../postiats/postiats.sats"
 
 (* ********** ************ *)
 
+(*
+* The syntax below is rewritten from the section Garmmar Rules
+* that is in the book
+* "The SPIN Model Checker", Chapter 16 Promela Language Reference.
+*)
+
+
+(* ********** ************ *)
+
 abstype pml_name = ptr
+
+val pml_name_tag: pml_name
+
 fun fprint_pml_name : (FILEref, pml_name) -> void
 overload fprint with fprint_pml_name
 
+(* ********** ************ *)
+
 abstype pml_uname = ptr
+fun pml_uname_create (symbol): pml_uname
 fun fprint_pml_uname : (FILEref, pml_uname) -> void
 overload fprint with fprint_pml_uname
 
+
+(* ********** ************ *)
 
 datatype pml_type = 
 | PMLTYPE_bit
@@ -109,9 +126,11 @@ datatype pml_anyexp =
 | PMLANYEXP_inline of (pml_name, pml_anyexplst)  // call inline function
 
 and 
-(* x[y].z[2] *)
+(* x[exp].ref *)
 pml_varref = 
-| PMLVARREF of (pml_name, option0 pml_anyexp, option0 pml_varref)
+| PMLVARREF of (pml_name (*name*)
+              , option0 pml_anyexp (*exp*)
+              , option0 pml_varref (*ref*))
 where 
 pml_anyexplst = list0 pml_anyexp
 
@@ -156,9 +175,9 @@ typedef pml_ivarlst = list0 pml_ivar
 fun fprint_pml_ivarlst : (FILEref, pml_ivarlst) -> void
 
 (* ********** ************ *)
-
+// [ visible ] typename ivar [',' ivar ] *
 typedef pml_decl = '{
-  pml_decl_visible = bool
+  pml_decl_visible = option0 bool
   , pml_decl_type = pml_type
   , pml_decl_ivarlst = pml_ivarlst
 }
@@ -257,7 +276,7 @@ datatype pml_module =
 /* user defined types */
 | PMLMODULE_utype of (pml_name, pml_declst)
 /* mtype declaration */
-| PMLMODULE_mtype
+| PMLMODULE_mtype of (list0 symbol)
 /* global vars, chans */
 | PMLMODULE_declst of pml_declst
 | PMLMODULE_proctype of pml_proctype
@@ -282,7 +301,7 @@ overload fprint with fprint_pml_program
 
 (* ******** ********* *)
 
-fun pml_decl_make (visible: bool
+fun pml_decl_make (visible: option0 bool
    , type: pml_type
    , ivarlst: pml_ivarlst
 ): pml_decl
@@ -311,7 +330,7 @@ fun pml_varref_make (pml_name): pml_varref
 
 (* ******** ********* *)
 
-fun pmltransform_i0prog (i0prog: i0prog): pml_modulelst
+fun pmltransform_i0prog (dtmap: datatype0map, i0prog: i0prog): pml_modulelst
 fun pmltransform_i0decl (i0decl: i0decl): pml_module
 fun pmltransform_i0fundef (i0fundef: i0fundef): pml_module
 

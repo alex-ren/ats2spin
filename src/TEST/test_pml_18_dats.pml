@@ -12,16 +12,7 @@
 
 // End of header
 
-proctype foo_0(int x_1; int y_2) {
-  int v1_3;
-  int v2_4;
-  v1_3 = (x_1) + (y_2);
-  v2_4 = (x_1) - (y_2);
-  printf("x is %d", 3)
-}
-init {
-atomic {
-  run foo_0(1, 2)
-}
+inline foo_0(x_1) {
+  
 }
 

@@ -9,6 +9,7 @@ staload "./../utils/utils.dats"
 (* ************ ************* *)
 
 staload "./promela.sats"
+staload "./../postiats/postiats.sats"
 staload "./../instr0/instr0.sats"
 
 #include "./../instr0/instr0_codegen2.hats"
@@ -62,6 +63,8 @@ implement fprint_val<pml_step> (out, step) =
   
 implement fprint_val<pml_stmnt> (out, stmnt) =
   myfprint_pml_stmnt (out, stmnt)
+
+implement fprint_val<symbol> = fprint_symbol
 
 (* ************ ************* *)
 

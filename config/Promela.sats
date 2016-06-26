@@ -16,10 +16,10 @@
 stacst curpid: int
 //
 abstype
-pid_type(i:int)
+pid (i:int)
 //
-typedef
-pid(i:int) = pid_type(i)
+// typedef
+// pid(i:int) = pid_type(i)
 //
 typedef pid = [i:nat] pid(i)
 //

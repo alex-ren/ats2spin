@@ -26,7 +26,7 @@ end
 fun pml$init (): void = let
   val x = 1 
   val y = pml$run (lam () => proctype$foo (1, x))
-  val _ = pml$run (lam () => proctype$foo1 (1, y))
+  val _ = pml$run (lam () => proctype$foo1 (1, 2))
 in
 end
 

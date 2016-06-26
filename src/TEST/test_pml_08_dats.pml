@@ -12,33 +12,33 @@
 
 // End of header
 
-inline foo_0(x_9, y_8) {
+inline foo_0(x_7, y_6) {
   int x_1;
   int y_2;
   int y_3;
-  int x_11;
-  int y_12;
-  x_1 = x_9;
-  y_2 = y_8;
-  foo_10:
+  int x_9;
+  int y_10;
+  x_1 = x_7;
+  y_2 = y_6;
+  foo_8:
   y_3 = (x_1) + (1);
   printf("y is %d ", y_3);
   if 
   :: (y_3) < (4) -> 
-    x_11 = y_3;
-    y_12 = x_1;
-    x_1 = x_11;
-    y_2 = y_12;
-    goto foo_10
+    x_9 = y_3;
+    y_10 = x_1;
+    x_1 = x_9;
+    y_2 = y_10;
+    goto foo_8
   :: else  -> 
     
   fi
 }
 init {
 atomic {
-  int x_7;
-  x_7 = 1;
-  foo_0(x_7, 2)
+  int x_5;
+  x_5 = 1;
+  foo_0(x_5, 2)
 }
 }
 

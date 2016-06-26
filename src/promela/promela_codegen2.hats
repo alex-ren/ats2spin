@@ -2014,6 +2014,9 @@ fprint_pml_module$PMLMODULE_mtype$lpar: $d2ctype(fprint_pml_module<>)
 extern
 fun{}
 fprint_pml_module$PMLMODULE_mtype$rpar: $d2ctype(fprint_pml_module<>)
+extern
+fun{}
+fprint_pml_module$PMLMODULE_mtype$arg1: $d2ctype(fprint_pml_module<>)
 //
 implement{}
 fprint_pml_module$PMLMODULE_mtype(out, arg0) = 
@@ -2021,6 +2024,7 @@ fprint_pml_module$PMLMODULE_mtype(out, arg0) =
 //
 val () = fprint_pml_module$PMLMODULE_mtype$con<>(out, arg0)
 val () = fprint_pml_module$PMLMODULE_mtype$lpar<>(out, arg0)
+val () = fprint_pml_module$PMLMODULE_mtype$arg1<>(out, arg0)
 val () = fprint_pml_module$PMLMODULE_mtype$rpar<>(out, arg0)
 //
 }
@@ -2030,6 +2034,9 @@ implement{}
 fprint_pml_module$PMLMODULE_mtype$lpar(out, _) = fprint_pml_module$lpar(out)
 implement{}
 fprint_pml_module$PMLMODULE_mtype$rpar(out, _) = fprint_pml_module$rpar(out)
+implement{}
+fprint_pml_module$PMLMODULE_mtype$arg1(out, arg0) =
+  let val-PMLMODULE_mtype(arg1) = arg0 in fprint_pml_module$carg(out, arg1) end
 //
 extern
 fun{}

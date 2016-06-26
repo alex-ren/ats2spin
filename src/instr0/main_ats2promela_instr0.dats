@@ -78,10 +78,43 @@ implement main0 (argc, argv) = let
   println! ("\n\n ========= Hello from ATS2PML! =============")
   }
 
+  val ret = $extfcall(int, "system",
+    "patsopt --jsonize-2 -o ./../config/Promela_hats.json -d ./../config/Promela.hats")
+  // val () = print! ("ret is ", ret)
+in
+if ret <> 0 then let
+
+  val () = if is_debug then {
+  val () = fprintln! (stderr_ref, "Failed in processing configuration files.")
+  }
+in end
+else let
+
+  (* Read in preprocessed files *)
+  val opt = fileref_open_opt ("./../config/Promela_hats.json", file_mode_r)
+in
+case+ opt of
+| ~None_vt () => let
+  val () = fprintln! (stderr_ref, "Failed in open preprocessed configuration files.")
+in end
+| ~Some_vt (json_ref) => let 
+
+  val jsv = postiats2jsonval (json_ref)
+
+  (* ******************* ***************** *)
 
   // symbol_manager
   val () = the_symbol_mgr_initialize ()
   //
+
+  (* *********** ************* *)
+  val '(d2ecs_json, max, s2env, d2env) = parse_d2eclist_export (jsv)
+
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== preprocessed content ==============================\n\n")
+  val () = fprint_d2eclist (stdout_ref, d2ecs_json)
+  }
 
   (* *********** ************* *)
 
@@ -107,10 +140,12 @@ implement main0 (argc, argv) = let
 
   val '(d2ecs_model, max, s2env, d2env) = parse_d2eclist_export (jsv)
 
+  val d2ecs = list_append (d2ecs_json, d2ecs_model)
+
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== level postiats ==============================\n\n")
-  val () = fprint_d2eclist (stdout_ref, d2ecs_model)
+  val () = fprint_d2eclist (stdout_ref, d2ecs)
   }
 
   (* ************** ************** *)
@@ -119,7 +154,7 @@ implement main0 (argc, argv) = let
   val () = fprint (stdout_ref, 
     "\n\n## ======== type checking ================\n\n")
   }
-  val '(d2eclist, tmap) = s3type_export (max, d2ecs_model)
+  val '(d2eclist, tmap) = s3type_export (max, d2ecs)
 
   (* ************** ************** *)
 
@@ -169,7 +204,7 @@ implement main0 (argc, argv) = let
   }
 
   val sa = stamp_allocator_create ()
-  val i0prog = i0transform_d2eclst_global (sa, i0env, d2ecs_model, tmap)
+  val i0prog = i0transform_d2eclst_global (sa, i0env, d2ecs, tmap)
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
@@ -217,6 +252,8 @@ implement main0 (argc, argv) = let
 
 in
   // nothing
+end
+end
 end (* end of [main0] *)
 
 

@@ -255,7 +255,14 @@ in
   EUlist (eus)
 end
 // | PMLSTMNT_print
-| PMLSTMNT_assert pml_exp => exitlocmsg ("not supported")
+| PMLSTMNT_assert pml_exp => let
+  val eus = emit "assert("
+    :: emit_pml_exp (pml_exp)
+    :: emit ")"
+    :: nil0
+in
+  EUlist (eus)
+end
 | PMLSTMNT_exp pml_exp => emit_pml_exp (pml_exp)
 // Inline call
 | PMLSTMNT_inline (pml_name, pml_anyexplst) => 
@@ -351,7 +358,19 @@ in
     val eu_anyexp = emit_pml_anyexp (pml_anyexp)
   in
     case+ pml_varref_opt of
-    | Some0 (pml_varref) => exitlocmsg ("not supported")
+    | Some0 (pml_varref) => let
+      val eu_varref = emit_pml_varref (pml_varref)
+      val eus = 
+        eu_name
+        :: emit_text ("[")
+        :: eu_anyexp
+        :: emit_text ("]")
+        :: emit_text (".")
+        :: eu_varref
+        :: nil0 ()
+    in
+      EUlist (eus)
+    end
     | None0 () => let
       val eus = 
         eu_name
@@ -363,7 +382,21 @@ in
       EUlist (eus)
     end
   end
-  | None0 () => eu_name
+  | None0 () =>
+    (
+    case+ pml_varref_opt of
+    | Some0 (pml_varref) => let
+      val eu_varref = emit_pml_varref (pml_varref)
+      val eus = 
+        eu_name
+        :: emit_text (".")
+        :: eu_varref
+        :: nil0 ()
+    in
+      EUlist (eus)
+    end
+    | None0 () => eu_name
+    )
 end
 
 implement emit_pml_atom (pml_atom) =

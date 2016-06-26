@@ -49,6 +49,8 @@ Description of Test Files
     This file is for testing the usage of call by reference and recursive function.
 16. `test_promela_16.dats`
     This file is for testing the usage of "case RANDOM".
-16. `test_promela_17.dats`
+17. `test_promela_17.dats`
     This file is for testing the usage of "case RANDOM" with tail call.
+18. `test_promela_18.dats`
+    This file is for testing the usage of "case" expression with datatype.
 

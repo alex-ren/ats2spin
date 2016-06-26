@@ -1,3 +1,4 @@
+
 #
 # A Simple Makefile
 #
@@ -44,6 +45,7 @@ ATS2PROMELA_sta := \
     instr0/instr0.sats \
     promela/promela.sats
 
+
 ATS2PROMELA_dyn := \
     utils/emiter.dats \
     parsing/parsing.dats \
@@ -67,8 +69,8 @@ ATS2PROMELA_dyn := \
     postiats/postiats_label.dats \
     postiats/postiats_s2cst.dats \
     postiats/postiats_s2var.dats \
-    postiats/postiats_s2exp.dats \
     postiats/postiats_s2rt.dats \
+    postiats/postiats_s2exp.dats \
     postiats/postiats_d2con.dats \
     postiats/postiats_d2cst.dats \
     postiats/postiats_d2var.dats \
@@ -76,8 +78,8 @@ ATS2PROMELA_dyn := \
     postiats/postiats_p2at.dats \
     postiats/postiats_c2lau.dats \
     postiats/postiats_d2exp.dats \
-    postiats/postiats_d2ecl.dats \
     postiats/postiats_mylib.dats \
+    postiats/postiats_d2ecl.dats \
     postiats/dynloadall.dats \
     simpletypes/simpletypes.dats \
     simpletypes/simpletypes_typemap.dats \
@@ -97,6 +99,7 @@ ATS2PROMELA_dyn := \
     instr0/i0id.dats \
     instr0/i0stamp_allocator.dats \
     instr0/i0type0.dats \
+    instr0/i0datatype0.dats \
     instr0/dynloadall.dats \
     promela/promela.dats \
     promela/promela_fprint.dats \
@@ -250,12 +253,11 @@ testall:: test_pml_12
 testall:: test_pml_13
 testall:: test_pml_14
 testall:: test_pml_15
-
-testall:: test_example_01_peterson
-
 testall:: test_pml_16
 testall:: test_pml_17
 testall:: test_pml_18
+
+testall:: test_example_01_peterson
 
 # ######
 

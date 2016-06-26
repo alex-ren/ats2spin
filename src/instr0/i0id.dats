@@ -12,6 +12,7 @@ staload "./../utils/emiter.sats"
 datatype i0id_t =
 | ID0sym of (i0name)  // , type0)
 | ID0cst of (i0name, stamp, option0 string (*extdef*), type0)
+| ID0con of (i0name, stamp, type0)
 | ID0var of (i0name, stamp, type0)
 
 assume i0id = i0id_t
@@ -23,42 +24,52 @@ implement i0id_is_sym (i0id) =
 case+ i0id of
 | ID0sym _ => true
 | ID0cst _ => false
+| ID0con _ => false
 | ID0var _ => false
 
 implement i0id_is_cst (i0id) =
 case+ i0id of
 | ID0sym _ => false
 | ID0cst _ => true
+| ID0con _ => false
 | ID0var _ => false
 
 implement i0id_is_var (i0id) =
 case+ i0id of
 | ID0sym _ => false
 | ID0cst _ => false
+| ID0con _ => false
 | ID0var _ => true
 
 implement i0id_make_cst (i0name, stamp, extdef_opt, type0) =
   ID0cst (i0name, stamp, extdef_opt, type0)
 
-implement i0id_make_var (i0name, stam, type0) =
-  ID0var (i0name, stam, type0)
+
+implement i0id_make_con (i0name, stamp, type0) =
+  ID0con (i0name, stamp, type0)
+
+implement i0id_make_var (i0name, stamp, type0) =
+  ID0var (i0name, stamp, type0)
 
 implement i0id_get_name (i0id) = 
 case+ i0id of
 | ID0sym (i0name) => i0name
 | ID0cst (i0name, stamp, _, _) => i0name
+| ID0con (i0name, stamp, _) => i0name
 | ID0var (i0name, stamp, _) => i0name
 
 implement i0id_get_stamp (i0id) = 
 case+ i0id of
 | ID0sym (i0name) => $effmask_all (exitlocmsg ("Symbol has no stamp.\n"))
 | ID0cst (i0name, stamp, _, _) => stamp
+| ID0con (i0name, stamp, _) => stamp
 | ID0var (i0name, stamp, _) => stamp
 
 implement i0id_get_type (i0id) = 
 case+ i0id of
 | ID0sym (i0name) => $effmask_all (exitlocmsg ("Symbol has no type.\n"))
 | ID0cst (i0name, stamp, _, ty) => ty
+| ID0con (i0name, stamp, ty) => ty
 | ID0var (i0name, stamp, ty) => ty
 
 implement i0id_get_extdef (i0id) =
@@ -103,6 +114,7 @@ end
 in
   ID0cst (ni0name, nstamp, extdef_opt, type0)
 end
+| ID0con (i0name, _, type0) => exitlocmsg ("Check this.\n")
 | ID0var (i0name, _, type0) => let
   val ni0name = i0name_copy_remove_prefix_inline (i0name)
   val nstamp = stamp_allocate (sa)
@@ -120,6 +132,9 @@ case+ i0id of
   val () = fprint (out, type0)
   val () = fprint (out, ")")
 in end
+| ID0con (i0name, stamp, type0) => let
+  val () = fprint! (out, i0name, "_", stamp)
+in end
 | ID0var (i0name, stamp, type0) => let
   val () = fprint (out, "(")
   val () = fprint! (out, i0name, "_", stamp)
@@ -136,6 +151,8 @@ case+ (x, y) of
 | (ID0cst (name1, stamp1, _, _), ID0cst (name2, stamp2, _, _)) =>
     stamp1 = stamp2
     // eq_i0name_i0name (name1, name2)
+| (ID0con (name1, stamp1, _), ID0con (name2, stamp2, _)) =>
+    stamp1 = stamp2
 | (ID0var (name1, stamp1, _), ID0var (name2, stamp2, _)) =>
     stamp1 = stamp2
 | (_, _) => false
@@ -155,7 +172,12 @@ case+ id of
   | Some0 extname => extname
   | None0 () => tostring_i0name (i0name)
   )
-// Only var would use stamp as part of the name.
+| ID0con (i0name, stamp, _) => let
+  val name = tostring_i0name (i0name)
+  val stamp = tostring_stamp (stamp)
+in
+  name + "_" + stamp
+end
 | ID0var (i0name, stamp, _) => let
   val name = tostring_i0name (i0name)
   val stamp = tostring_stamp (stamp)
@@ -167,6 +189,7 @@ implement tostring_i0id_name (id) =
 case+ id of
 | ID0sym (i0name) => tostring_i0name (i0name)
 | ID0cst (i0name, stamp, _, _) => tostring_i0name (i0name)
+| ID0con (i0name, stamp, _) => tostring_i0name (i0name)
 | ID0var (i0name, stamp, _) => tostring_i0name (i0name)
 
 

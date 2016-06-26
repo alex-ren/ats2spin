@@ -78,7 +78,10 @@ implement pml_varref_make (pml_name) =
 
 (* ************ ************* *)
 
-implement pmltransform_i0prog (i0prog) = let
+implement pmltransform_i0prog (dtmap, i0prog) = let
+
+  // todo
+
   val funmap = i0prog.i0prog_i0funmap
   val i0declst = i0prog.i0prog_i0declst
   
@@ -148,7 +151,7 @@ implement pmltransform_proctype (pml_name, i0fundef) = let
 
       val pml_type = pml_name_get_type (pml_name)
 
-      val pml_decl = pml_decl_make (false, pml_type, pml_ivarlst)
+      val pml_decl = pml_decl_make (Some0 false, pml_type, pml_ivarlst)
     in
       pml_decl :: res
     end
@@ -205,7 +208,7 @@ case+ i0inslst of
       | None0 () => PMLIVAR_name (pml_name)
     )
     val pml_ivarlst = pml_ivar :: nil0
-    val pml_decl = pml_decl_make (false (*visible*), pml_type, pml_ivarlst)
+    val pml_decl = pml_decl_make (Some0 false (*visible*), pml_type, pml_ivarlst)
     val pml_declst = pml_decl :: nil0
     val pml_step = PMLSTEP_declst pml_declst
   in 
@@ -360,6 +363,13 @@ INS0init_loop is replaced by dec and assign")
         loop (i0inslst, res)
       end
     end  // end of [INS0randome]
+  | INS0exception () => let
+    val pml_exp = PMLEXP_anyexp (PMLANYEXP_const (PMLATOM_bool (false)))
+    val pml_stmnt = PMLSTMNT_assert (pml_exp)
+    val pml_step = PMLSTEP_stmnt (pml_stmnt)
+  in
+    loop (i0inslst, pml_step :: res)
+  end // end of [INS0exception]
   | _ => exitlocmsg ("todo: " + datcon_i0ins i0ins)
 )  // end of [i0ins :: i0inslst]
 | nil0 () => res
@@ -383,7 +393,8 @@ case+ type0 of
 in
   case+ name of
   | "pid" => PMLTYPE_pid ()
-  | str => exitlocmsg (str + " is countered. Check this.\n")
+  | str => PMLTYPE_uname (pml_uname_create (s2cst_get_name (s2cst)))
+      // exitlocmsg (str + " is countered. Check this.\n")
 end
 | TYPE0ignored () => exitlocmsg ("Check this.\n")
 
@@ -470,12 +481,19 @@ in
 end
 | EXP0lambody _ => exitlocmsg (
   "This should not happen. Run should be processed else where")
-| EXP0matchtag (i0id, d2con) => 
-let
-  // todo
-  // i0id . tag == d2con
+| EXP0matchtag (elename, ctorname) => let
+  val pml_elename = pmltransform_i0id (elename)
+
+  val varref_index = pml_varref_make (pml_name_tag)
+  val varref = PMLVARREF (pml_elename, None0 (), Some0 varref_index)
+  val pml_eleexp = PMLANYEXP_varref (varref)
+
+  val pml_ctorname = pmltransform_i0id (ctorname)
+  val pml_ctorvarref = pml_varref_make (pml_ctorname)
+  val pml_ctorexp = PMLANYEXP_varref (pml_ctorvarref)
+
 in
-  exitlocmsg ("dd")
+  PMLANYEXP_binarop (PMLOPR_eq (), pml_eleexp, pml_ctorexp)
 end
 
 implement pmltransform_i0explst2pml_anyexplst (i0explst) = let
@@ -531,7 +549,7 @@ implement pmltransform_i0id2decl (i0id) = let
   val pml_ivarlst = pml_ivar :: nil0
 
   val pml_type = pml_name_get_type (pml_name)
-  val pml_decl = pml_decl_make (false (*visible*), pml_type, pml_ivarlst)
+  val pml_decl = pml_decl_make (Some0 false (*visible*), pml_type, pml_ivarlst)
 
 in
   pml_decl

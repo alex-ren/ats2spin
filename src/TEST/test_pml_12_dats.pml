@@ -17,7 +17,7 @@ proctype foo1_0(int x_1) {
 }
 init {
 atomic {
-  int pid1_4;
+  pid pid1_4;
   printf("pid is %d in init", get_pid());
   pid1_4 = run foo1_0(1)
 }

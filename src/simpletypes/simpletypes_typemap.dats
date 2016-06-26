@@ -318,6 +318,12 @@ s3typemap_update_d2cst
     tmap, d2cst_get_stamp (d2cst), S3TYPE_ENTITYcst (d2cst, s3type))
 
 implement
+s3typemap_update_d2con
+  (tmap, d2con, s3type) = 
+  s3typemap_update_stamp (
+    tmap, d2con_get_stamp (d2con), S3TYPE_ENTITYcon (d2con, s3type))
+
+implement
 s3typemap_update_d2var
   (tmap, loc, d2var, s3type) = let
   val tyopt = s3typemap_find_d2var (tmap, d2var)

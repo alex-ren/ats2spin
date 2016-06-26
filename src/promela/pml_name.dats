@@ -22,6 +22,8 @@ implement pml_name_make (name, stamp, pml_type) =
  , pml_name_type = pml_type
 }
 
+implement pml_name_tag = pml_name_make ("tag", stamp_make (0), PMLTYPE_ignore)
+
 implement pml_name_get_type (pml_name) = pml_name.pml_name_type
 
 implement fprint_pml_name (out, pml_name) = let
