@@ -1,3 +1,12 @@
+mtype START_1;
+mtype END_0;
+typedef message_745 {
+  mtype tag_0;
+  int member_0;
+  int member_1;
+  byte member_2
+}
+
 
 // Header in Promela
 
@@ -12,7 +21,7 @@
 
 // End of header
 
-inline foo_0(x_1) {
+inline foo_2(x_3) {
   
 }
 

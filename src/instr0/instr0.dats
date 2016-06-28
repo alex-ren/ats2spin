@@ -273,12 +273,27 @@ in
   i0id_make_cst (i0name, stamp, extdef_opt, type0)
 end
 
-implement i0transform_d2con (sa, i0env, tmap, d2con) = let
+implement i0transform_d2con (sa, tmap, d2con) = let
   val stamp = stamp_get_from_d2con (sa, d2con)
+
+  // val () = fprint (stderr_ref, "stamp is ")
+  // val () = fprint_stamp (stderr_ref, stamp)
+  // val () = fprintln! (stderr_ref, "===========")
+
   val name = d2con_get_name (d2con)
   val i0name = i0name_make (name)
-  val- Some0 s3type = s3typemap_find_d2con (tmap, d2con)
-  val type0 = type0_translate (s3type)
+
+  // It's possible that d2con is not in the tmap if
+  // it is only declared in the datatype, but never used
+  // in the code. In such situation, type checking process
+  // doesn't have a change to update its information to
+  // the tmap.
+  // Since we don't care about the type of d2con, we just
+  // ignore it here.
+
+  // val- Some0 s3type = s3typemap_find_d2con (tmap, d2con)
+  // val type0 = type0_translate (s3type)
+  val type0 = TYPE0ignored ()
 in
   i0id_make_con (i0name, stamp, type0)
 end
@@ -513,7 +528,7 @@ in
         '(res_i0declst, res.1, Some0 inss)
       end
       | P2Tcon (d2con, npf, p2atlst) => let
-        val i0id_d2con = i0transform_d2con (sa, i0env, tmap, d2con)
+        val i0id_d2con = i0transform_d2con (sa, tmap, d2con)
         val i0exp = EXP0matchtag (i0idsrc, i0id_d2con)
   
 // type0ctor = '(d2con (*constructor*), list0 ('(int (*mapped position*), type0)))
@@ -526,7 +541,7 @@ in
 //  , datatype0info_marshall = type0lst
 //  , datatype0info_ctors = type0ctorlst
 // }
-        val ctor = list0_find_exn (ctors, lam e => e.0 = d2con)
+        val ctor = list0_find_exn (ctors, lam e => e.0 = i0id_d2con)
 
         val aliasmap = i0transform_env_get_aliasmap (i0env)
 

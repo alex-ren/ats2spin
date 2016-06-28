@@ -176,13 +176,13 @@ case+ id of
   val name = tostring_i0name (i0name)
   val stamp = tostring_stamp (stamp)
 in
-  name + "_" + stamp
+  name  //  + "_" + stamp
 end
 | ID0var (i0name, stamp, _) => let
   val name = tostring_i0name (i0name)
   val stamp = tostring_stamp (stamp)
 in
-  name + "_" + stamp
+  name  //  + "_" + stamp
 end
 
 implement tostring_i0id_name (id) = 

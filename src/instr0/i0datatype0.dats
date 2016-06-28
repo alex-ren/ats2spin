@@ -21,13 +21,15 @@ staload _(*anon*) = "libats/DATS/hashfun.dats"
 staload _(*anon*) = "libats/DATS/linmap_list.dats"
 staload _(*anon*) = "libats/DATS/hashtbl_chain.dats"
 staload _(*anon*) = "libats/ML/DATS/hashtblref.dats"
+(* for qstruct_insert *)
+staload _(*anon*) = "libats/DATS/qlist.dats"
 
 (* ************* ************* *)
 implement fprint_val<stamp> = fprint_stamp
 implement fprint_val<type0> = myfprint_type0
 
 
-// type0ctor = '(d2con (*constructor*)
+// type0ctor = '(i0id (*constructor*)
 //               , list0 ('(int (*mapped position*), type0)))
 implement fprint_val<'(int, type0)> (out, p) = let
   val () = fprint (out, "(")
@@ -37,7 +39,7 @@ implement fprint_val<'(int, type0)> (out, p) = let
 in end
 
 implement fprint_val<type0ctor> (out, ctor) = let
-  val () = fprint_d2con (out, ctor.0)
+  val () = fprint_i0id (out, ctor.0)
   val () = fprint (out, ": ")
 
   implement
@@ -121,7 +123,9 @@ fun datatype0map_insert0 (
   val () = option_vt_free (opt)
 in end
 
-(* ****************** ****************** *)
+fun datatype0map_listize0 (dtmap: datatype0map)
+  : list0 (@(stamp, datatype0info)) = 
+  $HT.hashtbl_listize1<stamp, datatype0info> (dtmap)
 
 typedef type0_int_map = $HT.hashtbl (type0, int)
 typedef type0_intlst_map = $HT.hashtbl (type0, list0 int)
@@ -223,9 +227,27 @@ implement datatype0map_find (datatype0map, s2cst) =
   datatype0map_find0 (datatype0map, s2cst)
 
 implement datatype0map_insert (datatype0map, s2cst, datatype0info) =
-  datatype0map_insert (datatype0map, s2cst, datatype0info)
+  datatype0map_insert0 (datatype0map, s2cst, datatype0info)
 
-implement datatype0map_translate (s3datatypelst) = let
+
+implement datatype0map_listize (dtmap) = let
+  val pairlst = datatype0map_listize0 (dtmap)
+  val infolst = 
+    list0_foldleft<@(stamp, datatype0info)><list0 datatype0info> (
+    pairlst, nil0 (), fopr) where {
+  fun fopr (res: list0 datatype0info, x: @(stamp, datatype0info))
+    :<cloref1> list0 datatype0info = let
+    val e = x.1
+    val res = cons0 (e, res)
+  in
+    res
+  end
+  }
+in
+  infolst
+end
+
+implement datatype0map_translate (sa, tmap, s3datatypelst) = let
   val dtmap = datatype0map_create0 ()
 
   // handle all datatypes
@@ -233,6 +255,8 @@ implement datatype0map_translate (s3datatypelst) = let
     s3datatypelst, fopr, dtmap) where {
   fun fopr (
     s3datatype: s3datatype, dtmap: datatype0map):<cloref1> datatype0map = let
+    val () = $tempenver (sa)
+    val () = $tempenver (tmap)
     val s3datatype_ctorlst = s3datatype.s3datatype_ctorlst
 
     // handle all construtors, round 1
@@ -306,7 +330,8 @@ implement datatype0map_translate (s3datatypelst) = let
       }
       val typoslst = list0_reverse (typoslst)
 
-      val type0ctor = '(s3ctor.s3ctor_ctor, typoslst)
+      val i0id_d2con = i0transform_d2con (sa, tmap, s3ctor.s3ctor_ctor)
+      val type0ctor = '(i0id_d2con, typoslst)
       val res = cons0 (type0ctor, res)
     in
       res
@@ -348,7 +373,7 @@ implement datatype0map_translate (s3datatypelst) = let
     dtmap
   end
   }
-in dtmap end
+in dtmap end  // end of [datatype0map_translate]
 
 (* **************** **************** *)
 

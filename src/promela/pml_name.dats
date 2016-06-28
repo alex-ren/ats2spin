@@ -12,23 +12,37 @@ assume pml_name = '{
   pml_name_name = string
   , pml_name_stamp = stamp
   , pml_name_type = pml_type
+  , pml_name_extdef = option0 string
 }
 
 implement pml_name_get_name (pml_name) = pml_name.pml_name_name
 
-implement pml_name_make (name, stamp, pml_type) = 
+implement pml_name_get_stamp (pml_name) = pml_name.pml_name_stamp
+
+implement pml_name_make (name, stamp, pml_type, extdef) = 
 '{ pml_name_name = name
  , pml_name_stamp = stamp
  , pml_name_type = pml_type
+ , pml_name_extdef = extdef
 }
 
-implement pml_name_tag = pml_name_make ("tag", stamp_make (0), PMLTYPE_ignore)
+implement pml_name_tag = pml_name_make (
+  PML_NAME_FOR_CTOR, stamp_make (0), PMLTYPE_ignore, Some0 PML_NAME_FOR_CTOR)
 
 implement pml_name_get_type (pml_name) = pml_name.pml_name_type
 
-implement fprint_pml_name (out, pml_name) = let
+implement tostring_pml_name (pml_name) = 
+case+ pml_name.pml_name_extdef of
+| Some0 (extdef) => extdef
+| None0 () => let
   val stamp_str = tostring_stamp (pml_name.pml_name_stamp)
-  val name = pml_name.pml_name_name  //  + "_" + stamp_str
+  val name = pml_name.pml_name_name  + "_" + stamp_str
+in
+  name
+end
+
+implement fprint_pml_name (out, pml_name) = let
+  val name = tostring_pml_name (pml_name)
 in
   fprint (out, name)
 end

@@ -32,22 +32,9 @@ datatype type0 =
 | TYPE0fun of (type0lst, type0)
 | TYPE0ref of (type0)
 | TYPE0name of (s2cst)  // from abstype and datatype
-// | TYPE0datatype of (s2cst, type0ctorlst)  // from datatype
 | TYPE0ignored of ()
 where
 type0lst = list0 type0
-
-and
-type0ctor = '(d2con (*constructor*), list0 ('(int (*mapped position*), type0)))
-
-and
-type0ctorlst = list0 type0ctor
-
-typedef datatype0info = 
-'{ datatype0info_name = s2cst
- , datatype0info_marshall = type0lst
- , datatype0info_ctors = type0ctorlst
-}
 
 (* ********** ************ *)
 //
@@ -70,18 +57,6 @@ overload != with neq_type0_type0
 //
 fun
 hash_type0 (s: type0):<> ulint
-
-(* ********** ************ *)
-
-abstype datatype0map = ptr
-
-fun datatype0map_find (datatype0map, s2cst): option0 datatype0info
-
-fun datatype0map_insert (datatype0map, s2cst, datatype0info): void
-
-fun datatype0map_translate (s3datatypelst): datatype0map
-
-fun fprint_datatype0map: fprint_type (datatype0map)
 
 (* ********** ************ *)
 
@@ -165,6 +140,36 @@ fun tostring_i0id (i0id): string
 
 // Just the name, no stamp
 fun tostring_i0id_name (i0id): string
+
+(* ************* *************** *)
+
+typedef type0ctor = '(
+              i0id (*id for d2con*)
+             , list0 ('(int (*mapped position*)
+             , type0)))
+
+typedef type0ctorlst = list0 type0ctor
+
+typedef datatype0info = 
+'{ datatype0info_name = s2cst
+ , datatype0info_marshall = type0lst
+ , datatype0info_ctors = type0ctorlst
+}
+
+abstype datatype0map = ptr
+
+fun datatype0map_find (datatype0map, s2cst): option0 datatype0info
+
+fun datatype0map_insert (datatype0map, s2cst, datatype0info): void
+
+fun datatype0map_translate (
+  stamp_allocator, s3typemap, s3datatypelst): datatype0map
+
+fun datatype0map_listize (datatype0map): list0 datatype0info
+
+fun fprint_datatype0map: fprint_type (datatype0map)
+
+(* ********** ************ *)
 
 (* ************* *************** *)
 
@@ -417,7 +422,6 @@ fun i0transform_d2cst (
 
 fun i0transform_d2con (
   sa: stamp_allocator
-  , i0env: i0transform_env
   , tmap: s3typemap
   , d2con: d2con): i0id
 

@@ -42,7 +42,7 @@ in
       // val () = fprintln! (stderr_ref, "end p =====")
       val pml_type = pmltransform_i0type (type0)
 
-      val pml_name = pml_name_make (name_str, stamp, pml_type)
+      val pml_name = pml_name_make (name_str, stamp, pml_type, None0 ())
     in
       Some0 (pml_name)
     end
@@ -79,8 +79,101 @@ implement pml_varref_make (pml_name) =
 (* ************ ************* *)
 
 implement pmltransform_i0prog (dtmap, i0prog) = let
+  val infolst = datatype0map_listize (dtmap)
+  typedef res_type = '(pml_modulelst, list0 pml_name)
+  val '(modules, pml_names) = loop (infolst, '(nil0 (), nil0 ())) where {
+  fun loop (dtinfolst: list0 datatype0info, res: res_type)
+  :<cloref1> res_type = 
+  case+ dtinfolst of
+  | cons0 (dtinfo1, dtinfolst1) => let
+    val uname = (s2cst_get_name (dtinfo1.datatype0info_name)).tostring ()
+    val ustamp = s2cst_get_stamp (dtinfo1.datatype0info_name)
+    val utype = PMLTYPE_ignore ()
+    val utype_name = pml_name_make (uname, ustamp, utype, None0 ())
+    
+    // create a user defined type from a datatype in ATS
+    val pml_declst = loop (dtinfo1.datatype0info_marshall, nil0 (), 0) where {
+    fun loop (type0lst: type0lst, res: pml_declst, n: int):<cloref1> pml_declst =
+    case+ type0lst of
+    | cons0 (type0, type0lst1) => let
+      val pml_type = pmltransform_i0type (type0)
+      val pml_name = pml_name_make ("member", stamp_make (n), pml_type, None0 ())
+      val pml_ivar = PMLIVAR_name (pml_name)
+      val pml_ivarlst = list0_sing (pml_ivar)
+      
+      val pml_decl = pml_decl_make (None0 (), pml_type, pml_ivarlst)
+      val res = cons0 (pml_decl, res)
+    in
+      loop (type0lst1, res, n + 1)
+    end
+    | nil0 () => res
+    }
+    val pml_declst = list0_reverse (pml_declst)
 
-  // todo
+    // add the first member which is the tag for constructor
+    val pml_type = PMLTYPE_mtype ()
+    val pml_name = pml_name_make (
+              PML_NAME_FOR_CTOR, stamp_make (0), pml_type, None0 ())
+    val pml_ivar = PMLIVAR_name (pml_name)
+    val pml_ivarlst = list0_sing (pml_ivar)
+    val pml_decl_ctor = pml_decl_make (None0 (), pml_type, pml_ivarlst)
+    val pml_declst = cons0 (pml_decl_ctor, pml_declst)
+
+    val module_utype = PMLMODULE_utype (utype_name, pml_declst)
+    val module_utypelst = cons0 (module_utype, res.0)
+
+    val pml_namelst = list0_foldleft<type0ctor><list0 pml_name> (
+      dtinfo1.datatype0info_ctors, nil0 (), fopr) where {
+    fun fopr (res: list0 pml_name, e: type0ctor):<cloref1> list0 pml_name = let
+      val i0id = e.0
+      val pml_name = pmltransform_i0id (i0id)
+      val res = cons0 (pml_name, res)
+    in
+      res
+    end
+    }
+    val pml_namelst = list0_reverse_append (pml_namelst, res.1)
+    val res = '(module_utypelst, pml_namelst)
+  in
+    loop (dtinfolst1, res)
+  end
+  | nil0 () => res
+  // end of [loop]
+  }
+
+  val module_mtype = PMLMODULE_mtype (pml_names)
+  val modules_type = list0_reverse_append (modules, list0_sing (module_mtype))
+// type0ctor = '(d2con (*constructor*), list0 ('(int (*mapped position*), type0)))
+
+// typedef pml_decl = '{
+//   pml_decl_visible = option0 bool
+//   , pml_decl_type = pml_type
+//   , pml_decl_ivarlst = pml_ivarlst
+// }
+
+// datatype
+// pml_ivar = 
+// | PMLIVAR_exp of (pml_name (* bool (is constant)*), pml_exp)
+// | PMLIVAR_chan of (pml_name (* bool (is constant)*), pml_chan_init)
+// | PMLIVAR_name of (pml_name)
+   
+
+// assume pml_name = '{
+//   pml_name_name = string
+//   , pml_name_stamp = stamp
+//   , pml_name_type = pml_type
+// }
+
+// /* user defined types */
+// | PMLMODULE_utype of (pml_name, pml_declst)
+// /* mtype declaration */
+// | PMLMODULE_mtype of (list0 symbol)
+    
+// typedef datatype0info = 
+// '{ datatype0info_name = s2cst
+//  , datatype0info_marshall = type0lst
+//  , datatype0info_ctors = type0ctorlst
+// }
 
   val funmap = i0prog.i0prog_i0funmap
   val i0declst = i0prog.i0prog_i0declst
@@ -92,6 +185,8 @@ implement pmltransform_i0prog (dtmap, i0prog) = let
       pml_module :: res
     end
   }
+
+  val modules = list0_reverse_append (modules_type, modules)
 in
   modules
 end
@@ -186,7 +281,7 @@ implement pmltransform_i0id (i0id) = let
 
   val pml_type = pmltransform_i0type (type0)
 in
-  pml_name_make (name, stamp, pml_type)
+  pml_name_make (name, stamp, pml_type, i0id_get_extdef (i0id))
 end
 
 implement pmltransform_i0inslst (is_inline, i0inslst) = let
@@ -396,7 +491,7 @@ in
   | str => PMLTYPE_uname (pml_uname_create (s2cst_get_name (s2cst)))
       // exitlocmsg (str + " is countered. Check this.\n")
 end
-| TYPE0ignored () => exitlocmsg ("Check this.\n")
+| TYPE0ignored () => PMLTYPE_ignore ()
 
 implement pmltransform_i0exp2pml_anyexp (i0exp) =
 case+ i0exp of

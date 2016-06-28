@@ -61,8 +61,34 @@ implement emit_pml_program (program) =
 
 implement emit_pml_module (pml_module) =
 case+ pml_module of
-| PMLMODULE_utype _ => exitlocmsg ("not supported")
-| PMLMODULE_mtype _ => exitlocmsg ("not supported")
+| PMLMODULE_utype (name, declst) => let
+  val eus = emit "typedef "
+      :: emit_pml_name (name)
+      :: emit " {"
+      :: emit_indent ()
+      :: emit_newline ()
+      :: EUlist (emit<pml_decl> (declst, EUlist((emit ";") :: emit_newline () :: nil0 ())))
+      :: emit_unindent ()
+      :: emit_newline ()
+      :: emit "}"
+      :: emit_newline ()
+      :: nil0 ()
+in
+  EUlist (eus)
+end
+| PMLMODULE_mtype (pml_namelst) => let
+  implement emit_val<pml_name> (pml_name) = let
+    val eus = emit "mtype "
+        :: emit_pml_name (pml_name)
+        :: emit (";")
+        :: nil0 ()
+  in
+    EUlist (eus)
+  end
+  val eus = emit_list0<pml_name> (pml_namelst, emit_newline ())
+in
+  EUlist (eus)
+end
 | PMLMODULE_declst _ => exitlocmsg ("not supported")
 | PMLMODULE_proctype proctype => 
     emit_pml_proctype (proctype)
@@ -136,11 +162,9 @@ implement emit_pml_inline (pml_inline) = let
 in
   EUlist (eus)
 end
-implement emit_pml_name (pml_name) = let
-  val name = pml_name_get_name (pml_name)
-in
-  emit_text (name)
-end
+
+implement emit_pml_name (pml_name) = 
+  emit (tostring_pml_name (pml_name))
 
 implement emit_pml_decl (pml_decl) = let
   #define dec pml_decl
@@ -191,7 +215,7 @@ case+ pml_type of
 | PMLTYPE_pid () => emit_text ("pid")
 | PMLTYPE_short () => emit_text ("short")
 | PMLTYPE_int () => emit_text ("int")
-| PMLTYPE_mtype () => exitlocmsg ("not supported\n")
+| PMLTYPE_mtype () => emit_text ("mtype")
 | PMLTYPE_chan () => exitlocmsg ("not supported\n")
 | PMLTYPE_uname pml_uname => exitlocmsg ("not supported")
 | PMLTYPE_ignore () => exitlocmsg ("Should not happen.\n")

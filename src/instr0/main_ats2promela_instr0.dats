@@ -184,12 +184,18 @@ in end
   }
   
   (* ************** ************** *)
+  val () = if is_debug then {
+  val () = fprint (stdout_ref, 
+    "\n\n## ======== transform postiats to instr0 ================\n\n")
+  }
+
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
     "\n\n## ======== process datatype information ================\n\n")
   }
-  val datatype0map = datatype0map_translate (s3datatypelst)
+  val sa = stamp_allocator_create ()
+  val datatype0map = datatype0map_translate (sa, tmap, s3datatypelst)
   val i0env = i0transform_env_create (datatype0map)
 
   val () = if is_debug then {
@@ -200,10 +206,9 @@ in end
 
   val () = if is_debug then {
   val () = fprint (stdout_ref, 
-    "\n\n## ======== transform postiats to instr0 ================\n\n")
+    "\n\n## ======== process instruction information ================\n\n")
   }
 
-  val sa = stamp_allocator_create ()
   val i0prog = i0transform_d2eclst_global (sa, i0env, d2ecs, tmap)
 
   val () = if is_debug then {

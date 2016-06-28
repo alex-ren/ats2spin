@@ -17,6 +17,8 @@ staload "./../postiats/postiats.sats"
 * "The SPIN Model Checker", Chapter 16 Promela Language Reference.
 *)
 
+(* ********** ************ *)
+#define PML_NAME_FOR_CTOR "tag"
 
 (* ********** ************ *)
 
@@ -276,7 +278,7 @@ datatype pml_module =
 /* user defined types */
 | PMLMODULE_utype of (pml_name, pml_declst)
 /* mtype declaration */
-| PMLMODULE_mtype of (list0 symbol)
+| PMLMODULE_mtype of (list0 pml_name)
 /* global vars, chans */
 | PMLMODULE_declst of pml_declst
 | PMLMODULE_proctype of pml_proctype
@@ -322,7 +324,11 @@ fun pml_name_get_name (pml_name): string
 
 fun pml_name_get_type (pml_name): pml_type
 
-fun pml_name_make (string, stamp, pml_type): pml_name
+fun pml_name_get_stamp (pml_name): stamp
+
+fun tostring_pml_name (pml_name): string
+
+fun pml_name_make (string, stamp, pml_type, option0 string (*extdef*)): pml_name
 
 (* ******** ********* *)
 
