@@ -28,9 +28,6 @@ typedef pid = [i:nat] pid(i)
 fun
 pid2int{i:nat}(pid(i)): int(i)
 
-fun
-int2pid{i:nat}(int(i)): pid(i)
-
 fun 
 pid_eq{i1,i2:nat}(pid(i1), pid(i2)): bool(i1 == i2)
 
