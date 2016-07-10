@@ -10,6 +10,8 @@ staload "./../postiats/postiats.sats"
 
 assume pml_uname = symbol
 
+implement tostring_pml_uname (uname) = tostring_symbol (uname)
+
 implement pml_uname_create (sym) = sym
 
 implement fprint_pml_uname (out, pml_uname) = let

@@ -28,37 +28,38 @@ turn = n
 
 int g_lock = 0;
 
-#define vlock_acquire() \
+#define vlock_acquire(_) \
 d_step { \
 assert(g_lock == 0); \
 g_lock = 1; \
 }
 
-#define vlock_release() \
+#define vlock_release(_) \
 g_lock = 0
 
 
 
-inline loop_7(i_24, j_23) {
+inline loop_7(i_25, j_24) {
   pid i_8;
   pid j_9;
-  pid i_26;
-  pid j_27;
-  i_8 = i_24;
-  j_9 = j_23;
-  loop_25:
+  int lock_17;
+  pid i_27;
+  pid j_28;
+  i_8 = i_25;
+  j_9 = j_24;
+  loop_26:
   flag_set(i_8, atsbool_true);
-  turn_set(i_8);
-  ((flag_get(j_9)) == (atsbool_false)) + ((j_9) == (turn_get()));
+  turn_set(j_9);
+  ((flag_get(j_9)) == (atsbool_false)) + ((i_8) == (turn_get()));
   printf("pid: %d \n", i_8);
-  vlock_acquire();
-  vlock_release();
+  vlock_acquire(lock_17);
+  vlock_release(lock_17);
   flag_set(i_8, atsbool_false);
-  i_26 = i_8;
-  j_27 = j_9;
-  i_8 = i_26;
-  j_9 = j_27;
-  goto loop_25
+  i_27 = i_8;
+  j_28 = j_9;
+  i_8 = i_27;
+  j_9 = j_28;
+  goto loop_26
 }
 proctype proc_0() {
   pid i_1;
@@ -70,10 +71,10 @@ proctype proc_0() {
 }
 init {
 atomic {
-  pid pid1_20;
-  pid pid2_22;
-  pid1_20 = run proc_0();
-  pid2_22 = run proc_0()
+  pid pid1_21;
+  pid pid2_23;
+  pid1_21 = run proc_0();
+  pid2_23 = run proc_0()
 }
 }
 

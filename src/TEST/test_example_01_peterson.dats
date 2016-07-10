@@ -19,21 +19,21 @@ turn = n
 
 int g_lock = 0;
 
-#define vlock_acquire() \
+#define vlock_acquire(_) \
 d_step { \
 assert(g_lock == 0); \
 g_lock = 1; \
 }
 
-#define vlock_release() \
+#define vlock_release(_) \
 g_lock = 0
 
 
 %}
 
 // todo
-// extern prfun lemma_pid_scope (): 
-// [0 <= curpid && curpid < 2] void
+extern prfun lemma_pid_scope (): 
+[0 <= curpid && curpid < 2] void
 
 
 extern
@@ -50,7 +50,7 @@ fun turn_get(): [i:nat | i < 2] (pid(i)) = "ext#turn_get"
 
 extern
 fun turn_set {curpid < 2 && curpid >= 0} (
-  t: pid(curpid)): void = "ext#turn_set"
+  t: pid(1 - curpid)): void = "ext#turn_set"
 
 // todo
 // extern
@@ -59,11 +59,13 @@ fun turn_set {curpid < 2 && curpid >= 0} (
 // extern
 // fun vlock_release (v: atom_v): void = "ext#vlock_release"
 
-extern
-fun vlock_acquire (): void = "ext#vlock_acquire"
+absviewt@ype pml$lock
 
 extern
-fun vlock_release (): void = "ext#vlock_release"
+fun vlock_acquire (x: &pml$lock? >> pml$lock): void = "ext#vlock_acquire"
+
+extern
+fun vlock_release (x: &pml$lock >> pml$lock?): void = "ext#vlock_release"
 
 (* ****** ****** *)
 
@@ -80,20 +82,21 @@ proctype$proc() = let
     i: pid (curpid), j: pid (1 - curpid)
   ) : void = let
     val () = flag_set(i, true)
-    val () = turn_set(i)
+    val () = turn_set(j)
     val () = pml$wait_until(
       lam() => (flag_get(j)=false)
-         + (j = turn_get()))
+         + (i = turn_get()))
 
     val () = $extfcall (void, "printf", "pid: %d \\n", i)
 
     // todo: val (pf_lock | ()) = vlock_acquire ()
-    val () = vlock_acquire ()
+    var lock: pml$lock
+    val () = vlock_acquire (lock)
     //
     // This is a critial section
     //
     // todo: val () = vlock_release (pf_lock)
-    val () = vlock_release ()
+    val () = vlock_release (lock)
 
     val () = flag_set(i, false)
   in 

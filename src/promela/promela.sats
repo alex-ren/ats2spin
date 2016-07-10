@@ -33,6 +33,8 @@ overload fprint with fprint_pml_name
 
 abstype pml_uname = ptr
 fun pml_uname_create (symbol): pml_uname
+fun tostring_pml_uname (pml_uname): string
+overload .tostring with tostring_pml_uname
 fun fprint_pml_uname : (FILEref, pml_uname) -> void
 overload fprint with fprint_pml_uname
 

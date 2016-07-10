@@ -488,6 +488,7 @@ case+ type0 of
 in
   case+ name of
   | "pid" => PMLTYPE_pid ()
+  | "pml$lock" => PMLTYPE_int
   | str => PMLTYPE_uname (pml_uname_create (s2cst_get_name (s2cst)))
       // exitlocmsg (str + " is countered. Check this.\n")
 end

@@ -217,7 +217,8 @@ case+ pml_type of
 | PMLTYPE_int () => emit_text ("int")
 | PMLTYPE_mtype () => emit_text ("mtype")
 | PMLTYPE_chan () => exitlocmsg ("not supported\n")
-| PMLTYPE_uname pml_uname => exitlocmsg ("not supported")
+| PMLTYPE_uname pml_uname => exitlocmsg (pml_uname.tostring () + 
+                                         " is not supported")
 | PMLTYPE_ignore () => exitlocmsg ("Should not happen.\n")
 
 implement emit_pml_stmnt (pml_stmnt) = let
