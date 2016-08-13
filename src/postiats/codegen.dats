@@ -19,5 +19,6 @@ staload "./postiats.sats"
 #codegen2("fprint", d2exp_node, fprint_d2exp_node)
 #codegen2("fprint", d2ecl_node, fprint_d2ecl_node)
 #codegen2("fprint", p2at_node, fprint_p2at_node)
+#codegen2("fprint", wths2explst, fprint_wths2explst)
 
 

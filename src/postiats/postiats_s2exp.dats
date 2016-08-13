@@ -22,6 +22,7 @@ implement fprint_val<symbol> = fprint_symbol
 implement fprint_val<s2exp> = fprint_s2exp
 implement fprint_val<labs2exp> = fprint_labs2exp
 implement fprint_val<s2rt> = fprint_s2rt
+implement fprint_val<wths2explst> = myfprint_wths2explst
 
 (* ************ ************* *)
 
@@ -39,6 +40,9 @@ implement fprint_s2exp (out, s2exp) = let
 in end
 
 implement myfprint_s2exp_node (out, node) = fprint_s2exp_node<> (out, node)
+
+implement myfprint_wths2explst (out, wths2explst) = 
+  fprint_wths2explst<> (out, wths2explst)
 
 implement fprint_labs2exp (out, labs2exp) = let
   val () = fprint_label (out, labs2exp.labs2exp_label)

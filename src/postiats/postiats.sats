@@ -300,16 +300,24 @@ datatype s2exp_node =
 (* This is for the return type of a function whose parameters use
 * reference type.
 *)
-| S2Ewthtype of (s2exp (*, todo: WTHS2EXPLST*)) // e.g. x: char? >> char 
+| S2Ewthtype of (s2exp, wths2explst) // e.g. x: char? >> char 
 | S2Etop of (s2exp)  // used for uninitialized type, e.g. char?
 | S2Erefarg of (s2exp)
 | S2Eignored
 | S2Eerr
 
+and wths2explst =
+| WTHS2EXPLSTnil of () 
+| WTHS2EXPLSTcons_none of wths2explst
+| WTHS2EXPLSTcons_invar of (int(*refval*), s2exp, wths2explst)
+| WTHS2EXPLSTcons_trans of (int(*refval*), s2exp, wths2explst)
+// end of [wths2explst]
+
 where
 s2exp = '{
   s2exp_sort = s2rt, s2exp_node = s2exp_node
 } (* end of [s2exp] *)
+
 
 and labs2exp = '{
 labs2exp_label = label
@@ -322,6 +330,8 @@ and s2explst = list0 (s2exp)
 and s2expopt = option0 (s2exp)
 and s2expopt_vt = Option_vt (s2exp)
 
+(* ******************** ********************* *)
+
 fun s2exp_make_node
   (srt: s2rt, node: s2exp_node): s2exp
 
@@ -333,6 +343,9 @@ overload fprint with fprint_s2explst
 
 fun myfprint_s2exp_node: fprint_type (s2exp_node)
 fun{} fprint_s2exp_node: fprint_type (s2exp_node)
+
+fun myfprint_wths2explst: fprint_type (wths2explst)
+fun{} fprint_wths2explst: fprint_type (wths2explst)
 
 fun fprint_labs2exp: fprint_type (labs2exp)
 

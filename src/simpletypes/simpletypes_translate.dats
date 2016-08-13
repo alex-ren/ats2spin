@@ -141,10 +141,13 @@ end
 (* This is for the return type of a function whose parameters use
 * reference type.
 *)
-| S2Ewthtype (s2exp (*, todo: WTHS2EXPLST*)) => let
-  val s3type = s3type_translate (s2exp)
+| S2Ewthtype (s2exp, wths2explst) => let
+  val s3typeopt = s3type_translate (s2exp)
+  // val wths3typelst = s3type_translate_wths2explst (wths2explst)
 in
-  s3type
+  case+ s3typeopt of
+  | Some0 (s3type) => None0 () // todo Some0 (S3TYPEwthtype (s3type, wths3typelst))
+  | None0 () => s3typeopt
 end
 | S2Etop (s2exp) => s3type_translate (s2exp)
 | S2Erefarg (s2exp) => let

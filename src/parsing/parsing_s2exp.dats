@@ -69,6 +69,9 @@ fun parse_S2Efun (s2parsingenv, jsonval): s2exp_node
 extern 
 fun parse_S2Ewthtype (s2parsingenv, jsonval): s2exp_node
 
+extern 
+fun parse_wths2explst (s2parsingenv, jsonval): wths2explst
+
 (* This is for the reference type used for function parameters *)
 extern 
 fun parse_S2Erefarg (s2parsingenv, jsonval): s2exp_node
@@ -274,14 +277,49 @@ in
   S2Efun (s2e_npf, s2e_args, s2e_res)
 end // end of [parse_S2Efun]
 
+
 implement parse_S2Ewthtype (s2env, jsv0) = let
 val-JSONarray(jsvs) = jsv0
 val () = assertloc (length(jsvs) >= 2)
 val s2e = parse_s2exp (s2env, jsvs[0])
-// todo: parse WTH2EXPLST
+
+val wths2explst = parse_wths2explst (s2env, jsvs[1])
 in
-  S2Ewthtype (s2e)
+  S2Ewthtype (s2e, wths2explst)
 end
+
+implement parse_wths2explst (s2env, jsv0) = let
+val-JSONobject(lxs) = jsv0
+val-list_cons (lx, lxs) = lxs
+//
+val name = lx.0 and jsv1 = lx.1
+//
+val-JSONarray(jsvs) = jsv1
+in
+//
+(
+case+ name of
+//
+| "WTHS2EXPLSTcons_none" => let
+  val () = assertloc (length(jsvs) >= 1)
+in
+  WTHS2EXPLSTcons_none (parse_wths2explst (s2env, jsvs[0]))
+end
+| "WTHS2EXPLSTcons_trans" => let
+  val () = assertloc (length(jsvs) >= 3)
+  val refval = parse_int (jsvs[0])
+  val s2exp = parse_s2exp (s2env, jsvs[1])
+  val wths2explst = parse_wths2explst (s2env, jsvs[2])
+in
+  WTHS2EXPLSTcons_trans (refval, s2exp, wths2explst)
+end
+| "WTHS2EXPLSTcons_invar" => 
+  exitlocmsg ("WTHS2EXPLSTcons_invar is not supported.")
+| "WTHS2EXPLSTnil" => WTHS2EXPLSTnil ()
+| str => exitlocmsg (str + " is not supported")
+)
+end
+
 
 implement parse_S2Erefarg (s2env, jsv0) = let
 val-JSONarray(jsvs) = jsv0

@@ -27,6 +27,7 @@ implement fprint_val<s3tkind> = myfprint_s3tkind
 
 implement fprint_val<s3element> = fprint_s3element
 implement fprint_val<s3type> = myfprint_s3type
+// implement fprint_val<wths3typelst> = myfprint_wths3typelst
 
 implement{}
 fprint_s3type$S3TYPEref$arg1(out, arg0) = let 

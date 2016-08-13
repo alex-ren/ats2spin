@@ -58,7 +58,15 @@ datatype s3type =
                 , int (*effect: -1: ignored, 0: false, 1: true*))
 | S3TYPEvar of s2var
 | S3TYPEpoly of (s2varlst, s3type)
+| S3ttt of ()
+// | S3TYPEwthtype of (s3type, wths3typelst)
 | S3TYPEignored
+
+and wths3typelst =
+| WTHS3TYPELSTnil of ()
+// | WTHS3TYPELSTcons_none of wths3typelst
+// | WTHS3TYPELSTcons_invar of (int(*refval*), s3type, wths3typelst)
+// | WTHS3TYPELSTcons_trans of (int(*refval*), s3type, wths3typelst)
 
 where
 s3typelst = list0 s3type
@@ -81,6 +89,9 @@ fun myfprint_s3type : fprint_type (s3type)
 
 fun{} datcon_s3type : (s3type) -> string
 fun{} fprint_s3type : fprint_type (s3type)
+
+// fun myfprint_wths3typelst : fprint_type (wths3typelst)
+// fun{} fprint_wths3typelst : fprint_type (wths3typelst)
 
 (* ************* ************* *)
 
@@ -145,6 +156,8 @@ fun s3type_translate (s2exp): s3typeopt
 // due to the fact that some elements in the input
 // are not "types".
 fun s3type_translate_s2explst (s2explst): s3typelst
+
+fun s3type_translate_wths2explst (wths2explst): wths3typelst
 
 
 (* ************* ************* *)

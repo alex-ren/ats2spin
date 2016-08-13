@@ -15,6 +15,7 @@ case+ arg0 of
 | S3TYPEfun _ => "S3TYPEfun"
 | S3TYPEvar _ => "S3TYPEvar"
 | S3TYPEpoly _ => "S3TYPEpoly"
+| S3ttt _ => "S3ttt"
 | S3TYPEignored _ => "S3TYPEignored"
 )
 //
@@ -50,6 +51,9 @@ fun{}
 fprint_s3type$S3TYPEpoly: $d2ctype(fprint_s3type<>)
 extern
 fun{}
+fprint_s3type$S3ttt: $d2ctype(fprint_s3type<>)
+extern
+fun{}
 fprint_s3type$S3TYPEignored: $d2ctype(fprint_s3type<>)
 //
 (* ****** ****** *)
@@ -68,6 +72,7 @@ case+ arg0 of
 | S3TYPEfun _ => fprint_s3type$S3TYPEfun<>(out, arg0)
 | S3TYPEvar _ => fprint_s3type$S3TYPEvar<>(out, arg0)
 | S3TYPEpoly _ => fprint_s3type$S3TYPEpoly<>(out, arg0)
+| S3ttt _ => fprint_s3type$S3ttt<>(out, arg0)
 | S3TYPEignored _ => fprint_s3type$S3TYPEignored<>(out, arg0)
 )
 //
@@ -479,6 +484,32 @@ fprint_s3type$S3TYPEpoly$arg1(out, arg0) =
 implement{}
 fprint_s3type$S3TYPEpoly$arg2(out, arg0) =
   let val-S3TYPEpoly(_, arg2) = arg0 in fprint_s3type$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_s3type$S3ttt$con: $d2ctype(fprint_s3type<>)
+extern
+fun{}
+fprint_s3type$S3ttt$lpar: $d2ctype(fprint_s3type<>)
+extern
+fun{}
+fprint_s3type$S3ttt$rpar: $d2ctype(fprint_s3type<>)
+//
+implement{}
+fprint_s3type$S3ttt(out, arg0) = 
+{
+//
+val () = fprint_s3type$S3ttt$con<>(out, arg0)
+val () = fprint_s3type$S3ttt$lpar<>(out, arg0)
+val () = fprint_s3type$S3ttt$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_s3type$S3ttt$con(out, _) = fprint(out, "S3ttt")
+implement{}
+fprint_s3type$S3ttt$lpar(out, _) = fprint_s3type$lpar(out)
+implement{}
+fprint_s3type$S3ttt$rpar(out, _) = fprint_s3type$rpar(out)
 //
 extern
 fun{}

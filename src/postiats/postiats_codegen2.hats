@@ -859,7 +859,13 @@ fun{}
 fprint_s2exp_node$S2Ewthtype$rpar: $d2ctype(fprint_s2exp_node<>)
 extern
 fun{}
+fprint_s2exp_node$S2Ewthtype$sep1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
 fprint_s2exp_node$S2Ewthtype$arg1: $d2ctype(fprint_s2exp_node<>)
+extern
+fun{}
+fprint_s2exp_node$S2Ewthtype$arg2: $d2ctype(fprint_s2exp_node<>)
 //
 implement{}
 fprint_s2exp_node$S2Ewthtype(out, arg0) = 
@@ -868,6 +874,8 @@ fprint_s2exp_node$S2Ewthtype(out, arg0) =
 val () = fprint_s2exp_node$S2Ewthtype$con<>(out, arg0)
 val () = fprint_s2exp_node$S2Ewthtype$lpar<>(out, arg0)
 val () = fprint_s2exp_node$S2Ewthtype$arg1<>(out, arg0)
+val () = fprint_s2exp_node$S2Ewthtype$sep1<>(out, arg0)
+val () = fprint_s2exp_node$S2Ewthtype$arg2<>(out, arg0)
 val () = fprint_s2exp_node$S2Ewthtype$rpar<>(out, arg0)
 //
 }
@@ -878,8 +886,13 @@ fprint_s2exp_node$S2Ewthtype$lpar(out, _) = fprint_s2exp_node$lpar(out)
 implement{}
 fprint_s2exp_node$S2Ewthtype$rpar(out, _) = fprint_s2exp_node$rpar(out)
 implement{}
+fprint_s2exp_node$S2Ewthtype$sep1(out, _) = fprint_s2exp_node$sep<>(out)
+implement{}
 fprint_s2exp_node$S2Ewthtype$arg1(out, arg0) =
-  let val-S2Ewthtype(arg1) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+  let val-S2Ewthtype(arg1, _) = arg0 in fprint_s2exp_node$carg(out, arg1) end
+implement{}
+fprint_s2exp_node$S2Ewthtype$arg2(out, arg0) =
+  let val-S2Ewthtype(_, arg2) = arg0 in fprint_s2exp_node$carg(out, arg2) end
 //
 extern
 fun{}
@@ -3332,5 +3345,239 @@ implement{}
 fprint_p2at_node$P2Tignored$lpar(out, _) = fprint_p2at_node$lpar(out)
 implement{}
 fprint_p2at_node$P2Tignored$rpar(out, _) = fprint_p2at_node$rpar(out)
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTnil: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_none: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans: $d2ctype(fprint_wths2explst<>)
+//
+(* ****** ****** *)
+//
+implement{}
+fprint_wths2explst
+  (out, arg0) =
+(
+case+ arg0 of
+| WTHS2EXPLSTnil _ => fprint_wths2explst$WTHS2EXPLSTnil<>(out, arg0)
+| WTHS2EXPLSTcons_none _ => fprint_wths2explst$WTHS2EXPLSTcons_none<>(out, arg0)
+| WTHS2EXPLSTcons_invar _ => fprint_wths2explst$WTHS2EXPLSTcons_invar<>(out, arg0)
+| WTHS2EXPLSTcons_trans _ => fprint_wths2explst$WTHS2EXPLSTcons_trans<>(out, arg0)
+)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_wths2explst$sep: (FILEref) -> void
+implement{}
+fprint_wths2explst$sep(out) = fprint(out, ",")
+//
+extern
+fun{}
+fprint_wths2explst$lpar: (FILEref) -> void
+implement{}
+fprint_wths2explst$lpar(out) = fprint(out, "(")
+//
+extern
+fun{}
+fprint_wths2explst$rpar: (FILEref) -> void
+implement{}
+fprint_wths2explst$rpar(out) = fprint(out, ")")
+//
+extern
+fun{a:t0p}
+fprint_wths2explst$carg: (FILEref, INV(a)) -> void
+implement{a}
+fprint_wths2explst$carg(out, arg) = fprint_val<a>(out, arg)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTnil$con: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTnil$lpar: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTnil$rpar: $d2ctype(fprint_wths2explst<>)
+//
+implement{}
+fprint_wths2explst$WTHS2EXPLSTnil(out, arg0) = 
+{
+//
+val () = fprint_wths2explst$WTHS2EXPLSTnil$con<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTnil$lpar<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTnil$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_wths2explst$WTHS2EXPLSTnil$con(out, _) = fprint(out, "WTHS2EXPLSTnil")
+implement{}
+fprint_wths2explst$WTHS2EXPLSTnil$lpar(out, _) = fprint_wths2explst$lpar(out)
+implement{}
+fprint_wths2explst$WTHS2EXPLSTnil$rpar(out, _) = fprint_wths2explst$rpar(out)
+//
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_none$con: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_none$lpar: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_none$rpar: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_none$arg1: $d2ctype(fprint_wths2explst<>)
+//
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_none(out, arg0) = 
+{
+//
+val () = fprint_wths2explst$WTHS2EXPLSTcons_none$con<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_none$lpar<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_none$arg1<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_none$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_none$con(out, _) = fprint(out, "WTHS2EXPLSTcons_none")
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_none$lpar(out, _) = fprint_wths2explst$lpar(out)
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_none$rpar(out, _) = fprint_wths2explst$rpar(out)
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_none$arg1(out, arg0) =
+  let val-WTHS2EXPLSTcons_none(arg1) = arg0 in fprint_wths2explst$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$con: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$lpar: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$rpar: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$sep1: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$sep2: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$arg1: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$arg2: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$arg3: $d2ctype(fprint_wths2explst<>)
+//
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar(out, arg0) = 
+{
+//
+val () = fprint_wths2explst$WTHS2EXPLSTcons_invar$con<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_invar$lpar<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_invar$arg1<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_invar$sep1<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_invar$arg2<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_invar$sep2<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_invar$arg3<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_invar$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$con(out, _) = fprint(out, "WTHS2EXPLSTcons_invar")
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$lpar(out, _) = fprint_wths2explst$lpar(out)
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$rpar(out, _) = fprint_wths2explst$rpar(out)
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$sep1(out, _) = fprint_wths2explst$sep<>(out)
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$sep2(out, _) = fprint_wths2explst$sep<>(out)
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$arg1(out, arg0) =
+  let val-WTHS2EXPLSTcons_invar(arg1, _, _) = arg0 in fprint_wths2explst$carg(out, arg1) end
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$arg2(out, arg0) =
+  let val-WTHS2EXPLSTcons_invar(_, arg2, _) = arg0 in fprint_wths2explst$carg(out, arg2) end
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_invar$arg3(out, arg0) =
+  let val-WTHS2EXPLSTcons_invar(_, _, arg3) = arg0 in fprint_wths2explst$carg(out, arg3) end
+//
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$con: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$lpar: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$rpar: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$sep1: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$sep2: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$arg1: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$arg2: $d2ctype(fprint_wths2explst<>)
+extern
+fun{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$arg3: $d2ctype(fprint_wths2explst<>)
+//
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans(out, arg0) = 
+{
+//
+val () = fprint_wths2explst$WTHS2EXPLSTcons_trans$con<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_trans$lpar<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_trans$arg1<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_trans$sep1<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_trans$arg2<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_trans$sep2<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_trans$arg3<>(out, arg0)
+val () = fprint_wths2explst$WTHS2EXPLSTcons_trans$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$con(out, _) = fprint(out, "WTHS2EXPLSTcons_trans")
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$lpar(out, _) = fprint_wths2explst$lpar(out)
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$rpar(out, _) = fprint_wths2explst$rpar(out)
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$sep1(out, _) = fprint_wths2explst$sep<>(out)
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$sep2(out, _) = fprint_wths2explst$sep<>(out)
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$arg1(out, arg0) =
+  let val-WTHS2EXPLSTcons_trans(arg1, _, _) = arg0 in fprint_wths2explst$carg(out, arg1) end
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$arg2(out, arg0) =
+  let val-WTHS2EXPLSTcons_trans(_, arg2, _) = arg0 in fprint_wths2explst$carg(out, arg2) end
+implement{}
+fprint_wths2explst$WTHS2EXPLSTcons_trans$arg3(out, arg0) =
+  let val-WTHS2EXPLSTcons_trans(_, _, arg3) = arg0 in fprint_wths2explst$carg(out, arg3) end
 //
 (* ****** ****** *)
