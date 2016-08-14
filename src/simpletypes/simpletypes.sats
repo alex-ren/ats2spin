@@ -58,12 +58,11 @@ datatype s3type =
                 , int (*effect: -1: ignored, 0: false, 1: true*))
 | S3TYPEvar of s2var
 | S3TYPEpoly of (s2varlst, s3type)
-| S3ttt of ()
-// | S3TYPEwthtype of (s3type, wths3typelst)
+| S3TYPEwthtype of (s3type)  // , wths3typelst) todo
 | S3TYPEignored
 
-and wths3typelst =
-| WTHS3TYPELSTnil of ()
+// and wths3typelst =
+// | WTHS3TYPELSTnil of ()
 // | WTHS3TYPELSTcons_none of wths3typelst
 // | WTHS3TYPELSTcons_invar of (int(*refval*), s3type, wths3typelst)
 // | WTHS3TYPELSTcons_trans of (int(*refval*), s3type, wths3typelst)
@@ -157,7 +156,7 @@ fun s3type_translate (s2exp): s3typeopt
 // are not "types".
 fun s3type_translate_s2explst (s2explst): s3typelst
 
-fun s3type_translate_wths2explst (wths2explst): wths3typelst
+// fun s3type_translate_wths2explst (wths2explst): wths3typelst
 
 
 (* ************* ************* *)
