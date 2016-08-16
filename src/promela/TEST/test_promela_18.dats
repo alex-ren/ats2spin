@@ -1,4 +1,7 @@
-
+/*
+* This file is for testing the usage of "case" expression with datatype.
+*
+*/
 datatype message =
 | START of (int, char)
 | END of (int, int)

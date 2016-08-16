@@ -53,4 +53,7 @@ Description of Test Files
     This file is for testing the usage of "case RANDOM" with tail call.
 18. `test_promela_18.dats`
     This file is for testing the usage of "case" expression with datatype.
+19. `test_promela_19.dats`
+    This file is for testing the usage of 
+    scheme of send/recv functions.
 
