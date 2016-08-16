@@ -336,6 +336,13 @@ in
     tmap, d2var_get_stamp (d2var), S3TYPE_ENTITYvar (d2var, s3type, loc))
 end
 
+implement
+s3typemap_update_d2var_nocheck
+  (tmap, loc, d2var, s3type) = let
+  val () = s3typemap_update_stamp (
+    tmap, d2var_get_stamp (d2var), S3TYPE_ENTITYvar (d2var, s3type, loc))
+in end
+
 (* ****** ****** *)
 
 

@@ -129,6 +129,12 @@ fun s3typemap_update_d2con (
 fun s3typemap_update_d2var (
   s3typemap: s3typemap, loc: location_type, d2var: d2var, s3type: s3type): void
 
+// The function simply replace the type of d2var in the map with s3type.
+// There is no type match at all.
+// The function is used by oftype_D2Eapplst in simpletypes.dats
+fun s3typemap_update_d2var_nocheck (
+  s3typemap: s3typemap, loc: location_type, d2var: d2var, s3type: s3type): void
+
 // Create a new map, which has no S3TYPEref for d2cst and d2var.
 fun s3typemap_normalize (tmap: s3typemap): s3typemap
 

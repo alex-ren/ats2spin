@@ -541,7 +541,7 @@ fun oftype_D2Eapplst (
     end
   end  // end of [loop_poly]
 
-  and loop_fun (s3type: s3type (*funtion type*)
+  and loop_fun (s3type: s3type (*function type*)
             , d2exparglst: d2exparglst
             , inner_types: s3typelst
             , loc: location_type): (s3type, s3typelst) = let
@@ -554,7 +554,11 @@ fun oftype_D2Eapplst (
     then exitlocmsg (
       "Type mismatched: " + loc.tostring () + " different length.\n")
     else let
-      val () = loop_type_checker (d2expargs, ty_args) where {
+      val wthopt = (case+ ty_res of
+        | S3TYPEwthtype (s3type_res, wths3typelst) => Some0 wths3typelst
+        | _ => None0 
+      )
+      val () = loop_type_checker (d2expargs, ty_args, wthopt) where {
       fun loop_type_checker (
         d2explst: d2explst
         , s3typelst: s3typelst
@@ -562,10 +566,27 @@ fun oftype_D2Eapplst (
       case+ (d2explst, s3typelst) of
       | (list_cons (d2exp, d2explst1), cons0 (s3type, s3typelst1)) => let
         val () = s3typecheck_d2exp (d2exp, s3type, tmap)
-        val () = case+ wthopt of
-
+        //
+        // The type of function argument may be changed after the function
+        // invocation if the function parameter is of reference type.
+        val wthopt1 = (case+ wthopt of
+            | None0 () => wthopt
+            | Some0 (WTHS3TYPELSTnil ()) => exitlocmsg ("This is impossible.")
+            | Some0 (WTHS3TYPELSTcons_none (wths3typelst2))
+              => Some0 wths3typelst2
+            | Some0 (WTHS3TYPELSTcons_invar (refval, _, wths3typelst2))
+              => Some0 wths3typelst2
+            | Some0 (WTHS3TYPELSTcons_trans (refval, s3type_new, wths3typelst2))
+              => let
+              val- D2Evar (d2var) = d2exp.d2exp_node
+              val () = s3typemap_update_d2var_nocheck (tmap, d2exp.d2exp_loc, d2var, s3type_new)
+            in
+              Some0 wths3typelst2
+            end
+            ): option0 wths3typelst
+        //
       in
-        loop_type_checker (d2explst1, s3typelst1)
+        loop_type_checker (d2explst1, s3typelst1, wthopt1)
       end
       | (list_nil (), nil0 ()) => ()
       | (_, _) => exitlocmsg (
@@ -576,7 +597,7 @@ fun oftype_D2Eapplst (
     in
       case+ d2exparglst1 of
       | list_cons (_, _) => 
-         loop_s3type (ty_res, d2exparglst1, inner_types1, loc)
+        loop_s3type (ty_res, d2exparglst1, inner_types1, loc)
       | list_nil () => (ty_res, list0_reverse (inner_types1))
     end
   end  // end of [loop_fun]
