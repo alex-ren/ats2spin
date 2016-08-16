@@ -309,8 +309,13 @@ datatype s2exp_node =
 and wths2explst =
 | WTHS2EXPLSTnil of () 
 | WTHS2EXPLSTcons_none of wths2explst
+
+// extern fun foo4 (x: &int): void
 | WTHS2EXPLSTcons_invar of (int(*refval*), s2exp, wths2explst)
+
+// extern fun foo3 (x: &int >> char): void
 | WTHS2EXPLSTcons_trans of (int(*refval*), s2exp, wths2explst)
+
 // end of [wths2explst]
 
 where

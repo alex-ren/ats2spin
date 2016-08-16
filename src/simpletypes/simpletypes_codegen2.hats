@@ -496,7 +496,13 @@ fun{}
 fprint_s3type$S3TYPEwthtype$rpar: $d2ctype(fprint_s3type<>)
 extern
 fun{}
+fprint_s3type$S3TYPEwthtype$sep1: $d2ctype(fprint_s3type<>)
+extern
+fun{}
 fprint_s3type$S3TYPEwthtype$arg1: $d2ctype(fprint_s3type<>)
+extern
+fun{}
+fprint_s3type$S3TYPEwthtype$arg2: $d2ctype(fprint_s3type<>)
 //
 implement{}
 fprint_s3type$S3TYPEwthtype(out, arg0) = 
@@ -505,6 +511,8 @@ fprint_s3type$S3TYPEwthtype(out, arg0) =
 val () = fprint_s3type$S3TYPEwthtype$con<>(out, arg0)
 val () = fprint_s3type$S3TYPEwthtype$lpar<>(out, arg0)
 val () = fprint_s3type$S3TYPEwthtype$arg1<>(out, arg0)
+val () = fprint_s3type$S3TYPEwthtype$sep1<>(out, arg0)
+val () = fprint_s3type$S3TYPEwthtype$arg2<>(out, arg0)
 val () = fprint_s3type$S3TYPEwthtype$rpar<>(out, arg0)
 //
 }
@@ -515,8 +523,13 @@ fprint_s3type$S3TYPEwthtype$lpar(out, _) = fprint_s3type$lpar(out)
 implement{}
 fprint_s3type$S3TYPEwthtype$rpar(out, _) = fprint_s3type$rpar(out)
 implement{}
+fprint_s3type$S3TYPEwthtype$sep1(out, _) = fprint_s3type$sep<>(out)
+implement{}
 fprint_s3type$S3TYPEwthtype$arg1(out, arg0) =
-  let val-S3TYPEwthtype(arg1) = arg0 in fprint_s3type$carg(out, arg1) end
+  let val-S3TYPEwthtype(arg1, _) = arg0 in fprint_s3type$carg(out, arg1) end
+implement{}
+fprint_s3type$S3TYPEwthtype$arg2(out, arg0) =
+  let val-S3TYPEwthtype(_, arg2) = arg0 in fprint_s3type$carg(out, arg2) end
 //
 extern
 fun{}
@@ -543,6 +556,240 @@ implement{}
 fprint_s3type$S3TYPEignored$lpar(out, _) = fprint_s3type$lpar(out)
 implement{}
 fprint_s3type$S3TYPEignored$rpar(out, _) = fprint_s3type$rpar(out)
+//
+(* ****** ****** *)
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTnil: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_none: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans: $d2ctype(fprint_wths3typelst<>)
+//
+(* ****** ****** *)
+//
+implement{}
+fprint_wths3typelst
+  (out, arg0) =
+(
+case+ arg0 of
+| WTHS3TYPELSTnil _ => fprint_wths3typelst$WTHS3TYPELSTnil<>(out, arg0)
+| WTHS3TYPELSTcons_none _ => fprint_wths3typelst$WTHS3TYPELSTcons_none<>(out, arg0)
+| WTHS3TYPELSTcons_invar _ => fprint_wths3typelst$WTHS3TYPELSTcons_invar<>(out, arg0)
+| WTHS3TYPELSTcons_trans _ => fprint_wths3typelst$WTHS3TYPELSTcons_trans<>(out, arg0)
+)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_wths3typelst$sep: (FILEref) -> void
+implement{}
+fprint_wths3typelst$sep(out) = fprint(out, ",")
+//
+extern
+fun{}
+fprint_wths3typelst$lpar: (FILEref) -> void
+implement{}
+fprint_wths3typelst$lpar(out) = fprint(out, "(")
+//
+extern
+fun{}
+fprint_wths3typelst$rpar: (FILEref) -> void
+implement{}
+fprint_wths3typelst$rpar(out) = fprint(out, ")")
+//
+extern
+fun{a:t0p}
+fprint_wths3typelst$carg: (FILEref, INV(a)) -> void
+implement{a}
+fprint_wths3typelst$carg(out, arg) = fprint_val<a>(out, arg)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTnil$con: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTnil$lpar: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTnil$rpar: $d2ctype(fprint_wths3typelst<>)
+//
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTnil(out, arg0) = 
+{
+//
+val () = fprint_wths3typelst$WTHS3TYPELSTnil$con<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTnil$lpar<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTnil$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTnil$con(out, _) = fprint(out, "WTHS3TYPELSTnil")
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTnil$lpar(out, _) = fprint_wths3typelst$lpar(out)
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTnil$rpar(out, _) = fprint_wths3typelst$rpar(out)
+//
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_none$con: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_none$lpar: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_none$rpar: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_none$arg1: $d2ctype(fprint_wths3typelst<>)
+//
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_none(out, arg0) = 
+{
+//
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_none$con<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_none$lpar<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_none$arg1<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_none$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_none$con(out, _) = fprint(out, "WTHS3TYPELSTcons_none")
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_none$lpar(out, _) = fprint_wths3typelst$lpar(out)
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_none$rpar(out, _) = fprint_wths3typelst$rpar(out)
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_none$arg1(out, arg0) =
+  let val-WTHS3TYPELSTcons_none(arg1) = arg0 in fprint_wths3typelst$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$con: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$lpar: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$rpar: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$sep1: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$sep2: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$arg1: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$arg2: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$arg3: $d2ctype(fprint_wths3typelst<>)
+//
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar(out, arg0) = 
+{
+//
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_invar$con<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_invar$lpar<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_invar$arg1<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_invar$sep1<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_invar$arg2<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_invar$sep2<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_invar$arg3<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_invar$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$con(out, _) = fprint(out, "WTHS3TYPELSTcons_invar")
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$lpar(out, _) = fprint_wths3typelst$lpar(out)
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$rpar(out, _) = fprint_wths3typelst$rpar(out)
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$sep1(out, _) = fprint_wths3typelst$sep<>(out)
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$sep2(out, _) = fprint_wths3typelst$sep<>(out)
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$arg1(out, arg0) =
+  let val-WTHS3TYPELSTcons_invar(arg1, _, _) = arg0 in fprint_wths3typelst$carg(out, arg1) end
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$arg2(out, arg0) =
+  let val-WTHS3TYPELSTcons_invar(_, arg2, _) = arg0 in fprint_wths3typelst$carg(out, arg2) end
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_invar$arg3(out, arg0) =
+  let val-WTHS3TYPELSTcons_invar(_, _, arg3) = arg0 in fprint_wths3typelst$carg(out, arg3) end
+//
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$con: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$lpar: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$rpar: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$sep1: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$sep2: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$arg1: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$arg2: $d2ctype(fprint_wths3typelst<>)
+extern
+fun{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$arg3: $d2ctype(fprint_wths3typelst<>)
+//
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans(out, arg0) = 
+{
+//
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_trans$con<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_trans$lpar<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_trans$arg1<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_trans$sep1<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_trans$arg2<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_trans$sep2<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_trans$arg3<>(out, arg0)
+val () = fprint_wths3typelst$WTHS3TYPELSTcons_trans$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$con(out, _) = fprint(out, "WTHS3TYPELSTcons_trans")
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$lpar(out, _) = fprint_wths3typelst$lpar(out)
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$rpar(out, _) = fprint_wths3typelst$rpar(out)
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$sep1(out, _) = fprint_wths3typelst$sep<>(out)
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$sep2(out, _) = fprint_wths3typelst$sep<>(out)
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$arg1(out, arg0) =
+  let val-WTHS3TYPELSTcons_trans(arg1, _, _) = arg0 in fprint_wths3typelst$carg(out, arg1) end
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$arg2(out, arg0) =
+  let val-WTHS3TYPELSTcons_trans(_, arg2, _) = arg0 in fprint_wths3typelst$carg(out, arg2) end
+implement{}
+fprint_wths3typelst$WTHS3TYPELSTcons_trans$arg3(out, arg0) =
+  let val-WTHS3TYPELSTcons_trans(_, _, arg3) = arg0 in fprint_wths3typelst$carg(out, arg3) end
 //
 (* ****** ****** *)
 (* ****** ****** *)

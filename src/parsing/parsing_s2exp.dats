@@ -313,8 +313,14 @@ end
 in
   WTHS2EXPLSTcons_trans (refval, s2exp, wths2explst)
 end
-| "WTHS2EXPLSTcons_invar" => 
-  exitlocmsg ("WTHS2EXPLSTcons_invar is not supported.")
+| "WTHS2EXPLSTcons_invar" => let
+  val () = assertloc (length(jsvs) >= 3)
+  val refval = parse_int (jsvs[0])
+  val s2exp = parse_s2exp (s2env, jsvs[1])
+  val wths2explst = parse_wths2explst (s2env, jsvs[2])
+in
+  WTHS2EXPLSTcons_invar (refval, s2exp, wths2explst)
+end
 | "WTHS2EXPLSTnil" => WTHS2EXPLSTnil ()
 | str => exitlocmsg (str + " is not supported")
 )

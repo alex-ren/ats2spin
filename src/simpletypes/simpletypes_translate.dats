@@ -143,10 +143,10 @@ end
 *)
 | S2Ewthtype (s2exp, wths2explst) => let
   val s3typeopt = s3type_translate (s2exp)
-  // val wths3typelst = s3type_translate_wths2explst (wths2explst)
+  val wths3typelst = s3type_translate_wths2explst (wths2explst)
 in
   case+ s3typeopt of
-  | Some0 (s3type) => None0 () // todo Some0 (S3TYPEwthtype (s3type, wths3typelst))
+  | Some0 (s3type) => Some0 (S3TYPEwthtype (s3type, wths3typelst))
   | None0 () => s3typeopt
 end
 | S2Etop (s2exp) => s3type_translate (s2exp)
@@ -174,3 +174,26 @@ implement s3type_translate_s2explst (s2explst) = let
 in
   res
 end
+
+implement s3type_translate_wths2explst (wths2explst) =
+case+ wths2explst of
+| WTHS2EXPLSTnil () => WTHS3TYPELSTnil ()
+| WTHS2EXPLSTcons_none wths2explst1 => let
+  val wths3typelst = s3type_translate_wths2explst (wths2explst1)
+in
+  WTHS3TYPELSTcons_none (wths3typelst)
+end
+| WTHS2EXPLSTcons_invar (refval, s2exp, wths2explst1) => let
+  val- Some0 s3type = s3type_translate (s2exp)
+  val wths3typelst = s3type_translate_wths2explst (wths2explst1)
+in
+  WTHS3TYPELSTcons_invar (refval, s3type, wths3typelst)
+end
+| WTHS2EXPLSTcons_trans (refval, s2exp, wths2explst1) => let
+  val- Some0 s3type = s3type_translate (s2exp)
+  val wths3typelst = s3type_translate_wths2explst (wths2explst1)
+in
+  WTHS3TYPELSTcons_trans (refval, s3type, wths3typelst)
+end
+
+

@@ -27,7 +27,7 @@ implement fprint_val<s3tkind> = myfprint_s3tkind
 
 implement fprint_val<s3element> = fprint_s3element
 implement fprint_val<s3type> = myfprint_s3type
-// implement fprint_val<wths3typelst> = myfprint_wths3typelst
+implement fprint_val<wths3typelst> = myfprint_wths3typelst
 
 implement{}
 fprint_s3type$S3TYPEref$arg1(out, arg0) = let 
@@ -57,6 +57,9 @@ end
 implement fprint_val<s3labeltype> = fprint_s3labeltype
 
 implement myfprint_s3type (out, s3type) = fprint_s3type<> (out, s3type)
+
+implement myfprint_wths3typelst (out, wths3typelst) = 
+  fprint_wths3typelst (out, wths3typelst)
 
 implement fprint_s3labeltype (out, labtype) = let
   val lab = labtype.s3labeltype_label
@@ -553,10 +556,14 @@ fun oftype_D2Eapplst (
     else let
       val () = loop_type_checker (d2expargs, ty_args) where {
       fun loop_type_checker (
-        d2explst: d2explst , s3typelst: s3typelst): void =
+        d2explst: d2explst
+        , s3typelst: s3typelst
+        , wthopt: option0 wths3typelst): void =
       case+ (d2explst, s3typelst) of
       | (list_cons (d2exp, d2explst1), cons0 (s3type, s3typelst1)) => let
         val () = s3typecheck_d2exp (d2exp, s3type, tmap)
+        val () = case+ wthopt of
+
       in
         loop_type_checker (d2explst1, s3typelst1)
       end
@@ -931,7 +938,7 @@ implement s3type_match (tmap, left, right) = let
   val tyleft = s3type_normalize (left)
   val tyright = s3type_normalize (right)
 in
-  case+ (tyleft, tyright) of
+  case- (tyleft, tyright) of
   | (S3TYPEref (tyvar), _) =>
     (
     case+ !tyvar of
@@ -1019,6 +1026,10 @@ in
     else None0 ()
   | (S3TYPEpoly (s2varlst1, s3type1), S3TYPEpoly (s2varlst2, s3type2)) =>
     s3type_match (tmap, s3type1, s3type2)
+  | (S3TYPEwthtype (s3type1, wths3typelst1), right) =>
+    s3type_match (tmap, s3type1, right)
+  | (left, S3TYPEwthtype (s3type2, wths3typelst2)) =>
+    s3type_match (tmap, left, s3type2)
   | (S3TYPErefarg (left0), right) => s3type_match (tmap, left0, right)
   | (left, S3TYPErefarg (right0)) => s3type_match (tmap, left, right0)
   | (left, right) => let
@@ -1121,9 +1132,35 @@ end
 in
   S3TYPEpoly (s2varlst, s3type1)
 end
+| S3TYPEwthtype (s3type, wths3typelst) => let
+  val s3type1 = s3type_normalize (s3type)
+  val wths3typelst1 = s3type_normalize_wths3typelst (wths3typelst)
+in
+  S3TYPEwthtype (s3type1, wths3typelst1)
+end
 | S3TYPEignored () => S3TYPEignored () 
 // end of [s3type_normalize]
 
+implement s3type_normalize_wths3typelst (wths3typelst) =
+case+ wths3typelst of
+| WTHS3TYPELSTnil () => wths3typelst
+| WTHS3TYPELSTcons_none (wths3typelst1) => let
+  val wths3typelst2 = s3type_normalize_wths3typelst (wths3typelst1)
+in
+  WTHS3TYPELSTcons_none (wths3typelst2)
+end
+| WTHS3TYPELSTcons_invar (refval, s3type1, wths3typelst1) => let
+  val s3type2 = s3type_normalize (s3type1)
+  val wths3typelst2 = s3type_normalize_wths3typelst (wths3typelst1)
+in
+  WTHS3TYPELSTcons_invar (refval, s3type2, wths3typelst2)
+end
+| WTHS3TYPELSTcons_trans (refval, s3type1, wths3typelst1) => let
+  val s3type2 = s3type_normalize (s3type1)
+  val wths3typelst2 = s3type_normalize_wths3typelst (wths3typelst1)
+in
+  WTHS3TYPELSTcons_trans (refval, s3type2, wths3typelst2)
+end
 
 implement s3type_normalize_typelst (s3typelst) = let
   val s3typelst1 = list0_foldright (s3typelst, fopr, nil0) where {

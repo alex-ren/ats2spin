@@ -83,7 +83,12 @@ end
 in
   S3TYPEpoly (s2varlst, ty)
 end
-
+| S3TYPEwthtype (s3type, wths3typelst) => let
+  val s3type1 = s3type_instantiate (s3type, map)
+  val wths3typelst1 = s3type_instantiate_wths3typelst (wths3typelst, map)
+in
+  S3TYPEwthtype (s3type1, wths3typelst1)
+end
 | S3TYPEignored () => s3type
 // end of [s3type_instantiate]
 
@@ -98,6 +103,30 @@ implement s3type_instantiate_typelst (s3typelst, map) = let
   }
 in
   s3typelst1
+end
+
+
+implement s3type_instantiate_wths3typelst (wths3typelst, map) =
+case+ wths3typelst of
+| WTHS3TYPELSTnil () => wths3typelst
+| WTHS3TYPELSTcons_none (wths3typelst1) => let
+  val wths3typelst2 = s3type_instantiate_wths3typelst (wths3typelst1, map)
+in
+  WTHS3TYPELSTcons_none (wths3typelst2)
+end
+| WTHS3TYPELSTcons_invar (refval, s3type1, wths3typelst1) => let
+  val s3type2 = s3type_instantiate (s3type1, map)
+  val wths3typelst2 = 
+    s3type_instantiate_wths3typelst (wths3typelst1, map)
+in
+  WTHS3TYPELSTcons_invar (refval, s3type2, wths3typelst2)
+end
+| WTHS3TYPELSTcons_trans (refval, s3type1, wths3typelst1) => let
+  val s3type2 = s3type_instantiate (s3type1, map)
+  val wths3typelst2 = 
+    s3type_instantiate_wths3typelst (wths3typelst1, map)
+in
+  WTHS3TYPELSTcons_trans (refval, s3type2, wths3typelst2)
 end
 
 
