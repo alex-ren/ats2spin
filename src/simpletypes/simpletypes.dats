@@ -20,13 +20,15 @@ implement is_debug_typechecking = ref false
 
 (* ************ ************* *)
 implement myfprint_s3tkind (out, s3tkind) = fprint_s3tkind<> (out, s3tkind)
+implement myfprint_s3element (out, s3element) = 
+  fprint_s3element<> (out, s3element)
 
 implement fprint_val<s2cst> = fprint_s2cst
 implement fprint_val<s2var> = fprint_s2var
-implement fprint_val<s3tkind> = myfprint_s3tkind
 
-implement fprint_val<s3element> = fprint_s3element
-implement fprint_val<s3type> = myfprint_s3type
+implement fprint_val<s3tkind>   = myfprint_s3tkind
+implement fprint_val<s3element> = myfprint_s3element
+implement fprint_val<s3type>    = myfprint_s3type
 implement fprint_val<wths3typelst> = myfprint_wths3typelst
 
 implement{}

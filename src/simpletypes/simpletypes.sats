@@ -44,10 +44,11 @@ datatype s3element =
 | S3ELEMENTunit
 
 fun{} fprint_s3element: fprint_type (s3element)
+fun myfprint_s3element: fprint_type (s3element)
 
 datatype s3type =
-| S3TYPEref of ref (s3typeopt)
-| S3TYPErefarg of (s3type)
+| S3TYPEref of ref (s3typeopt)  // used for type inference
+| S3TYPErefarg of (s3type)  // used for reference type
 | S3TYPEelement of (s3element)
 | S3TYPErecord of (ref s3tkind, int (*npf*), s3labeltypelst)
 | S3TYPEprop
@@ -58,7 +59,8 @@ datatype s3type =
                 , int (*effect: -1: ignored, 0: false, 1: true*))
 | S3TYPEvar of s2var
 | S3TYPEpoly of (s2varlst, s3type)
-| S3TYPEwthtype of (s3type, wths3typelst)
+// used for return type for funtions, whose parameters are of reference type.
+| S3TYPEwthtype of (s3type, wths3typelst)  
 | S3TYPEignored
 
 and wths3typelst =
@@ -234,6 +236,7 @@ fun s3type_export (max: int, prog: d2eclist): '(d2eclist, s3typemap)
 
 (* ************* ************* *)
 
+// Turn some well-known ATS types into s3type.
 fun s3type_translate_S3Eapp_con (s2cst): s3typeopt
 
 (* ************* ************* *)

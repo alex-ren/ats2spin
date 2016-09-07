@@ -500,6 +500,7 @@ in
   in
     (i0declst, list0_sing ins)
   end  // end of [D2Eintrep]
+  // handle the case of message recv
   | D2Evar (d2var) => let
     val i0idsrc = i0transform_d2var (sa, i0env, tmap, d2var)
     val- Some0 (s3type) = s3typemap_find_d2var (tmap, d2var)

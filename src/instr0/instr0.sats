@@ -93,10 +93,10 @@ fun stamp_allocate (allocator: stamp_allocator): stamp
 (* ************ ************** *)
 
 datatype i0id_cat =
-| I0ID_gvar
-| I0ID_fname
-| I0ID_para
-| I0ID_other
+| I0ID_gvar  // global variable
+| I0ID_fname // function name
+| I0ID_para  // parameter
+| I0ID_other // other
 
 (* ************ ************** *)
 
