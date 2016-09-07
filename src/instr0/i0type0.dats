@@ -102,6 +102,7 @@ in
 end
 | S3TYPEvar s2var => exitlocmsg ("This should not happen.\n")
 | S3TYPEpoly (s2varlst, s3type) => TYPE0ignored ()
+| S3TYPEwthtype (s3type, wths3typelst) => type0_translate (s3type)
 | S3TYPEignored () => exitlocmsg ("Check this.\n")
 end
 

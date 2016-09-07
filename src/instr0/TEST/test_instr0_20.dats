@@ -15,18 +15,18 @@ datatype message =
 | MIDDLE
 
 
-extern fun {a:t@ype} recv (ch: int): a
+extern fun recv {a:t@ype} (ch: int): a
 
 fun inline$foo (ch: int): void = let
   val x = 1
 in
   case+ RANDOM of
   | 0 => let
-    val- START (x)  = recv<message> (ch)
+    val- START (x)  = recv{message} (ch)
     val () = $extfcall (void, "printf", "x is %d\\n", x)
   in end
   | 1 => let
-    val- END (x, y) = recv<message> (ch)
+    val- END (x, y) = recv{message} (ch)
     val () = $extfcall (void, "printf", "y is %d\\n", y)
   in end
   | _ => let
