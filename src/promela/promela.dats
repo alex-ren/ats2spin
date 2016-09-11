@@ -530,7 +530,7 @@ in
     )
   | None0 () => if i0id_is_run (i0id) then let
     val- i0exp :: nil0 = i0explst
-    val- EXP0lambody (proc_call) = i0exp
+    val proc_call = i0exp
     val- EXP0app (proc_id, proc_arglst) = proc_call
     val- Some0 proc_name = pml_name_make_proctype (proc_id)
     val pml_anyexplst = pmltransform_i0explst2pml_anyexplst (proc_arglst)

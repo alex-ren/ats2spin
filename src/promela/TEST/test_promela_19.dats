@@ -148,7 +148,7 @@ chanpos1_grant
 (* ****** ****** *)
 
 fun pml$init (): void = let
-  val _ = pml$run (lam () =>  proctype$foo ())
-  val _ = pml$run (lam () =>  proctype$foo2 ())
+  val _ = pml$run (proctype$foo ())
+  val _ = pml$run (proctype$foo2 ())
 in end
 

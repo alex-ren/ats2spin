@@ -222,6 +222,15 @@ depend:: ; $(PATSOPT) --output-a .depend --depgen -d $(ATS2PROMELA_dyn)
 
 ######
 
+promela/TEST/test_promela_%: promela/TEST/test_promela_%_dats.json
+	./ats2promela $< > $(patsubst %.json, %.pml, $<)
+	cat $(patsubst %.json, %.pml, $<)
+	spin -u1000 $(patsubst %.json, %.pml, $<)
+
+promela/TEST/debug_promela_%: promela/TEST/test_promela_%_dats.json
+	./ats2promela $< --debug
+#	cat $(patsubst %.json, %.pml, $<)
+
 test_%: TEST/test_%_dats.json
 	./ats2promela $< > $(patsubst %.json, %.pml, $<)
 	cat $(patsubst %.json, %.pml, $<)
@@ -231,29 +240,30 @@ debug_%: TEST/test_%_dats.json
 	./ats2promela $< --debug
 #	cat $(patsubst %.json, %.pml, $<)
 
+
 # ######
 #
 testall:: all
 #
 testall:: ; $(MAKE) -C TEST
 #
-testall:: test_pml_01
-testall:: test_pml_02
-testall:: test_pml_03
-testall:: test_pml_04
-testall:: test_pml_05
-testall:: test_pml_06
-testall:: test_pml_07
-testall:: test_pml_08
-testall:: test_pml_09
-testall:: test_pml_10
-testall:: test_pml_11
-testall:: test_pml_12
-testall:: test_pml_13
-testall:: test_pml_14
-testall:: test_pml_15
-testall:: test_pml_16
-testall:: test_pml_17
+testall:: promela/TEST/test_promela_01
+testall:: promela/TEST/test_promela_02
+testall:: promela/TEST/test_promela_03
+testall:: promela/TEST/test_promela_04
+testall:: promela/TEST/test_promela_05
+testall:: promela/TEST/test_promela_06
+testall:: promela/TEST/test_promela_07
+testall:: promela/TEST/test_promela_08
+testall:: promela/TEST/test_promela_09
+testall:: promela/TEST/test_promela_10
+testall:: promela/TEST/test_promela_11
+testall:: promela/TEST/test_promela_12
+testall:: promela/TEST/test_promela_13
+testall:: promela/TEST/test_promela_14
+testall:: promela/TEST/test_promela_15
+testall:: promela/TEST/test_promela_16
+testall:: promela/TEST/test_promela_17
 	
 testall:: test_example_01_peterson
 

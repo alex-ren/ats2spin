@@ -109,8 +109,8 @@ end  // end of [proctype$proc]
 (* ****** ****** *)
 
 fun pml$init (): void = let
-  val pid1 = pml$run (lam () => proctype$proc ())
-  val pid2 = pml$run (lam () => proctype$proc ())
+  val pid1 = pml$run (proctype$proc ())
+  val pid2 = pml$run (proctype$proc ())
 in end
 
 (* end of [Peterson.dats] *)
