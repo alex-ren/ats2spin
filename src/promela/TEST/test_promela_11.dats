@@ -29,7 +29,8 @@ fun proctype$foo1 (x: int): void = let
 in end
 
 fun proctype$foo2 (): void = let
-  val () = pml$wait_until (lam () => g_get () > 0)
+  val x = 3
+  val () = pml$wait_until (lam () => x + g_get () > 0)
   val () = $extfcall (void, "printf", "g is %d in foo2", g_get())
 in end
 
