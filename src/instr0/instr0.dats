@@ -358,7 +358,7 @@ implement i0transform_p2at2holder (sa, i0env, tmap, p2at) = let
   //   "======== i0transform_p2at2holder: ", p2at.p2at_loc, "\n")
 in
 case+ p2at.p2at_node of
-| P2Tany () => None0 ()
+| P2Tany () => Some0 (i0id_make_any ())
 | P2Tvar (d2var) => Some0 (i0transform_d2var (sa, i0env, tmap, d2var))
 | P2Tempty () => None0 ()
 | P2Tann (p2at, s2exp) => i0transform_p2at2holder (sa, i0env, tmap, p2at)

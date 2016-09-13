@@ -324,17 +324,30 @@ case+ i0inslst of
       end
       )
     else case+ i0exp_opt of
-    | Some0 (i0exp_name) => let  // handle normal expression
-      // Currently, the left hand side must be a name.
-      val- EXP0var (i0id) = i0exp_name  
-      val pml_name = pmltransform_i0id (i0id)
-      val pml_varref = PMLVARREF (pml_name, None0, None0)
-      val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
-      val pml_stmnt = PMLSTMNT_assign (pml_varref, pml_anyexp)
-      val pml_step = PMLSTEP_stmnt pml_stmnt
-    in
-      loop (i0inslst, pml_step :: res)
-    end
+    | Some0 (i0exp_name) => 
+    ( case+ i0exp_name of
+      | EXP0var (i0id) => let  // handle normal expression
+        // Currently, the left hand side must be a name.
+        val- EXP0var (i0id) = i0exp_name  
+        val pml_name = pmltransform_i0id (i0id)
+        val pml_varref = PMLVARREF (pml_name, None0, None0)
+        val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
+        val pml_stmnt = PMLSTMNT_assign (pml_varref, pml_anyexp)
+        val pml_step = PMLSTEP_stmnt pml_stmnt
+      in
+        loop (i0inslst, pml_step :: res)
+      end
+      | EXP0any () => let
+        val pml_varref = PMLVARREF (pml_name_any, None0, None0)
+        val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
+        val pml_stmnt = PMLSTMNT_assign (pml_varref, pml_anyexp)
+        val pml_step = PMLSTEP_stmnt pml_stmnt
+      in
+        loop (i0inslst, pml_step :: res)
+      end
+      | _ => exitlocmsg (
+        datcon_i0exp (i0exp_name) + " cannot be used as left-value.\n")
+    )
     | None0 () => let // hande normal function call without return value
       val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
       val pml_exp = PMLEXP_anyexp (pml_anyexp)
@@ -501,6 +514,7 @@ case+ i0exp of
 | EXP0string (str) => PMLANYEXP_string (str)
 | EXP0var (i0id) => 
       PMLANYEXP_varref (pml_varref_make (pmltransform_i0id (i0id)))
+| EXP0any () => exitlocmsg ("This should not happen.\n")
 | EXP0app (i0id, i0explst) => let
   val opr_opt = pmltransform_i0id2operator (i0id)
 in

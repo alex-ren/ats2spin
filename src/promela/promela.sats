@@ -18,6 +18,7 @@ staload "./../postiats/postiats.sats"
 *)
 
 (* ********** ************ *)
+#define PML_NAME_FOR_ANY "_"
 #define PML_NAME_FOR_CTOR "tag"
 
 (* ********** ************ *)
@@ -25,6 +26,7 @@ staload "./../postiats/postiats.sats"
 abstype pml_name = ptr
 
 val pml_name_tag: pml_name
+val pml_name_any: pml_name
 
 fun fprint_pml_name : (FILEref, pml_name) -> void
 overload fprint with fprint_pml_name

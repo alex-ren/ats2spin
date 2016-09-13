@@ -109,14 +109,18 @@ datatype i0id_cat =
 
 abstype i0id = ptr
 
+fun i0id_make_any (): i0id
 fun i0id_make_sym (i0name): i0id
 fun i0id_make_cst (i0name, stamp, option0 string, type0): i0id
 fun i0id_make_var (i0name, stamp, type0): i0id
 fun i0id_make_con (i0name, stamp, type0): i0id
+
+fun i0id_is_any (i0id): bool
 fun i0id_is_sym (i0id): bool
 fun i0id_is_cst (i0id): bool
 fun i0id_is_var (i0id): bool
 fun i0id_is_con (i0id): bool
+
 fun i0id_get_name (i0id):<fun> i0name
 fun i0id_get_stamp (i0id):<fun> stamp
 fun i0id_get_type (i0id):<fun> type0
@@ -202,6 +206,7 @@ and i0exp =
 | EXP0i0nt of (string)
 | EXP0string of (string)
 | EXP0var of (i0id)
+| EXP0any of ()
 | EXP0app of (i0id, i0explst)
 | EXP0extfcall of (string, i0explst)
 | EXP0lambody of (i0exp)

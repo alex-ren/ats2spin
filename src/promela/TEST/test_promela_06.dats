@@ -14,7 +14,7 @@ in
 end
 
 fun pml$init (): void = let
-  val _  = inline$foo (2)
+  val ()  = inline$foo (2)
   val ()  = inline$foo (2)
 in 
 end

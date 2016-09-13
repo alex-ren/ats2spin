@@ -10,6 +10,7 @@ staload "./../postiats/postiats.sats"
 staload "./../utils/emiter.sats"
 
 datatype i0id_t =
+| ID0any of () 
 | ID0sym of (i0name)  // , type0)
 | ID0cst of (i0name, stamp, option0 string (*extdef*), type0)
 | ID0con of (i0name, stamp, type0)
@@ -17,11 +18,14 @@ datatype i0id_t =
 
 assume i0id = i0id_t
 
+implement i0id_make_any () = ID0any ()
+
 implement i0id_make_sym (i0name) =
   ID0sym (i0name)
 
 implement i0id_is_sym (i0id) =
 case+ i0id of
+| ID0any () => false
 | ID0sym _ => true
 | ID0cst _ => false
 | ID0con _ => false
@@ -29,6 +33,7 @@ case+ i0id of
 
 implement i0id_is_cst (i0id) =
 case+ i0id of
+| ID0any () => false
 | ID0sym _ => false
 | ID0cst _ => true
 | ID0con _ => false
@@ -36,10 +41,20 @@ case+ i0id of
 
 implement i0id_is_var (i0id) =
 case+ i0id of
+| ID0any () => false
 | ID0sym _ => false
 | ID0cst _ => false
 | ID0con _ => false
 | ID0var _ => true
+
+
+implement i0id_is_any (i0id) =
+case+ i0id of
+| ID0any () => true
+| ID0sym _ => false
+| ID0cst _ => false
+| ID0con _ => false
+| ID0var _ => false
 
 implement i0id_make_cst (i0name, stamp, extdef_opt, type0) =
   ID0cst (i0name, stamp, extdef_opt, type0)
@@ -53,6 +68,7 @@ implement i0id_make_var (i0name, stamp, type0) =
 
 implement i0id_get_name (i0id) = 
 case+ i0id of
+| ID0any () => $effmask_all (exitlocmsg ("This should not happen.\n"))
 | ID0sym (i0name) => i0name
 | ID0cst (i0name, stamp, _, _) => i0name
 | ID0con (i0name, stamp, _) => i0name
@@ -60,6 +76,7 @@ case+ i0id of
 
 implement i0id_get_stamp (i0id) = 
 case+ i0id of
+| ID0any () => $effmask_all (exitlocmsg ("ID0any has not stamp.\n"))
 | ID0sym (i0name) => $effmask_all (exitlocmsg ("Symbol has no stamp.\n"))
 | ID0cst (i0name, stamp, _, _) => stamp
 | ID0con (i0name, stamp, _) => stamp
@@ -67,6 +84,7 @@ case+ i0id of
 
 implement i0id_get_type (i0id) = 
 case+ i0id of
+| ID0any () => $effmask_all (exitlocmsg ("ID0any has no type.\n"))
 | ID0sym (i0name) => $effmask_all (exitlocmsg ("Symbol has no type.\n"))
 | ID0cst (i0name, stamp, _, ty) => ty
 | ID0con (i0name, stamp, ty) => ty
@@ -102,6 +120,7 @@ end
 
 implement i0id_copy_remove_prefix_inline (i0id, sa) =
 case+ i0id of
+| ID0any () => i0id
 | ID0sym (i0name) => let
   val ni0name = i0name_copy_remove_prefix_inline (i0name)
   // val nstamp = stamp_allocate (sa)
@@ -124,6 +143,7 @@ end
 
 implement fprint_i0id (out, i0id) = 
 case+ i0id of
+| ID0any () => fprint (out, "id_any")
 | ID0sym (i0name) => fprint (out, i0name)
 | ID0cst (i0name, stamp, _, type0) => let
   val () = fprint (out, "(")
@@ -165,6 +185,7 @@ end
 
 implement tostring_i0id (id) = 
 case+ id of
+| ID0any () => "_"
 | ID0sym (i0name) => tostring_i0name (i0name)
 | ID0cst (i0name, stamp, extdef_opt, _) =>
   (
@@ -187,6 +208,7 @@ end
 
 implement tostring_i0id_name (id) = 
 case+ id of
+| ID0any () => tostring_i0id (id)
 | ID0sym (i0name) => tostring_i0name (i0name)
 | ID0cst (i0name, stamp, _, _) => tostring_i0name (i0name)
 | ID0con (i0name, stamp, _) => tostring_i0name (i0name)

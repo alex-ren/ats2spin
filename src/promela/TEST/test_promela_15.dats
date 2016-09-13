@@ -20,7 +20,7 @@ end
 fun pml$init (): void = let
   var x:int = 1
   val () = $extfcall (void, "printf", "old x is %d\\n", x)
-  val _  = inline$foo (4, x)
+  val ()  = inline$foo (4, x)
   val () = $extfcall (void, "printf", "new x is %d\\n", x)
 in 
 end

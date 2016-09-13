@@ -14,6 +14,9 @@ fun{}
 fprint_i0exp$EXP0var: $d2ctype(fprint_i0exp<>)
 extern
 fun{}
+fprint_i0exp$EXP0any: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
 fprint_i0exp$EXP0app: $d2ctype(fprint_i0exp<>)
 extern
 fun{}
@@ -36,6 +39,7 @@ case+ arg0 of
 | EXP0i0nt _ => fprint_i0exp$EXP0i0nt<>(out, arg0)
 | EXP0string _ => fprint_i0exp$EXP0string<>(out, arg0)
 | EXP0var _ => fprint_i0exp$EXP0var<>(out, arg0)
+| EXP0any _ => fprint_i0exp$EXP0any<>(out, arg0)
 | EXP0app _ => fprint_i0exp$EXP0app<>(out, arg0)
 | EXP0extfcall _ => fprint_i0exp$EXP0extfcall<>(out, arg0)
 | EXP0lambody _ => fprint_i0exp$EXP0lambody<>(out, arg0)
@@ -201,6 +205,32 @@ fprint_i0exp$EXP0var$rpar(out, _) = fprint_i0exp$rpar(out)
 implement{}
 fprint_i0exp$EXP0var$arg1(out, arg0) =
   let val-EXP0var(arg1) = arg0 in fprint_i0exp$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_i0exp$EXP0any$con: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0any$lpar: $d2ctype(fprint_i0exp<>)
+extern
+fun{}
+fprint_i0exp$EXP0any$rpar: $d2ctype(fprint_i0exp<>)
+//
+implement{}
+fprint_i0exp$EXP0any(out, arg0) = 
+{
+//
+val () = fprint_i0exp$EXP0any$con<>(out, arg0)
+val () = fprint_i0exp$EXP0any$lpar<>(out, arg0)
+val () = fprint_i0exp$EXP0any$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_i0exp$EXP0any$con(out, _) = fprint(out, "EXP0any")
+implement{}
+fprint_i0exp$EXP0any$lpar(out, _) = fprint_i0exp$lpar(out)
+implement{}
+fprint_i0exp$EXP0any$rpar(out, _) = fprint_i0exp$rpar(out)
 //
 extern
 fun{}
@@ -1367,6 +1397,7 @@ case+ arg0 of
 | EXP0i0nt _ => "EXP0i0nt"
 | EXP0string _ => "EXP0string"
 | EXP0var _ => "EXP0var"
+| EXP0any _ => "EXP0any"
 | EXP0app _ => "EXP0app"
 | EXP0extfcall _ => "EXP0extfcall"
 | EXP0lambody _ => "EXP0lambody"

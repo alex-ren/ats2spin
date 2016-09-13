@@ -26,6 +26,9 @@ implement pml_name_make (name, stamp, pml_type, extdef) =
  , pml_name_extdef = extdef
 }
 
+implement pml_name_any = pml_name_make (
+  PML_NAME_FOR_ANY, stamp_make (0), PMLTYPE_ignore, Some0 PML_NAME_FOR_ANY)
+
 implement pml_name_tag = pml_name_make (
   PML_NAME_FOR_CTOR, stamp_make (0), PMLTYPE_ignore, Some0 PML_NAME_FOR_CTOR)
 

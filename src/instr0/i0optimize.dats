@@ -177,6 +177,7 @@ else let
         | EXP0i0nt _ => ins
         | EXP0string _ => ins
         | EXP0var _ => ins
+        | EXP0any () => exitlocmsg ("This should not happen.")
         | EXP0extfcall _ => ins
         | EXP0lambody _ => exitlocmsg ("This should not happen.")
         | EXP0matchtag (_, _) => ins
@@ -330,6 +331,14 @@ implement i0optimize_collect_decs_fundef (i0fundef) = let
     (
     case+ i0ins of
     | INS0decl (i0id, i0expopt) =>
+      if i0id_is_any (i0id) then let  // handle val _ = xxx
+        val- Some0 i0exp = i0expopt
+        val ins_assign = INS0assign (Some0 (EXP0any ()),  i0exp)
+        val res2' = ins_assign :: res2
+      in
+        loop (i0inslst1, res1 (*no new INS0decl*), res2')
+      end
+      else
       (
       case+ i0expopt of
       | Some0 i0exp => let

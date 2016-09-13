@@ -32,6 +32,6 @@ end
 
 fun pml$init (): void = let
   val x = 1
-  val _  = inline$foo1 (x, 1)
+  val ()  = inline$foo1 (x, 1)
 in 
 end
