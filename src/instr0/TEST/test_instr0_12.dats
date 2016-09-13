@@ -17,6 +17,6 @@ in end
 fun pml$init (): void = let
   val () = $extfcall (void
             , "printf", "pid is %d in init", pml$mypid ())
-  val pid1 = pml$run (lam () => proctype$foo1 (1))
+  val pid1 = pml$run (proctype$foo1 (1))
 in end
 

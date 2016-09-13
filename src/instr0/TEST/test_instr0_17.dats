@@ -31,6 +31,6 @@ end
 fun proctype$foo (): void = inline$foo ()
 
 fun pml$init (): void = let
-  val _ = pml$run (lam () =>  proctype$foo ())
+  val _ = pml$run (proctype$foo ())
 in end
 

@@ -34,8 +34,8 @@ fun proctype$foo2 (): void = let
 in end
 
 fun pml$init (): void = let
-  val pid1 = pml$run (lam () => proctype$foo1 (1))
-  val pid2 = pml$run (lam () => proctype$foo2 ())
+  val pid1 = pml$run (proctype$foo1 (1))
+  val pid2 = pml$run (proctype$foo2 ())
 in end
 
 
