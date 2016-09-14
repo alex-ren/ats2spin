@@ -246,6 +246,9 @@ debug_%: TEST/test_%_dats.json
 testall:: all
 #
 testall:: ; $(MAKE) -C TEST
+testall:: ; $(MAKE) -C postiats testall
+testall:: ; $(MAKE) -C simpletypes testall
+# testall:: ; $(MAKE) -C instr0 testall
 #
 testall:: promela/TEST/test_promela_01
 testall:: promela/TEST/test_promela_02

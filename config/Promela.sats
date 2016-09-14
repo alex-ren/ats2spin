@@ -47,17 +47,18 @@ pml$assert{b:bool}(bool(b)): [b==true] void = "ext#assert"
 //
 (* ****** ****** *)
 //
-#define RANDOM 0
+#define pml$random 0
+#define pml$else _ 
 
 (* ****** ****** *)
 
 sortdef gname = int
 
 fun
-pml$wait_until(() -> bool): void
+pml$wait_until {b: bool} (() -> bool b): [b == true] void
 
 fun
-pml$wait_unless(() -> bool): void
+pml$wait_unless {b: bool} (() -> bool b): [b == true] void
 
 fun
 pml$run (void): pid
