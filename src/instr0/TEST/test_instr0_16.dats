@@ -18,10 +18,11 @@ in
     val () = $extfcall (void, "printf", "this is branch 1\\n")
   in end
   | 1 => let
-    val () = pml$wait_until (lam () => true)
+    val y = 3
     val () = $extfcall (void, "printf", "this is branch 2\\n")
   in end
   | _ => let
+    val () = pml$wait_until (lam () => true)
     val () = $extfcall (void, "printf", "this is branch else\\n")
   in end
 end

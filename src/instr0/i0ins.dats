@@ -19,7 +19,7 @@ in
 
 implement fprint_i0gbranch (out, gb) = let
   val () = fprint (out, "i0gbranch (")
-  val () = myfprint_i0exp (out, gb.i0gbranch_guard)
+  val () = myfprint_i0ins (out, gb.i0gbranch_guard)
   val () = fprint (out, ",\n")
 
   // fprint is overloaded with fprint_list0_sep.

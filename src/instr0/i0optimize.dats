@@ -374,10 +374,21 @@ implement i0optimize_collect_decs_fundef (i0fundef) = let
           i0gbranchlst, fopr, '(res1, nil0 ())) where {
       fun fopr (i0gbranch: i0gbranch
                 , '(res1, res2): accu_t):<cloref1> accu_t = let
-        val (res1', inss_in_branch) = loop (i0gbranch.i0gbranch_inss, res1, nil0)
-        val i0gbranch' = i0gbranch_make (i0gbranch.i0gbranch_guard, inss_in_branch)
+
+        // Turn one ins into list
+        val guard_inss0 = cons0 (i0gbranch.i0gbranch_guard, nil0 ())
+        // Add decl if necessary
+        val (res1', guard_inss1) = loop (guard_inss0, res1, nil0)
+        // Shall have only one ins
+        val- cons0 (guard_new, nil0 ()) = guard_inss1
+
+
+        val (res1'', inss_in_branch) = 
+          loop (i0gbranch.i0gbranch_inss, res1', nil0)
+
+        val i0gbranch' = i0gbranch_make (guard_new, inss_in_branch)
       in
-        '(res1', cons0 (i0gbranch', res2))
+        '(res1'', cons0 (i0gbranch', res2))
       end
       }
     in

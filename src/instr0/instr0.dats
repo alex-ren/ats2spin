@@ -73,8 +73,8 @@ implement i0transform_env_get_aliasmap (i0env) =
 
 (* ********** ************ *)
 
-implement i0gbranch_make (i0exp, i0inslst) =
-'{ i0gbranch_guard = i0exp
+implement i0gbranch_make (i0ins, i0inslst) =
+'{ i0gbranch_guard = i0ins
  , i0gbranch_inss = i0inslst
 }
 
@@ -450,16 +450,19 @@ in
   | D2Eintrep (intrep) => let
     implement 
     list_foldright$fopr<c2lau><'(
-      i0declst, i0gbranchlst, option0 i0inslst)> (c2lau, res) = let
+      i0declst
+      , i0gbranchlst
+      , option0 i0inslst(*else branch*))> (c2lau, res) = let
       val- list_cons (pat, list_nil ()) = c2lau.c2lau_patlst
       val d2exp = c2lau.c2lau_body
-      // must be a "let" expression
+      // The branch of a case expression must be a "let" expression.
       val- D2Elet (d2eclist, d2exp) = d2exp.d2exp_node
     in
       case+ pat.p2at_node of
       // else branch
       | P2Tany () => let
-        val (i0declst1, inss1) = i0transform_d2eclist (sa, i0env, d2eclist, tmap, fmap)
+        val- cons (_, d2eclist1) = d2eclist  // The first step is omitted.
+        val (i0declst1, inss1) = i0transform_d2eclist (sa, i0env, d2eclist1, tmap, fmap)
         val (i0declst2, inss2) = i0transform_d2exp_fbody (sa, i0env, d2exp, tmap, fmap)
         val i0declst = list0_append (i0declst1, i0declst2)
         val inss = list0_append (inss1, inss2)
@@ -468,15 +471,12 @@ in
         '(res_i0declst, res.1, Some0 inss)
       end
       | _ => let
-        // The first dec must be guard
+        // The first dec is used as guard
         val- cons (d2ec, d2eclst1) = d2eclist
-        // turn d2ec into i0exp
-        val- D2Cvaldecs (
-          valkind, list_cons (v2aldec, list_nil ())) = d2ec.d2ecl_node
-        val i0exp = i0transform_v2aldec2guardexp (sa, i0env, tmap, v2aldec)
-  
-        // val inss = i0transform_D2Cvaldecs (sa, v2aldeclst)
-  
+
+        // turn d2ec into guard, which is just an i0ins
+        val (y, i0inss) = i0transform_d2ecl (sa, i0env, d2ec, tmap, fmap)
+        val- cons0 (i0ins, nil0 ()) = i0inss
   
         val (i0declst1, inss1) = 
           i0transform_d2eclist (sa, i0env, d2eclst1, tmap, fmap)
@@ -486,7 +486,7 @@ in
         val inss = list0_append (inss1, inss2)
   
         val res_i0declst = list0_append (i0declst, res.0)
-        val gbranch = i0gbranch_make (i0exp, inss)
+        val gbranch = i0gbranch_make (i0ins, inss)
         val res_gbranchlst = gbranch :: res.1
       in
         '(res_i0declst, res_gbranchlst, res.2)
@@ -531,6 +531,7 @@ in
       | P2Tcon (d2con, npf, p2atlst) => let
         val i0id_d2con = i0transform_d2con (sa, tmap, d2con)
         val i0exp = EXP0matchtag (i0idsrc, i0id_d2con)
+        val i0ins = INS0assign (None0 (), i0exp)
   
 // type0ctor = '(d2con (*constructor*), list0 ('(int (*mapped position*), type0)))
 // 
@@ -559,7 +560,8 @@ in
 // }
           val- P2Tvar (d2var) = p2at1.p2at_node
           val i0id = i0transform_d2var (sa, i0env, tmap, d2var)
-          val aliasinfo = i0aliasinfo_create (i0id, i0idsrc, pos1.0)
+          val aliasinfo = i0aliasinfo_create (
+                            i0id, i0idsrc(*message name*), pos1.0)
           val () = i0aliasinfo_insert (aliasmap, i0id, aliasinfo)
         in end
         | (list_nil (), nil0 ()) => ()
@@ -570,7 +572,7 @@ in
           i0transform_d2exp_fbody (sa, i0env, d2exp, tmap, fmap)
   
         val res_i0declst = list0_append (i0declst, res.0)
-        val gbranch = i0gbranch_make (i0exp, inss)
+        val gbranch = i0gbranch_make (i0ins, inss)
         val res_gbranchlst = gbranch :: res.1
       in
         '(res_i0declst, res_gbranchlst, res.2)

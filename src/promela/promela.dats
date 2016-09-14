@@ -435,10 +435,12 @@ INS0init_loop is replaced by dec and assign")
       val branches = list0_foldright<i0gbranch><pml_options> (
           i0gbranchlst, fopr, nil0) where {
       fun fopr (i0gbranch: i0gbranch, res: pml_options):<cloref1> pml_options = let
-        val guard_anyexp = 
-          pmltransform_i0exp2pml_anyexp (i0gbranch.i0gbranch_guard)
-        val guard_exp = PMLEXP_anyexp (guard_anyexp)
-        val guard_step = PMLSTEP_stmnt (PMLSTMNT_exp (guard_exp))
+
+        // translate guard to a step
+        val guard_inss = 
+          pmltransform_i0inslst (is_inline
+                                 , list0_cons (i0gbranch.i0gbranch_guard, nil0))
+        val- cons0 (guard_step, nil0 ()) = guard_inss
 
         val pml_inss = pmltransform_i0inslst (is_inline, i0gbranch.i0gbranch_inss)
         val pml_inss = guard_step :: pml_inss
@@ -451,6 +453,7 @@ INS0init_loop is replaced by dec and assign")
     in
       case+ inssopt of
       | Some0 inss_else => let
+        val () = fprintln! (stderr_ref, "ccccccccccccccccccccccccccccccccc\n")
         val else_step = PMLSTEP_stmnt (PMLSTMNT_else)
         val pml_inss_else = pmltransform_i0inslst (is_inline, inss_else)
         val pml_inss_else = else_step :: pml_inss_else
@@ -509,7 +512,11 @@ end
 
 implement pmltransform_i0exp2pml_anyexp (i0exp) =
 case+ i0exp of
-| EXP0int (i) => exitlocmsg ("not supported")  // PMLANYEXP_const (PMLATOM_int (i))
+| EXP0int (i) => let
+   val () = fprintln! (stderr_ref, "begin r is =====", i)
+in
+  exitlocmsg ("not supported")  // PMLANYEXP_const (PMLATOM_int (i))
+end
 | EXP0i0nt (i_str) => PMLANYEXP_const (PMLATOM_i0nt (i_str))
 | EXP0string (str) => PMLANYEXP_string (str)
 | EXP0var (i0id) => 

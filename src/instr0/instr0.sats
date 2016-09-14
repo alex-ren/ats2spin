@@ -220,7 +220,7 @@ and
 i0explst = list0 i0exp
 and
 i0gbranch = '{
-  i0gbranch_guard = i0exp
+  i0gbranch_guard = i0ins
   , i0gbranch_inss = i0inslst
 }
 and
@@ -230,7 +230,7 @@ i0gbranchlst = list0 i0gbranch
 
 fun fprint_i0gbranch (FILEref, i0gbranch): void
 
-fun i0gbranch_make (i0exp, i0inslst): i0gbranch
+fun i0gbranch_make (i0ins, i0inslst): i0gbranch
 
 fun{} fprint_i0exp : (FILEref, i0exp) -> void // a function template
 fun{} fprint_i0ins : (FILEref, i0ins) -> void // a function template
@@ -354,10 +354,13 @@ fun stamp_get_from_d2con (
 (* ************ ************* *)
 
 abstype i0aliasmap = ptr
+
+// E.g. case m of | START (x, y) => 
+// Then x = m.1
 typedef i0aliasinfo =
-'{ i0aliasinfo_i0id = i0id
- , i0aliasinfo_src = i0id
- , i0aliasinfo_member = int
+'{ i0aliasinfo_i0id = i0id  // name in code (x)
+ , i0aliasinfo_src = i0id   // name of the message (m)
+ , i0aliasinfo_member = int  // e.g. (1)
 }
 
 fun i0aliasinfo_create (i0id: i0id, src: i0id, member: int): i0aliasinfo
