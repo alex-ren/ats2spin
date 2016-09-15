@@ -10,7 +10,7 @@ staload "./Promela.sats"
 fun inline$foo (): void = let
   val x = 1
 in
-  case+ RANDOM of
+  case+ pml$random of
   | 0 => let
     val () = pml$wait_until (lam () => true)
     val () = $extfcall (void, "printf", "this is branch 1\\n")
@@ -24,6 +24,7 @@ in
     inline$foo ()
   end
   | _ => let
+    val () = pml$wait_until (lam () => false)
     val () = $extfcall (void, "printf", "this is branch end\\n")
   in end
 end

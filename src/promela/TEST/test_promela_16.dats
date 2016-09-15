@@ -21,7 +21,7 @@ in
     val y = 3
     val () = $extfcall (void, "printf", "this is branch 2\\n")
   in end
-  | pml$else => let
+  | _ => let
     val () = pml$wait_until (lam () => true)
     val () = $extfcall (void, "printf", "this is branch else\\n")
   in end

@@ -48,7 +48,6 @@ pml$assert{b:bool}(bool(b)): [b==true] void = "ext#assert"
 (* ****** ****** *)
 //
 #define pml$random 0
-#define pml$else _ 
 
 (* ****** ****** *)
 

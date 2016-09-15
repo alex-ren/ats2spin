@@ -453,7 +453,6 @@ INS0init_loop is replaced by dec and assign")
     in
       case+ inssopt of
       | Some0 inss_else => let
-        val () = fprintln! (stderr_ref, "ccccccccccccccccccccccccccccccccc\n")
         val else_step = PMLSTEP_stmnt (PMLSTMNT_else)
         val pml_inss_else = pmltransform_i0inslst (is_inline, inss_else)
         val pml_inss_else = else_step :: pml_inss_else
