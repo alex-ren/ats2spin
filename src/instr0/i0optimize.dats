@@ -13,8 +13,13 @@ staload "./instr0.sats"
 
 (* ************ ************* *)
 
-fun i0optimize_i0prog_on_i0fundef (i0prog: i0prog, fopr: i0fundef -<cloref1> i0fundef): i0prog = let
-  val i0funmap = i0prog.i0prog_i0funmap
+// This function is used for both i0optimize_tailcall and
+// i0optimize_collect_decs.
+fun i0optimize_i0prog_on_i0fundef (
+  i0prog: i0prog
+  , fopr: i0fundef -<cloref1> i0fundef
+  ): i0prog = let
+  // val i0funmap = i0prog.i0prog_i0funmap
 
   // create a new map to hold newly generated functions
   val fmap = i0funmap_create (i2sz(2048))
@@ -49,11 +54,12 @@ fun i0optimize_i0prog_on_i0fundef (i0prog: i0prog, fopr: i0fundef -<cloref1> i0f
   }
 in
   i0prog1
-end  // end of [i0optimize_tailcall]
+end  // end of [i0optimize_i0prog_on_i0fundef]
 
 implement i0optimize_tailcall (sa, i0prog) = let
   val i0funmap = i0prog.i0prog_i0funmap
-  fun fopr (i0fundef: i0fundef):<cloref1> i0fundef = i0optimize_tailcall_fundef (sa, i0fundef, i0funmap)
+  fun fopr (i0fundef: i0fundef):<cloref1> i0fundef = 
+    i0optimize_tailcall_fundef (sa, i0fundef, i0funmap)
 in
   i0optimize_i0prog_on_i0fundef (i0prog, fopr)
 end
@@ -148,7 +154,8 @@ else let
   (* ****************** ************** *)
   fun optimize_tailcall_return2jump (
     inss: i0inslst
-    , map_fname_tag: i0idmap
+    // mapping function name to corresponding tag (for jump)
+    , map_fname_tag: i0idmap  
     , i0funmap: i0funmap
   ): i0inslst = let
 
@@ -181,42 +188,42 @@ else let
         | EXP0extfcall _ => ins
         | EXP0lambody _ => exitlocmsg ("This should not happen.")
         | EXP0matchtag (_, _) => ins
-        | EXP0app (i0id, i0explst) => let
-          val tag_id_opt = i0idmap_search (map_fname_tag, i0id)
+        | EXP0app (fnameid, i0explst) => let
+          val tag_id_opt = i0idmap_search (map_fname_tag, fnameid)
         in
           case+ tag_id_opt of
-          | ~Some_vt (tag_id) => let
-            val i0fundef = i0funmap_search0 (i0funmap, i0id)
+          | ~Some_vt (tag_id) => let  // jump to tag_id
+            val i0fundef = i0funmap_search0 (i0funmap, fnameid)
             val paralst = i0fundef_get_paralst (i0fundef)
 
-            val para_pair_lst = list0_foldleft<i0id><list0 para_old_new> (
-                              paralst, list0_nil, fopr) where {
-              val () = $tempenver(sa)  // Handling a bug for ATS.
-              fun fopr (res: list0 para_old_new
-                  , i0id: i0id):<cloref1> list0 para_old_new = let
-                val new_i0id = i0id_copy (i0id, sa)
-                val res = list0_cons (@(i0id, new_i0id), res)
-              in
-                res
-              end
-            }
-            val para_pair_lst = list0_reverse (para_pair_lst)
-
-            val (calc_exp_lst, assign_lst) = loop (i0explst, para_pair_lst) where {
+            val (calc_exp_lst, assign_lst) = loop (i0explst, paralst) where {
             fun loop (
               i0explst: i0explst
-              , para_pair_lst: list0 para_old_new)
+              , paralst: i0idlst)
             : (i0inslst(*calc exp*), i0inslst (*assign var*)) = 
-            case+ (i0explst, para_pair_lst) of
-            | ((i0exp :: i0explst1), (para_pair :: para_pair_lst1)) => let
-              val (inss1, inss2) = loop (i0explst1, para_pair_lst1)
-              val ins1 = INS0decl (para_pair.1, Some0 i0exp)
-              val ins2 = INS0assign (Some0 (EXP0var para_pair.0), EXP0var (para_pair.1))
-              val inss1 = ins1 :: inss1
-              val inss2 = ins2 :: inss2
-            in (inss1, inss2) end
-            | (nil (), nil ()) => (nil (), nil ())
-            | (_, _) => exitlocmsg ("This shall not happen")
+            case+ (i0explst, paralst) of
+            | ((i0exp :: i0explst1), (para :: paralst1)) => let
+              val type0 = i0id_get_type (para)
+            in
+              if type0_is_ref (type0) then let
+                val- EXP0var (arg) = i0exp
+              in
+                // no need to do anything for parameters of reference types
+                if (arg = para) then loop (i0explst1, paralst1)
+                else exitlocmsg ("parameter of reference type misused\n")
+              end
+              else let
+                val (inss1, inss2) = loop (i0explst1, paralst1)
+                // create new temporary variables for computation result
+                val new_i0id = i0id_copy (para, sa) 
+                val ins1 = INS0decl (new_i0id, Some0 i0exp)
+                val ins2 = INS0assign (Some0 (EXP0var para), EXP0var (new_i0id))
+                val inss1 = ins1 :: inss1
+                val inss2 = ins2 :: inss2
+              in (inss1, inss2) end
+            end
+              | (nil (), nil ()) => (nil (), nil ())
+              | (_, _) => exitlocmsg ("This shall not happen")
             }
             
             val ins = INS0tail_jump (list0_append (calc_exp_lst, assign_lst), tag_id)

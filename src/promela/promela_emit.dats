@@ -335,6 +335,8 @@ end
   => emit_pml_varref (pml_varref)
 | PMLANYEXP_const pml_atom
   => emit_pml_atom (pml_atom)
+| PMLANYEXP_skip ()
+  => emit_text ("skip")
 | PMLANYEXP_fcall (name, pml_anyexplst) => 
     emit_pml_anyexp_fcall (name, pml_anyexplst)
 | PMLANYEXP_string (str) => emit_text ("\"" + str + "\"")

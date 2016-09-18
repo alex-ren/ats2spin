@@ -229,6 +229,30 @@ implement pmltransform_inline (pml_name, i0fundef) = let
   val inss = i0fundef_get_instructions (i0fundef)
   val pml_steplst = pmltransform_i0inslst (true, inss)
 
+  fun fopr (res: bool, i0id: i0id):<cloref1> bool = let
+    val type0 = i0id_get_type (i0id)
+  in
+    if type0_is_ref (type0) then res
+    else false
+  end
+
+  val pml_steplst = // This is for a bug in PROMELA
+    // Add a "skip" if the first line in an inline procedure
+    // is a label. Otherwise SPIN reports:
+    // =====> instead of  "{ Label: statement ... }"
+    // =====> always use  "Label: { statement ... }"
+    if (i0fundef_is_recursive (i0fundef) &&
+          // true when there is no para whose type is not reference type
+          list0_foldleft<i0id><bool> (i0idlst, true, fopr)
+    ) then let
+      val exp = PMLEXP_anyexp (PMLANYEXP_skip ())
+      val stmnt = PMLSTMNT_exp (exp)
+      val step = PMLSTEP_stmnt (stmnt)
+    in
+      cons0 (step, pml_steplst)
+    end
+    else  pml_steplst
+
   val inline = pml_inline_make (pml_name, pml_namelst, pml_steplst)
 in
   PMLMODULE_inline (inline)

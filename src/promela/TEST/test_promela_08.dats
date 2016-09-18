@@ -35,6 +35,10 @@ end
 fun pml$init (): void = let
   val x = 1
   val ()  = inline$foo (x, 2)
+
+  var x: int = 0
+  var y: int = 0
+  val ()  = inline$foo1 (x, y)
 in 
 end
 

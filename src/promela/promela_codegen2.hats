@@ -365,6 +365,9 @@ fun{}
 fprint_pml_anyexp$PMLANYEXP_const: $d2ctype(fprint_pml_anyexp<>)
 extern
 fun{}
+fprint_pml_anyexp$PMLANYEXP_skip: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
 fprint_pml_anyexp$PMLANYEXP_fcall: $d2ctype(fprint_pml_anyexp<>)
 extern
 fun{}
@@ -388,6 +391,7 @@ case+ arg0 of
 | PMLANYEXP_select _ => fprint_pml_anyexp$PMLANYEXP_select<>(out, arg0)
 | PMLANYEXP_varref _ => fprint_pml_anyexp$PMLANYEXP_varref<>(out, arg0)
 | PMLANYEXP_const _ => fprint_pml_anyexp$PMLANYEXP_const<>(out, arg0)
+| PMLANYEXP_skip _ => fprint_pml_anyexp$PMLANYEXP_skip<>(out, arg0)
 | PMLANYEXP_fcall _ => fprint_pml_anyexp$PMLANYEXP_fcall<>(out, arg0)
 | PMLANYEXP_string _ => fprint_pml_anyexp$PMLANYEXP_string<>(out, arg0)
 | PMLANYEXP_run _ => fprint_pml_anyexp$PMLANYEXP_run<>(out, arg0)
@@ -651,6 +655,32 @@ fprint_pml_anyexp$PMLANYEXP_const$rpar(out, _) = fprint_pml_anyexp$rpar(out)
 implement{}
 fprint_pml_anyexp$PMLANYEXP_const$arg1(out, arg0) =
   let val-PMLANYEXP_const(arg1) = arg0 in fprint_pml_anyexp$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_skip$con: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_skip$lpar: $d2ctype(fprint_pml_anyexp<>)
+extern
+fun{}
+fprint_pml_anyexp$PMLANYEXP_skip$rpar: $d2ctype(fprint_pml_anyexp<>)
+//
+implement{}
+fprint_pml_anyexp$PMLANYEXP_skip(out, arg0) = 
+{
+//
+val () = fprint_pml_anyexp$PMLANYEXP_skip$con<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_skip$lpar<>(out, arg0)
+val () = fprint_pml_anyexp$PMLANYEXP_skip$rpar<>(out, arg0)
+//
+}
+implement{}
+fprint_pml_anyexp$PMLANYEXP_skip$con(out, _) = fprint(out, "PMLANYEXP_skip")
+implement{}
+fprint_pml_anyexp$PMLANYEXP_skip$lpar(out, _) = fprint_pml_anyexp$lpar(out)
+implement{}
+fprint_pml_anyexp$PMLANYEXP_skip$rpar(out, _) = fprint_pml_anyexp$rpar(out)
 //
 extern
 fun{}
@@ -2329,6 +2359,7 @@ case+ arg0 of
 | PMLANYEXP_select _ => "PMLANYEXP_select"
 | PMLANYEXP_varref _ => "PMLANYEXP_varref"
 | PMLANYEXP_const _ => "PMLANYEXP_const"
+| PMLANYEXP_skip _ => "PMLANYEXP_skip"
 | PMLANYEXP_fcall _ => "PMLANYEXP_fcall"
 | PMLANYEXP_string _ => "PMLANYEXP_string"
 | PMLANYEXP_run _ => "PMLANYEXP_run"

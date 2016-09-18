@@ -120,6 +120,7 @@ datatype pml_anyexp =
 // | PMLANYEXP_recv_poll
 | PMLANYEXP_varref of pml_varref  // e.g. arr[2]
 | PMLANYEXP_const of pml_atom
+| PMLANYEXP_skip of ()
 | PMLANYEXP_fcall of (string, pml_anyexplst)
 // used as argument for fcall
 | PMLANYEXP_string of (string)
