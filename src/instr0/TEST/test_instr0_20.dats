@@ -20,7 +20,7 @@ extern fun recv {a:t@ype} (ch: int): a
 fun inline$foo (ch: int): void = let
   val x = 1
 in
-  case+ RANDOM of
+  case+ pml$random of
   | 0 => let
     val- START (x)  = recv{message} (ch)
     val () = $extfcall (void, "printf", "x is %d\\n", x)
