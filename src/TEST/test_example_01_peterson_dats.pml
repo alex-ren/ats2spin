@@ -43,8 +43,8 @@ inline loop_7(i_25, j_24) {
   pid i_8;
   pid j_9;
   int lock_17;
-  pid i_27;
-  pid j_28;
+  pid i_28;
+  pid j_27;
   i_8 = i_25;
   j_9 = j_24;
   loop_26:
@@ -55,10 +55,10 @@ inline loop_7(i_25, j_24) {
   vlock_acquire(lock_17);
   vlock_release(lock_17);
   flag_set(i_8, atsbool_false);
-  i_27 = i_8;
-  j_28 = j_9;
-  i_8 = i_27;
-  j_9 = j_28;
+  i_28 = i_8;
+  j_27 = j_9;
+  i_8 = i_28;
+  j_9 = j_27;
   goto loop_26
 }
 proctype proc_0() {

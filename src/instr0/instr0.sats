@@ -554,11 +554,14 @@ fun i0optimize_tailcall_fundef (
   , funmap: i0funmap
 ): i0fundef
 
-fun i0inss_substitute_id (inss: i0inslst, idmap: i0idmap): i0inslst
-fun i0inssopt_substitute_id (inss: i0inslstopt, idmap: i0idmap): i0inslstopt
 fun i0ins_substitute_id (ins: i0ins, idmap: i0idmap): i0ins
+fun i0inss_substitute_id (inss: i0inslst, idmap: i0idmap): i0inslst
+fun i0inssopt_substitute_id (inssopt: i0inslstopt, idmap: i0idmap): i0inslstopt
+
 fun i0exp_substitute_id (exp: i0exp, idmap: i0idmap): i0exp
+fun i0explst_substitute_id (explst: i0explst, idmap: i0idmap): i0explst
 fun i0expopt_substitute_id (expopt: option0 i0exp, idmap: i0idmap): option0 i0exp
+
 fun i0gbranch_substitute_id (i0gbranch: i0gbranch, idmap: i0idmap): i0gbranch
 fun i0gbranchlst_substitute_id (
   i0gbranchlst: i0gbranchlst, idmap: i0idmap): i0gbranchlst

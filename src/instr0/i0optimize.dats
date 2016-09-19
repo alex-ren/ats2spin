@@ -93,27 +93,45 @@ else let
   val cur_ref_paralst = 
     list0_filter<i0id>(cur_paralst,
                        lam id => type0_is_ref (i0id_get_type (id)))
+
+  // process all the other functions in the group
   val ref_para_map = list0_foldright<i0id><i0idmap> (
     fnames, fopr, ref_para_map) where {
-  fun fopr (cur_name: i0id, res: i0idmap):<cloref1> i0idmap = 
+
+  fun fopr (the_name: i0id, res: i0idmap):<cloref1> i0idmap = let
+     // val () = fprint (stderr_ref, "fill ref_para_map for function ")
+     // val () = fprint_i0id (stderr_ref, the_name)
+     // val () = fprint (stderr_ref, "\n")
+
+  in
     // Skip since the current one has been processed previously.
-    if cur_name = fname then res  
+    if the_name = fname then res  
     else let
-      val i0fundef = i0funmap_search0 (i0funmap, cur_name)
-      val paralst = i0fundef_get_paralst (i0fundef)
-      val ref_paralst = list0_filter<i0id>(paralst,
+      val the_i0fundef = i0funmap_search0 (i0funmap, the_name)
+      val the_paralst = i0fundef_get_paralst (the_i0fundef)
+      val the_ref_paralst = list0_filter<i0id>(the_paralst,
                      lam id => type0_is_ref (i0id_get_type (id)))
 
       val () = loop_match (cur_ref_paralst
-                         , ref_paralst
+                         , the_ref_paralst
                          , res) where {
-      fun loop_match (cur_ref_paralst: i0idlst
-                     , ref_paralst: i0idlst
+      fun loop_match (
+                     // parameters of the current function being processed
+                     cur_ref_paralst: i0idlst  
+                     // parameters of the function in the group
+                     , the_ref_paralst: i0idlst
                      , ref_para_map: i0idmap): void =
-      case+ (cur_ref_paralst, ref_paralst) of
+      case+ (cur_ref_paralst, the_ref_paralst) of
       | (cons0 (cur_para, cur_ref_paralst1), cons0 (para, ref_paralst1)) => let
         val () = i0idmap_insert_any (ref_para_map, para, cur_para)
-      in end
+        // val () = fprint (stderr_ref, "map ")
+        // val () = fprint_i0id (stderr_ref, para)
+        // val () = fprint (stderr_ref, " to ")
+        // val () = fprint_i0id (stderr_ref, cur_para)
+        // val () = fprint (stderr_ref, "\n")
+      in 
+        loop_match (cur_ref_paralst1, ref_paralst1, ref_para_map) 
+      end
       | (nil0 (), nil0 ()) => ()
       | (_, _) => 
         exitlocmsg ("The number of parameters of ref types doesn't match.\n")
@@ -121,6 +139,7 @@ else let
     in
       res
     end  // end of [fopr]
+    end
   }
 
   // create new parameters for the current function
@@ -334,6 +353,9 @@ else let
     else let
     val i0fundef = i0funmap_search0 (i0funmap, cur_name)
     val cur_inss = i0fundef_get_instructions (i0fundef)
+
+    val cur_inss = i0inss_substitute_id (cur_inss, ref_para_map)
+
     val cur_inss = optimize_tailcall_return2jump (
       cur_inss, map_fname_tag, i0funmap)
 
@@ -356,45 +378,7 @@ in
   new_fundef
 end  // end of [i0optimize_tailcall_fundef]
 
-
-implement i0inss_substitute_id (inss(*: i0inslst*)
-                                , idmap(*: i0idmap*)) = let
-fun loop (inss: i0inslst
-          , accu: i0inslst): i0inslst =
-case+ inss of
-| list0_cons (ins, inss1) => let
-  val ins' = i0ins_substitute_id (ins, idmap)
-  val accu' = list0_cons (ins', accu)
-in
-  loop (inss1, accu')
-end
-| list0_nil () => list0_reverse (accu)
-// end of [loop]
-
-val ret = loop (inss, list0_nil ())
-
-in
-  ret
-end
-
-implement i0gbranchlst_substitute_id (i0gbranchlst, idmap) = 
-  list0_foldright<i0gbranch><i0gbranchlst> (
-      i0gbranchlst, fopr, nil0) where {
-  fun fopr (i0gbranch: i0gbranch, res: i0gbranchlst):<cloref1> i0gbranchlst = let
-    val i0gbranch' = i0gbranch_substitute_id (i0gbranch, idmap)
-  in
-    cons0 (i0gbranch', res)
-  end
-  }
-
-implement i0gbranch_substitute_id (i0gbranch, idmap) = let
-  val i0inss = i0inss_substitute_id (
-             i0gbranch.i0gbranch_inss, idmap)
-  val guard = i0ins_substitute_id (i0gbranch.i0gbranch_guard, idmap)
-  val i0gbranch' = i0gbranch_make (guard, i0inss)
-in
-  i0gbranch'
-end
+(* ************************* ************************** *)
 
 implement i0ins_substitute_id (ins, idmap) = case+ ins of
 | INS0decl (i0id, i0expopt) => 
@@ -421,77 +405,76 @@ implement i0ins_substitute_id (ins, idmap) = case+ ins of
 | INS0tail_jump (_, _) => ins  // Currently no need to handle. exitlocmsg ("todo.")
 // end of [i0ins_substitute_id]
 
-//   (case+ i0expopt of
-//   | Some0 i0exp => (case+ i0exp of
-//     | EXP0int _ => ins
-//     | EXP0i0nt _ => ins
-//     | EXP0string _ => ins
-//     | EXP0var _ => ins
-//     | EXP0any () => exitlocmsg ("This should not happen.")
-//     | EXP0extfcall _ => ins
-//     | EXP0lambody _ => exitlocmsg ("This should not happen.")
-//     | EXP0matchtag (_, _) => ins
-//     | EXP0app (fnameid, i0explst) => let
-//       val tag_id_opt = i0idmap_search (map_fname_tag, fnameid)
-//     in
-//       case+ tag_id_opt of
-//       | ~Some_vt (tag_id) => let  // jump to tag_id
-//         val i0fundef = i0funmap_search0 (i0funmap, fnameid)
-//         val paralst = i0fundef_get_paralst (i0fundef)
-// 
-//         val (calc_exp_lst, assign_lst) = loop (i0explst, paralst) where {
-//         fun loop (
-//           i0explst: i0explst
-//           , paralst: i0idlst)
-//         : (i0inslst(*calc exp*), i0inslst (*assign var*)) = 
-//         case+ (i0explst, paralst) of
-//         | ((i0exp :: i0explst1), (para :: paralst1)) => let
-//           val type0 = i0id_get_type (para)
-//         in
-//           if type0_is_ref (type0) then let
-//             val- EXP0var (arg) = i0exp
-// 
-//             // find the mapped name for the parameter
-//             val mapped_para_vt = i0idmap_search (ref_para_map, para)
-//             val mapped_para = (case+ mapped_para_vt of
-//                               | ~Some_vt (para') => para'
-//                               | ~None_vt () => para
-//                               ): i0id
-// 
-//             // find the mapped name for the argument
-//             val mapped_arg_vt = i0idmap_search (ref_para_map, arg)
-//             val mapped_arg = (case+ mapped_arg_vt of
-//                               | ~Some_vt (arg') => arg'
-//                               | ~None_vt () => arg
-//                               ): i0id
-//           in
-//             // no need to do anything for parameters of reference types
-//             if (mapped_arg = mapped_para) then loop (i0explst1, paralst1)
-//             else exitlocmsg ("parameter of reference type misused\n")
-//           end
-//           else let
-//             val (inss1, inss2) = loop (i0explst1, paralst1)
-//             // create new temporary variables for computation result
-//             val new_i0id = i0id_copy (para, sa) 
-//             val ins1 = INS0decl (new_i0id, Some0 i0exp)
-//             val ins2 = INS0assign (Some0 (EXP0var para), EXP0var (new_i0id))
-//             val inss1 = ins1 :: inss1
-//             val inss2 = ins2 :: inss2
-//           in (inss1, inss2) end
-//         end
-//           | (nil (), nil ()) => (nil (), nil ())
-//           | (_, _) => exitlocmsg ("This shall not happen")
-//         }
-//         
-//         val ins = INS0tail_jump (list0_append (calc_exp_lst, assign_lst), tag_id)
-//       in
-//         ins
-//       end
-//       | ~None_vt () => ins
-//     end
-//     )
-//   | None0 () => ins
-//   )
+(* ************************* ************************** *)
+
+implement i0inss_substitute_id (inss(*: i0inslst*)
+                                , idmap(*: i0idmap*)) =
+  list0_map (inss, lam ins => i0ins_substitute_id (ins, idmap))
+
+(* ************************* ************************** *)
+
+implement i0inssopt_substitute_id (inssopt, idmap) =
+  option0_map (inssopt, lam inss => i0inss_substitute_id (inss, idmap))
+
+(* ************************* ************************** *)
+
+implement i0exp_substitute_id (exp, idmap) = 
+case+ exp of
+| EXP0int _ => exp
+| EXP0i0nt _ => exp
+| EXP0string _ => exp
+| EXP0var i0id => EXP0var (i0id_substitute_id (i0id, idmap))
+| EXP0any () => exp
+| EXP0app (fnameid, i0explst) =>
+  EXP0app (i0id_substitute_id (fnameid, idmap)
+         , i0explst_substitute_id (i0explst, idmap))
+| EXP0extfcall (name, i0explst) => 
+  EXP0extfcall (name, i0explst_substitute_id (i0explst, idmap))
+| EXP0lambody i0exp => EXP0lambody (i0exp_substitute_id (i0exp, idmap))
+| EXP0matchtag (de, ctor) =>
+  EXP0matchtag (i0id_substitute_id (de, idmap)
+              , i0id_substitute_id (ctor, idmap))
+  
+(* ************************* ************************** *)
+
+implement i0explst_substitute_id (i0explst(*: i0explst*)
+                                , idmap(*: i0idmap*)) =
+  list0_map<i0exp><i0exp> (i0explst, 
+      lam i0exp => i0exp_substitute_id (i0exp, idmap))
+
+implement i0expopt_substitute_id (i0expopt, idmap) = 
+  option0_map (i0expopt, lam i0exp => i0exp_substitute_id (i0exp, idmap))
+
+(* ************************* ************************** *)
+
+implement i0gbranch_substitute_id (i0gbranch, idmap) = let
+  val i0inss = i0inss_substitute_id (
+             i0gbranch.i0gbranch_inss, idmap)
+  val guard = i0ins_substitute_id (i0gbranch.i0gbranch_guard, idmap)
+  val i0gbranch' = i0gbranch_make (guard, i0inss)
+in
+  i0gbranch'
+end
+
+(* ************************* ************************** *)
+
+implement i0id_substitute_id (id, idmap) = 
+if i0id_is_any (id) || i0id_is_sym (id) then id  // These two have no stamps.
+else let
+  val idopt_vt = i0idmap_search (idmap, id)
+in
+  case+ idopt_vt of
+  | ~Some_vt (id1) => id1
+  | ~None_vt () => id
+end
+
+(* ************************* ************************** *)
+
+implement i0gbranchlst_substitute_id (i0gbranchlst, idmap) = 
+  list0_map (i0gbranchlst
+     , lam i0gbranch => i0gbranch_substitute_id (i0gbranch, idmap))
+
+(* ************************* ************************** *)
 
 implement i0optimize_collect_decs (i0prog) = let
   fun fopr (i0fundef: i0fundef):<cloref1> i0fundef = 
