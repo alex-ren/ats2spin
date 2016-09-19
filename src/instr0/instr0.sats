@@ -195,8 +195,8 @@ datatype i0ins =
 //
 // Added for recursive functions
 | INS0init_loop of (
-  i0idlst (*all variables*)
-  , list0 (@(i0id, i0id)) (*variabe and initial value from para*))
+  i0idlst (*all variables for non-ref*)
+  , list0 (@(i0id, i0id)) (*variabe and initial value from para for non-ref*))
 //
 // Added for recursive functions
 | INS0tail_jump of (i0inslst (*calc arg*), i0id (*jump tag*))
@@ -553,6 +553,18 @@ fun i0optimize_tailcall_fundef (
   , i0fundef: i0fundef
   , funmap: i0funmap
 ): i0fundef
+
+fun i0inss_substitute_id (inss: i0inslst, idmap: i0idmap): i0inslst
+fun i0inssopt_substitute_id (inss: i0inslstopt, idmap: i0idmap): i0inslstopt
+fun i0ins_substitute_id (ins: i0ins, idmap: i0idmap): i0ins
+fun i0exp_substitute_id (exp: i0exp, idmap: i0idmap): i0exp
+fun i0expopt_substitute_id (expopt: option0 i0exp, idmap: i0idmap): option0 i0exp
+fun i0gbranch_substitute_id (i0gbranch: i0gbranch, idmap: i0idmap): i0gbranch
+fun i0gbranchlst_substitute_id (
+  i0gbranchlst: i0gbranchlst, idmap: i0idmap): i0gbranchlst
+
+// return the same id if id is not in idmap
+fun i0id_substitute_id (id: i0id, idmap: i0idmap): i0id
 
 (* ********** *********** *)
 

@@ -30,29 +30,32 @@ in
 end
 
 
-// fun inline$fooa1 (x: &int, y: &int): void = let
-//   val () = x := x + 1
-//   val () = $extfcall (void
-//              , "printf"
-//              , "x is %d"
-//              , x
-//              )
-// in
-//   inline$fooa2 (x, y)
-// end
-// and inline$fooa2 (x: &int, y: &int): void = let
-//   val () = y := y + 1
-//   val () = $extfcall (void
-//              , "printf"
-//              , "y is %d"
-//              , y
-//              )
-// in
-//   if y < 100 then inline$fooa1 (x, y)
-// end
+fun inline$fooa1 (x: &int): void = let
+  val () = x := x + 1
+  val () = $extfcall (void
+             , "printf"
+             , "x is %d"
+             , x
+             )
+in
+  inline$fooa2 (x)
+end
+and inline$fooa2 (y: &int): void = let
+  val () = y := y + 1
+  val () = $extfcall (void
+             , "printf"
+             , "y is %d"
+             , y
+             )
+in
+  if y < 100 then inline$fooa1 (y)
+end
 
 fun pml$init (): void = let
   val x = 1
-  val ()  = inline$foo1 (x, 1)
+  val () = inline$foo1 (x, 1)
+
+  var x: int = 0
+  val () = inline$fooa1 (x)
 in 
 end
