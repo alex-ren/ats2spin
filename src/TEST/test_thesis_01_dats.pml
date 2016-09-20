@@ -15,14 +15,14 @@
 
 inline loop_4(c_5, s_6) {
   skip;
-  loop_9:
+  loop_10:
   s_6 = (s_6) + (c_5);
   c_5 = (c_5) + (1);
   if 
   :: (c_5) > (x_1) -> 
     
   :: else  -> 
-    goto loop_9
+    goto loop_10
   fi
 }
 proctype foo_0(int x_1) {
@@ -31,7 +31,8 @@ proctype foo_0(int x_1) {
   count_2 = 0;
   sum_3 = 0;
   loop_4(count_2, sum_3);
-  printf("sum is %d\n", sum_3)
+  printf("sum is %d\n", sum_3);
+  assert((sum_3) == (10))
 }
 init {
 atomic {

@@ -19,9 +19,11 @@ fun proctype$foo (n: int): void = let
   val () = inline$incx (x, y)
   val () = $extfcall (void, "printf", "x is %d\\n", x)
   val () = $extfcall (void, "printf", "y is %d\\n", y)
+  val () = pml$assert0 (x = n + 1)
+  val () = pml$assert0 (x = y)
 in end
 
 fun pml$init (): void = let
-  val _ = pml$run (proctype$foo (100))
+  val _ = pml$run (proctype$foo (40))
 in end
 

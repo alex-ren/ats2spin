@@ -13,6 +13,7 @@ fun proctype$foo (x: int): void = let
   end
   val () = inline$loop (count, sum)
   val () = $extfcall (void, "printf", "sum is %d\\n", sum)
+  val () = pml$assert0 (sum = 10)
 in
 end
 

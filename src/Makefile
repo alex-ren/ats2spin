@@ -269,6 +269,8 @@ testall:: promela/TEST/test_promela_16
 testall:: promela/TEST/test_promela_17
 	
 testall:: test_example_01_peterson
+testall:: test_thesis_01
+testall:: test_thesis_02
 
 # ######
 

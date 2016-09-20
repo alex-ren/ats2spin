@@ -270,12 +270,13 @@ end
 in
   EUlist (eus)
 end
-| PMLSTMNT_name (pml_name, pml_stmnt) => let
+| PMLSTMNT_name (pml_name, pml_stmnt_opt) => let
   val eus = emit_pml_name (pml_name)
     :: emit ":"
-    :: emit_newline ()
-    :: emit_pml_stmnt (pml_stmnt)
-    :: nil0
+    :: (case+ pml_stmnt_opt of 
+       | Some0 pml_stmnt => emit_newline () :: emit_pml_stmnt (pml_stmnt) :: nil0
+       | None0 () => nil0
+       )
 in
   EUlist (eus)
 end

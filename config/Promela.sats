@@ -44,6 +44,9 @@ pml$mypid(): [curpid >= 0] pid curpid = "ext#get_pid"
 //
 fun
 pml$assert{b:bool}(bool(b)): [b==true] void = "ext#assert"
+
+fun
+pml$assert0 (bool): void = "ext#assert"
 //
 (* ****** ****** *)
 //

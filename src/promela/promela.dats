@@ -414,18 +414,29 @@ INS0init_loop is replaced by dec and assign")
   // end
   | INS0label (i0id) => let
     val pml_name = pmltransform_i0id (i0id)
-    val- ins1 :: inss1 = i0inslst
-    val steps = pmltransform_i0inslst (is_inline, ins1 :: nil0)
-    val- step1 :: steps1 = steps
-
-    // consume the next stmnt
-    val- PMLSTEP_stmnt (stmnt) = step1  // It should be a statement.
-    val pml_stmnt = PMLSTMNT_name (pml_name, stmnt)
-    val pml_step = PMLSTEP_stmnt (pml_stmnt)
-    val res = pml_step :: res
-    val res = list0_reverse_append (steps1, res)
   in
-    loop (inss1, res)
+    case+ i0inslst of
+    | ins1 :: inss1 => let
+      val- ins1 :: inss1 = i0inslst
+      val steps = pmltransform_i0inslst (is_inline, ins1 :: nil0)
+      val- step1 :: steps1 = steps
+
+      // consume the next stmnt
+      val- PMLSTEP_stmnt (stmnt) = step1  // It should be a statement.
+      val pml_stmnt = PMLSTMNT_name (pml_name, Some0 stmnt)
+      val pml_step = PMLSTEP_stmnt (pml_stmnt)
+      val res = pml_step :: res
+      val res = list0_reverse_append (steps1, res)
+    in
+      loop (inss1, res)
+    end
+    | nil0 () => let
+      val pml_stmnt = PMLSTMNT_name (pml_name, None0 ())
+      val pml_step = PMLSTEP_stmnt (pml_stmnt)
+      val res = pml_step :: res
+    in
+      loop (i0inslst, res)
+    end
   end
   | INS0tail_jump (epiloge_inss, i0id) => let
     val epiloge_steps = pmltransform_i0inslst (is_inline, epiloge_inss)
@@ -504,7 +515,15 @@ INS0init_loop is replaced by dec and assign")
   in
     loop (i0inslst, pml_step :: res)
   end // end of [INS0exception]
-  | _ => exitlocmsg ("todo: " + datcon_i0ins i0ins)
+  | INS0goto (i0id) => let
+    val pml_name = pmltransform_i0id (i0id)
+    val pml_stmnt = PMLSTMNT_goto (pml_name)
+    val pml_step = PMLSTEP_stmnt (pml_stmnt)
+    val res = pml_step :: res
+  in
+    loop (i0inslst, res)
+  end
+//  | _ => exitlocmsg ("todo: " + datcon_i0ins i0ins)
 )  // end of [i0ins :: i0inslst]
 | nil0 () => res
 
@@ -512,7 +531,7 @@ val pml_inss = loop (i0inslst, nil0)
 val ret = list0_reverse (pml_inss)
 in
   ret
-end
+end // end of [pmltransform_i0inslst]
 
 implement pmltransform_i0type (type0) =
 case+ type0 of

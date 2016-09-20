@@ -220,7 +220,7 @@ pml_stmnt =
 | PMLSTMNT_goto of pml_name
 // Promela needs a label to be attached to a statement.
 // So I don't use the following currently.
-| PMLSTMNT_name of (pml_name, pml_stmnt)  
+| PMLSTMNT_name of (pml_name, option0 pml_stmnt)  
 // | PMLSTMNT_label of (pml_name)
 // | PMLSTMNT_print
 | PMLSTMNT_assert of pml_exp

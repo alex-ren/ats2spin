@@ -25,6 +25,8 @@ Description of Test Files
     This file is for testing the usage of extfcall.
 4. `test_promela_04.dats`
     This file is for testing the inclusion of Promela code in ATS.
-5. `test_promela_05.dats`
+5. `test_label_no_stmnt.pml`
+    This file is for testing that label can be used without being attached
+    to any statement, which does not match the manual of PROMELA.
 
 

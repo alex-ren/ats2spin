@@ -133,6 +133,7 @@ overload fprint with fprint_i0id
 
 fun i0id_copy (i0id: i0id, sa: stamp_allocator): i0id
 fun i0id_copy_remove_prefix_inline (i0id: i0id, sa: stamp_allocator): i0id
+fun i0id_var_copy_remove_prefix_inline_add_suffix (i0id, suffix: string, stamp_allocator): i0id
 
 fun eq_i0id_i0id (x: i0id, y: i0id):<fun0> bool
 overload = with eq_i0id_i0id

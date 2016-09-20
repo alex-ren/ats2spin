@@ -141,6 +141,28 @@ in
   ID0var (ni0name, nstamp, type0)
 end
 
+implement i0id_var_copy_remove_prefix_inline_add_suffix (i0id, suffix, sa) =
+case+ i0id of
+| ID0var (i0name, _, type0) => let
+  val str = tostring_i0name i0name
+  val nstr_opt = str.removePrefix (PML_INLINE)
+in
+  case+ nstr_opt of
+  | Some (nstr) => let
+    val i0name1 = i0name_make (symbol_make (nstr + suffix))
+    val stamp1 = stamp_allocate (sa)
+  in
+    ID0var (i0name1, stamp1, type0)
+  end
+  | None () => let
+    val i0name1 = i0name_make (symbol_make (str + suffix))
+    val stamp1 = stamp_allocate (sa)
+  in
+    ID0var (i0name1, stamp1, type0)
+  end
+end
+| _ => exitlocmsg ("only ID0var is supported\n")
+
 implement fprint_i0id (out, i0id) = 
 case+ i0id of
 | ID0any () => fprint (out, "id_any")
