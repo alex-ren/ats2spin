@@ -30,6 +30,8 @@ all:: ; $(MAKE) -C ../promela/TEST
 all:: test_scratch_dats.json
 all:: test01_dats.json
 all:: test_example_01_peterson_dats.json
+all:: test_thesis_01_dats.json
+all:: test_thesis_02_dats.json
 
 ######
 #
@@ -49,5 +51,9 @@ cleanall:: ; $(RMF) test_scratch_dats.json
 cleanall:: ; $(RMF) test01_dats.json
 cleanall:: ; $(RMF) test02_dats.json
 cleanall:: ; $(RMF) test_example_01_peterson_dats.json
+cleanall:: ; $(RMF) test_thesis_01_dats.json
+cleanall:: ; $(RMF) test_thesis_02_dats.json
 
 ###### end of [Makefile] ######
+
+
