@@ -417,9 +417,6 @@ fun{}
 fprint_i0ins$INS0label: $d2ctype(fprint_i0ins<>)
 extern
 fun{}
-fprint_i0ins$INS0return: $d2ctype(fprint_i0ins<>)
-extern
-fun{}
 fprint_i0ins$INS0ifbranch: $d2ctype(fprint_i0ins<>)
 extern
 fun{}
@@ -447,7 +444,6 @@ case+ arg0 of
 | INS0decl _ => fprint_i0ins$INS0decl<>(out, arg0)
 | INS0assign _ => fprint_i0ins$INS0assign<>(out, arg0)
 | INS0label _ => fprint_i0ins$INS0label<>(out, arg0)
-| INS0return _ => fprint_i0ins$INS0return<>(out, arg0)
 | INS0ifbranch _ => fprint_i0ins$INS0ifbranch<>(out, arg0)
 | INS0random _ => fprint_i0ins$INS0random<>(out, arg0)
 | INS0goto _ => fprint_i0ins$INS0goto<>(out, arg0)
@@ -608,39 +604,6 @@ fprint_i0ins$INS0label$rpar(out, _) = fprint_i0ins$rpar(out)
 implement{}
 fprint_i0ins$INS0label$arg1(out, arg0) =
   let val-INS0label(arg1) = arg0 in fprint_i0ins$carg(out, arg1) end
-//
-extern
-fun{}
-fprint_i0ins$INS0return$con: $d2ctype(fprint_i0ins<>)
-extern
-fun{}
-fprint_i0ins$INS0return$lpar: $d2ctype(fprint_i0ins<>)
-extern
-fun{}
-fprint_i0ins$INS0return$rpar: $d2ctype(fprint_i0ins<>)
-extern
-fun{}
-fprint_i0ins$INS0return$arg1: $d2ctype(fprint_i0ins<>)
-//
-implement{}
-fprint_i0ins$INS0return(out, arg0) = 
-{
-//
-val () = fprint_i0ins$INS0return$con<>(out, arg0)
-val () = fprint_i0ins$INS0return$lpar<>(out, arg0)
-val () = fprint_i0ins$INS0return$arg1<>(out, arg0)
-val () = fprint_i0ins$INS0return$rpar<>(out, arg0)
-//
-}
-implement{}
-fprint_i0ins$INS0return$con(out, _) = fprint(out, "INS0return")
-implement{}
-fprint_i0ins$INS0return$lpar(out, _) = fprint_i0ins$lpar(out)
-implement{}
-fprint_i0ins$INS0return$rpar(out, _) = fprint_i0ins$rpar(out)
-implement{}
-fprint_i0ins$INS0return$arg1(out, arg0) =
-  let val-INS0return(arg1) = arg0 in fprint_i0ins$carg(out, arg1) end
 //
 extern
 fun{}
@@ -1416,7 +1379,6 @@ case+ arg0 of
 | INS0decl _ => "INS0decl"
 | INS0assign _ => "INS0assign"
 | INS0label _ => "INS0label"
-| INS0return _ => "INS0return"
 | INS0ifbranch _ => "INS0ifbranch"
 | INS0random _ => "INS0random"
 | INS0goto _ => "INS0goto"

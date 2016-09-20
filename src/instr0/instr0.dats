@@ -375,20 +375,24 @@ implement i0transform_d2exp_fbody (sa, i0env, body, tmap, fmap) = let
   //   "======== i0transform_d2exp_fbody: ", body.d2exp_loc, "\n")
 in
 case+ node of
-| D2Ecst (d2cst) => let
-  val i0id = i0transform_d2cst (sa, i0env, tmap, d2cst)
-  val i0exp = EXP0var (i0id)
-  val inss = list0_sing (INS0return (Some0 i0exp))
-in
-  (nil0, inss)
-end
-| D2Evar (d2var) => let
-  val i0id = i0transform_d2var (sa, i0env, tmap, d2var)
-  val i0exp = EXP0var (i0id)
-  val inss = list0_sing (INS0return (Some0 i0exp))
-in
-  (nil0, inss)
-end
+| D2Ecst (d2cst) => 
+  exitlocmsg ("Function cannot return concrete value.\n")
+// let
+//   val i0id = i0transform_d2cst (sa, i0env, tmap, d2cst)
+//   val i0exp = EXP0var (i0id)
+//   val inss = list0_sing (INS0return (Some0 i0exp))
+// in
+//   (nil0, inss)
+// end
+| D2Evar (d2var) => 
+  exitlocmsg ("Function cannot return concrete value.\n")
+// let
+//   val i0id = i0transform_d2var (sa, i0env, tmap, d2var)
+//   val i0exp = EXP0var (i0id)
+//   val inss = list0_sing (INS0return (Some0 i0exp))
+// in
+//   (nil0, inss)
+// end
 
 //   | D2Esym of (d2sym)
 // //
@@ -398,16 +402,22 @@ end
 //   | D2Efloat of (double)
 //   | D2Estring of (string)
 // //
-| D2Ei0nt (str) => let
-  val inss = list0_sing (INS0return (Some0 (EXP0i0nt (str))))
-in
-  (nil0, inss)
-end
+| D2Ei0nt (str) => 
+  exitlocmsg ("Function cannot return concrete value.\n")
+// let
+//   val inss = list0_sing (INS0return (Some0 (EXP0i0nt (str))))
+// in
+//   (nil0, inss)
+// end
+
 //   | D2Ec0har of (char)
 //   | D2Ef0loat of (string)
 //   | D2Es0tring of (string)
 // //
-| D2Eempty ((*void*)) => (nil0, list0_cons (INS0return (None0 ()), list0_nil ()))
+| D2Eempty ((*void*)) => 
+  (nil0, nil0)
+// (nil0, list0_cons (INS0return (None0 ()), list0_nil ()))
+
 // //
 // | D2Eexp (d2exp) => i0transform_d2exp_fbody (sa, d2exp, fmap)
 // //
@@ -424,7 +434,7 @@ end
     val i0explst = i0transform_d2exparglst (sa, i0env, tmap, d2exparglst)
     val app = EXP0app (i0id, i0explst)
   in
-    (nil0, list0_sing (INS0return (Some0 app)))
+    (nil0, list0_sing (INS0assign (None0 (), app)))
   end
 // //
 | D2Eifopt (
@@ -435,7 +445,8 @@ end
   val (i0declst2, inss2) = (case+ d2expopt of
                | Some (d2exp) => 
                    i0transform_d2exp_fbody (sa, i0env, d2exp, tmap, fmap)
-               | None () => (nil0, list0_sing (INS0return (None0)))
+               | None () => (nil0, nil0)
+                   // (nil0, list0_sing (INS0return (None0)))
   ): (i0declst, i0inslst)
 in
   (list0_append (i0declst1, i0declst2)

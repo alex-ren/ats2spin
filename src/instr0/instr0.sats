@@ -184,7 +184,7 @@ datatype i0ins =
 //
 | INS0label of (i0id)
 //
-| INS0return of (option0 i0exp)
+// | INS0return of (option0 i0exp)
 //
 | INS0ifbranch of (i0exp, i0inslst (*if*), i0inslst (*else*))
 //

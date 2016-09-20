@@ -8,10 +8,8 @@ fun proctype$foo (n: int): void = let
   if x1 > n then () 
   else let
     val () = x1 := x1 + 1
-    // val () = inline$incy (x1, y1)
-  in 
-    inline$incy (x1, y1)
-  end
+    val () = inline$incy (x1, y1)
+  in end
   and inline$incy (x2: &int, y2: &int): void = let
     val () = y2 := y2 + 1
   in

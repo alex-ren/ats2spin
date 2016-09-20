@@ -381,19 +381,19 @@ case+ i0inslst of
       loop (i0inslst, pml_step :: res)
     end
     )  // end of [if i0exp_is_inline_call]
-  | INS0return i0expopt => 
-    (
-    case+ i0expopt of
-    | Some0 (i0exp) => let // hande normal function call without return value
-      val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
-      val pml_exp = PMLEXP_anyexp (pml_anyexp)
-      val pml_stmnt = PMLSTMNT_exp (pml_exp)
-      val pml_step = PMLSTEP_stmnt (pml_stmnt)
-    in
-      loop (i0inslst, pml_step :: res)
-    end
-    | None0 () => loop (i0inslst, res)
-    )
+  // | INS0return i0expopt => 
+  //   (
+  //   case+ i0expopt of
+  //   | Some0 (i0exp) => let // hande normal function call without return value
+  //     val pml_anyexp = pmltransform_i0exp2pml_anyexp (i0exp)
+  //     val pml_exp = PMLEXP_anyexp (pml_anyexp)
+  //     val pml_stmnt = PMLSTMNT_exp (pml_exp)
+  //     val pml_step = PMLSTEP_stmnt (pml_stmnt)
+  //   in
+  //     loop (i0inslst, pml_step :: res)
+  //   end
+  //   | None0 () => loop (i0inslst, res)
+  //   )
   | INS0init_loop (local_vars, assignments) => 
     exitlocmsg ("This should not happen. \
 INS0init_loop is replaced by dec and assign")
