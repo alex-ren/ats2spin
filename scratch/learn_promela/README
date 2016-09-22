@@ -28,5 +28,7 @@ Description of Test Files
 5. `test_label_no_stmnt.pml`
     This file is for testing that label can be used without being attached
     to any statement, which does not match the manual of PROMELA.
-
+6. `test_chan_variable.pml`
+    This file is for testing that we can only use constants to define
+    the type of channels.
 
