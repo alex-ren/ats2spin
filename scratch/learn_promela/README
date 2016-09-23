@@ -31,4 +31,8 @@ Description of Test Files
 6. `test_chan_variable.pml`
     This file is for testing that we can only use constants to define
     the type of channels.
+7. `test_reassign_channel.pml`
+    This file is for testing that channel definition cannot be used to create
+    multiple channels.
+
 
