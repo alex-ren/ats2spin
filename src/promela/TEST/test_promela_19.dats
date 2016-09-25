@@ -1,49 +1,35 @@
 
 
-/*
-*
-*/
-#include "share/atspre_staload.hats"
-#include "share/atspre_define.hats"
-
+#include "share/HATS/atspre_staload_libats_ML.hats"
 staload "./Promela.sats"
 
 
-abstype chnil
-abstype chcons(x:vt@ype, xs:type)
+(* ****** ****** *)
+
+abstype chanref(a:vt@ype)
 
 (* ****** ****** *)
 
-stadef :: = chcons
+absvtype chanptr(a:vt@ype)
 
 (* ****** ****** *)
-
-abstype chanref(a:vtype)
-
-(* ****** ****** *)
-
-absvtype chanptr(a:vtype)
-
-(* ****** ****** *)
-//
+// Can transfer any type of payload
 absvtype channel0
 //
-absvtype chanpos1(ss:vtype)
-absvtype channeg1(ss:vtype)
+absvtype chanpos1(ss:vt@ype)
+absvtype channeg1(ss:vt@ype)
+
+(* ************** ************** *)
+
+// End state of channels
+abstype chnil
+
+(* ************** ************** *)
 
 extern
 fun
-channel0_create
-  (cap: intGte(0)): channel0
-//
-extern
-fun channel0_destroy(channel0): void
-
-
-extern
-fun
-channel0_split{ss:vtype}
-  (chan: !channel0 >> chanpos1(ss)): channeg1(ss)
+channel0_split {init:vt@ype}
+  (chan: !channel0 >> chanpos1(init)): channeg1(init)
 //
 (* ****** ****** *)
 //
@@ -54,88 +40,155 @@ extern
 prfun
 chanpos1_nil_close (!chanpos1(chnil) >> channel0): void
 
-// extern
-// fun
-// chanpos1_recv
-// {x:vt@ype}{xs:type}
-// (
-//   chan: !chanpos1(x::xs) >> chanpos1(xs)
-// ) : x // end of [chanpos1_recv]
-// 
-// (* ****** ****** *)
-// 
-// extern
-// fun
-// channeg1_send
-// {x:vt@ype}{xs:type}
-// (
-//   chan: !channeg1(x::xs) >> channeg1(xs), x: (x)
-// ) : void // end of [channeg1_send]
+(* ************** ************** *)
+//
+// States of protocals
+
+absvtype ss_client
+
+absvtype ss_grant
 
 
+(* ************** ************** *)
+// Protocals
 
-
-absvtype ss_client = ptr
-
-absvtype ss_grant = ptr
-
+// Channel for send to Client
 datavtype
-ClientOpt(ss:vtype) =
-  | DENY(chnil) of ()
-  | DENY(chnil) of channeg1(chnil)
-  | HOLD(ss_client) of channeg1(chnil)
-  | GRANT(chnil) of (channeg1(ss_grant))
-//
-datatype
-AgentGrantOpt(ss:vtype) = RETURN1(chnil) of ()
+ClientOpt(start:vt@ype, next:vt@ype) =
+  | DENY(ss_client, chnil) of ()
+  | HOLD(ss_client, ss_client) of ()
+  | GRANT(ss_client, chnil) of (channeg1(ss_grant))
 
-(* ****** ****** *)
-//
 extern
 fun
-chanref_recv
-  {a:vtype}(chan: chanref(a)): (a)
+pml_chan_send$channeg1_client{beg,next:vt@ype}
+  (chan: !channeg1(beg) >> channeg1(next), x: ClientOpt(beg, next)): void
 extern
 fun
-chanref_send
-  {a:vtype}(chan: chanref(a), x: (a)): void
-//
-(* ****** ****** *)
-//
+pml_chan_recv$chanpos1_client {beg:vt@ype}
+  (chan: !chanpos1(beg) >> chanpos1(next)): #[next:vt@ype] ClientOpt(beg,next)
+
+(* ************** ************** *)
+// Channel for send to Agent
+datavtype
+AgentOpt(start:vt@ype, next:vt@ype) =
+| RETURN(ss_grant, chnil) of ()
+
+vtypedef AgentOpt = [s,n:vt@ype] AgentOpt (s, n)
+
 extern
 fun
-chanptr_recv
-  {a:vtype}(chan: !chanptr(a)): (a)
+pml_chan_send$channeg1_agent{beg,next:vt@ype}
+  (chan: !channeg1(beg) >> channeg1(next), x: AgentOpt(beg, next)): void
 extern
 fun
-chanptr_send
-  {a:vtype}(chan: !chanptr(a), x: (a)): void
+pml_chan_recv$chanpos1_agent {beg:vt@ype}
+  (chan: !chanpos1(beg) >> chanpos1(next)): #[next:vt@ype] AgentOpt(beg,next)
+
+(* ************** ************** *)
+// Channel for send to Server
+datavtype
+ServerOpt =
+  | RETURN of (channel0)
+  | REQUEST of (channeg1(ss_client))
+
 //
-(* ****** ****** *)
-//
-extern
-fun
-channeg1_client{ss:vtype}
-  (chan: !channeg1(ss_client) >> channeg1(ss), x: ClientOpt(ss)): void
-extern
-fun
-chanpos1_client
-  (chan: !chanpos1(ss_client) >> chanpos1(ss)): #[ss:vtype] ClientOpt(ss)
-//
-(* ****** ****** *)
-//
-extern
-fun
-channeg1_grant{ss:vtype}
-  (chan: !channeg1(ss_grant) >> channeg1(ss), x: AgentGrantOpt(ss)): void
-extern
-fun
-chanpos1_grant
-  (chan: !chanpos1(ss_grant) >> chanpos1(ss)): #[ss:vtype] AgentGrantOpt(ss)
-//
-(* ****** ****** *)
+
+(* **************** **************** *)
+
+// create local channels
+// ATS/PML compiler shall generate the body of this function in PML.
+extern fun pml_chan_create$
+  {a:vt@ype}(*type of payload*) {b:vt@ype} (*type of channel*) (
+  int (*buffer size, must be constant when invoked*)
+  ): b
+
+// Patterns for operations are similar,
+// but types for operations can be very sophisticated.
+extern fun pml_chan_recv$
+  {pt:vt@ype} {b:vt@ype} (ch: !b): pt
+
+extern fun pml_chan_send$
+  {pt:vt@ype} {b:vt@ype} (ch: !b, ele: pt): void
+
+extern fun pml_chan_isempty$ {a:vt@ype} (ch: !a): bool
+
+extern fun pml_chan_isnotempty$ {a:vt@ype} (ch: !a): bool
+
+extern prfun pml_chan_destroy$ {a:vt@ype} (ch: a): void
+
+(* **************** **************** *)
+
+abstype array_t
+
+extern fun pml_array_create$
+  {a: vt@ype (*type of element*)} {b:vt@ype} (
+  int (*array size, must be constant when invoked*)
+  , ele: a // initial value
+  ): b
+
+extern fun pml_array_get$
+  {a: vt@ype (*type of element*)} {b:vt@ype} (
+  arr: !b
+  , n: int
+  ): a
+
+extern fun pml_array_set$
+  {a: vt@ype (*type of element*)} {b:vt@ype} (
+  arr: !b
+  , ele: a
+  , n: int
+  ): void
+(* **************** **************** *)
+// Must input static arguments. Otherwise may cause type checking failure.
+val theServer = pml_chan_create${ServerOpt} {chanref ServerOpt} (2) 
+
+extern fun proctype$agent (
+  agent: channel0, client: channeg1 (ss_client)): void
+
+#define N 2
+fun proctype$server (): void = let
+  val agents = pml_array_create$
+               {channel0}{array_t} 
+               (N, pml_chan_create${AgentOpt}{channel0} (0))
+
+fun inline$loop (n: &int, arr: !array_t, pool: !chanptr (channel0)): void =
+if n < N then let
+  val () = pml_chan_send$ (pool
+                    , pml_array_get${channel0} {array_t} (arr, n))
+in end
 
 
+fun inline$loop (pool: &chanptr(channel0)): void = 
+case pml$random of
+| 0 => (case- pml_chan_recv$ {ServerOpt} {chanref ServerOpt} (theServer) 
+  of ~RETURN (agent) => let
+  val () = pml_chan_send$ (pool, agent)
+in end
+)
+| 1 => (case- pml_chan_recv$ {ServerOpt} {chanref ServerOpt} (theServer) 
+  of ~REQUEST (client) =>
+  if pml_chan_isnotempty$ (pool) then
+    case- pml_chan_recv$ {channel0} (pool) of
+    | agent => let
+      val _ = pml$run (proctype$agent (agent, client))
+    in inline$loop (pool) end
+  else let
+    val () = pml_chan_send$channeg1_client (client, DENY ())
+    prval () = channeg1_nil_close (client)
+  in inline$loop (pool) end
+)
+in end
+
+// Use tuple in ATS for typedef in PROMELA
+// Currently I don't want to fully support the pattern match in ATS/PML.
+// I.E. certain pattern match cannot be mapped to valid PROMELA.
+// Then the question is to what extent do I support.
+// val- (1, x) = recv () when x = y
+// val- Cons (2, x) = recv () when x = y
+// The payload can be an instance of certain datatype (members of
+// this datatype cannot have compound types (e.g. datatype, array)
+// or a sequence of elementary types (e.g. int).
 
 
 
