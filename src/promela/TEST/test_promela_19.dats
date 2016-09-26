@@ -172,16 +172,22 @@ in inline$loop (pool) end
 )
 | 1 => (case- pml$chan_recv$ {ServerOpt} {chanref ServerOpt} (server) 
   of ~REQUEST (client) =>
-  if pml$chan_isnotempty$ (pool) then
+  case+ pml$random of
+  | 0 => let
+    val () = pml$wait_until0$ (pml$chan_isempty$ (pool))
+    val () = pml$chan_send$channeg1_client (client, DENY ())
+    prval () = channeg1_nil_close (client)
+  in inline$loop (pool) end
+  | 1 => let
+    val () = pml$wait_until0$ (pml$chan_isnotempty$ (pool))
+  in
     case- pml$chan_recv$ {channel0} (pool) of
     | agent => let
       val _ = pml$run (proctype$agent (agent, client))
     in inline$loop (pool) end
-  else let
-    val () = pml$chan_send$channeg1_client (client, DENY ())
-    prval () = channeg1_nil_close (client)
-  in inline$loop (pool) end
+  end
 )
+
 in 
   inline$loop (pool)
 end
@@ -189,37 +195,37 @@ end
 (* ****************** ****************** *)
 
 fun proctype$client (): void = let
-val chan = pml$chan_create${ClientOpt}{channel0} (0)
+val me = pml$chan_create${ClientOpt}{channel0} (0)
 
-fun inline$loop1 (chan: channel0): void = let
+fun inline$loop1 (me: channel0): void = let
   val () = pml$wait_until0 (lam () => pml$timeout ())
   val () = pml$chan_send$ {ServerOpt} {chanref ServerOpt} (
-      server, REQUEST (channel0_split (chan)))
+      server, REQUEST (channel0_split (me)))
 
-  fun inline$loop2 (chan: !chanpos1 (ss_client) >> chanpos1 (chnil)): void =
+  fun inline$loop2 (me: !chanpos1 (ss_client) >> chanpos1 (chnil)): void =
     case+ pml$random of
-    | 0 => (case- pml$chan_recv$chanpos1_client{ss_client} (chan) of
-           | ~HOLD () => inline$loop2 (chan)
+    | 0 => (case- pml$chan_recv$chanpos1_client{ss_client} (me) of
+           | ~HOLD () => inline$loop2 (me)
            )
-    | 1 => (case- pml$chan_recv$chanpos1_client (chan) of
+    | 1 => (case- pml$chan_recv$chanpos1_client (me) of
            | ~DENY () => ()  // break
            )
-    | 2 => (case- pml$chan_recv$chanpos1_client (chan) of
+    | 2 => (case- pml$chan_recv$chanpos1_client (me) of
            | ~GRANT (agent) => let
              val () = pml$chan_send$channeg1_agent (agent, RETURN ())
              prval () = channeg1_nil_close (agent)
            in end  // break
            )
 
-  val () = inline$loop2 (chan)
+  val () = inline$loop2 (me)
 
-  prval () = chanpos1_nil_close (chan)
+  prval () = chanpos1_nil_close (me)
 in
-  inline$loop1 (chan)
+  inline$loop1 (me)
 end
 
 in
-  inline$loop1 (chan)
+  inline$loop1 (me)
 end
 
 

@@ -59,8 +59,15 @@ sortdef gname = int
 fun
 pml$wait_until {b: bool} (() -> bool b): [b == true] void
 
+
+fun
+pml$wait_until$ {b: bool} (bool b): [b == true] void
+
 fun
 pml$wait_until0 (() -> bool): void
+
+fun
+pml$wait_until0$ (bool): void
 
 fun
 pml$run (void): pid
