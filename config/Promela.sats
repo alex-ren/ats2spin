@@ -60,7 +60,7 @@ fun
 pml$wait_until {b: bool} (() -> bool b): [b == true] void
 
 fun
-pml$wait_unless {b: bool} (() -> bool b): [b == true] void
+pml$wait_until0 (() -> bool): void
 
 fun
 pml$run (void): pid
@@ -72,6 +72,59 @@ Promela$set_tag (tag: string): void
 
 fun
 Promela$atomic {a:viewt@ype} (() -> a): a
+
+(* ****** ****** *)
+
+(* ****** ****** *)
+// Channel related primitives
+
+abstype pml$chan
+
+(* **************** **************** *)
+
+// create local channels
+// ATS/PML compiler shall generate the body of this function in PML.
+fun pml$chan_create$
+  {a:vt@ype}(*type of payload*) {b:vt@ype} (*type of channel*) (
+  int (*buffer size, must be constant when invoked*)
+  ): b
+
+// Patterns for operations are similar,
+// but types for operations can be very sophisticated.
+fun pml$chan_recv$
+  {pt:vt@ype} {b:vt@ype} (ch: !b): pt
+
+fun pml$chan_send$
+  {pt:vt@ype} {b:vt@ype} (ch: !b, ele: pt): void
+
+fun pml$chan_isempty$ {a:vt@ype} (ch: !a): bool
+
+fun pml$chan_isnotempty$ {a:vt@ype} (ch: !a): bool
+
+prfun pml$chan_destroy$ {a:vt@ype} (ch: a): void
+
+(* ****** ****** *)
+
+abstype pml$array (a:t@ype)
+
+fun pml$array_create$
+  {a: vt@ype (*type of element*)} {b:vt@ype} (
+  int (*array size, must be constant when invoked*)
+  , ele: a // initial value
+  ): b
+
+fun pml$array_get$
+  {a: vt@ype (*type of element*)} {b:vt@ype} (
+  arr: !b
+  , n: int
+  ): a
+
+fun pml$array_set$
+  {a: vt@ype (*type of element*)} {b:vt@ype} (
+  arr: !b
+  , ele: a
+  , n: int
+  ): void
 
 (* ****** ****** *)
 
@@ -101,14 +154,6 @@ fun {a:t0ype} promela_gvar_dec (): gid_t
 fun {a:t0ype} promela_gvar_create (x: a): gid_t
 fun {a:t0ype} promela_gvar_get (gid: gid_t): a
 fun {a:t0ype} promela_gvar_set (gid: gid_t, x: a): void
-
-fun {a:t0ype} promela_gvar_int_array_dec (sz: int): gid_t
-fun {a:t0ype} promela_gvar_int_array_get (gid: gid_t, n: int): int
-fun {a:t0ype} promela_gvar_int_array_set (gid: gid_t, n: int, x: int): void
-
-fun {a:t0ype} promela_gvar_chan_dec (cap: int): gid_t
-fun {a:t0ype} promela_gvar_chan_create (cap: int): gid_t
-
 
 
 

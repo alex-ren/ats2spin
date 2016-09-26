@@ -1,23 +1,20 @@
 
-
-#include "share/HATS/atspre_staload_libats_ML.hats"
 staload "./Promela.sats"
 
+(* ****** ****** *)
+
+abstype chanref(a:vt@ype) = pml$chan  // type in PROMELA
 
 (* ****** ****** *)
 
-abstype chanref(a:vt@ype)
-
-(* ****** ****** *)
-
-absvtype chanptr(a:vt@ype)
+absvtype chanptr(a:vt@ype) = pml$chan  // type in PROMELA
 
 (* ****** ****** *)
 // Can transfer any type of payload
-absvtype channel0
+absvtype channel0 = pml$chan  // type in PROMELA
 //
-absvtype chanpos1(ss:vt@ype)
-absvtype channeg1(ss:vt@ype)
+absvtype chanpos1(ss:vt@ype) = pml$chan  // type in PROMELA
+absvtype channeg1(ss:vt@ype) = pml$chan  // type in PROMELA
 
 (* ************** ************** *)
 
@@ -59,13 +56,15 @@ ClientOpt(start:vt@ype, next:vt@ype) =
   | HOLD(ss_client, ss_client) of ()
   | GRANT(ss_client, chnil) of (channeg1(ss_grant))
 
+vtypedef ClientOpt = [s,n:vt@ype] ClientOpt (s, n)
+
 extern
 fun
-pml_chan_send$channeg1_client{beg,next:vt@ype}
+pml$chan_send$channeg1_client{beg,next:vt@ype}
   (chan: !channeg1(beg) >> channeg1(next), x: ClientOpt(beg, next)): void
 extern
 fun
-pml_chan_recv$chanpos1_client {beg:vt@ype}
+pml$chan_recv$chanpos1_client {beg:vt@ype}
   (chan: !chanpos1(beg) >> chanpos1(next)): #[next:vt@ype] ClientOpt(beg,next)
 
 (* ************** ************** *)
@@ -78,11 +77,11 @@ vtypedef AgentOpt = [s,n:vt@ype] AgentOpt (s, n)
 
 extern
 fun
-pml_chan_send$channeg1_agent{beg,next:vt@ype}
+pml$chan_send$channeg1_agent{beg,next:vt@ype}
   (chan: !channeg1(beg) >> channeg1(next), x: AgentOpt(beg, next)): void
 extern
 fun
-pml_chan_recv$chanpos1_agent {beg:vt@ype}
+pml$chan_recv$chanpos1_agent {beg:vt@ype}
   (chan: !chanpos1(beg) >> chanpos1(next)): #[next:vt@ype] AgentOpt(beg,next)
 
 (* ************** ************** *)
@@ -96,89 +95,136 @@ ServerOpt =
 
 (* **************** **************** *)
 
-// create local channels
-// ATS/PML compiler shall generate the body of this function in PML.
-extern fun pml_chan_create$
-  {a:vt@ype}(*type of payload*) {b:vt@ype} (*type of channel*) (
-  int (*buffer size, must be constant when invoked*)
-  ): b
+abstype chan_array = pml$array (pml$chan)  // type in PROMELA
 
-// Patterns for operations are similar,
-// but types for operations can be very sophisticated.
-extern fun pml_chan_recv$
-  {pt:vt@ype} {b:vt@ype} (ch: !b): pt
+(* **************** **************** *)
+extern fun pml$timeout (): bool
 
-extern fun pml_chan_send$
-  {pt:vt@ype} {b:vt@ype} (ch: !b, ele: pt): void
-
-extern fun pml_chan_isempty$ {a:vt@ype} (ch: !a): bool
-
-extern fun pml_chan_isnotempty$ {a:vt@ype} (ch: !a): bool
-
-extern prfun pml_chan_destroy$ {a:vt@ype} (ch: a): void
+%{
+#define timeout (_nr_pr <= N + M)
+%}
 
 (* **************** **************** *)
 
-abstype array_t
-
-extern fun pml_array_create$
-  {a: vt@ype (*type of element*)} {b:vt@ype} (
-  int (*array size, must be constant when invoked*)
-  , ele: a // initial value
-  ): b
-
-extern fun pml_array_get$
-  {a: vt@ype (*type of element*)} {b:vt@ype} (
-  arr: !b
-  , n: int
-  ): a
-
-extern fun pml_array_set$
-  {a: vt@ype (*type of element*)} {b:vt@ype} (
-  arr: !b
-  , ele: a
-  , n: int
-  ): void
-(* **************** **************** *)
 // Must input static arguments. Otherwise may cause type checking failure.
-val theServer = pml_chan_create${ServerOpt} {chanref ServerOpt} (2) 
+val server = pml$chan_create${ServerOpt} {chanref ServerOpt} (0) 
 
-extern fun proctype$agent (
-  agent: channel0, client: channeg1 (ss_client)): void
+fun proctype$agent (
+  agent: channel0, client: channeg1 (ss_client)): void = let
+
+fun inline$loop (agent: !channel0, client: channeg1 (ss_client)): void =
+case+ pml$random of
+| 0 => let
+  val () = pml$chan_send$channeg1_client (client, HOLD ())
+in
+  inline$loop (agent, client)
+end
+| 1 => let
+  val () = pml$chan_send$channeg1_client (client, DENY ())
+  prval () = channeg1_nil_close (client)
+in
+  // cannot call inline$loop (agent, client) again
+  // the status of client has changed
+end
+| 2 => let
+  val () = pml$chan_send$channeg1_client (
+             client, GRANT (channel0_split {ss_grant} (agent)
+))
+in
+  case- pml$chan_recv$chanpos1_agent (agent) of
+  | ~RETURN () => let
+    prval () = chanpos1_nil_close (agent)
+    prval () = channeg1_nil_close (client)
+  in end
+end
+
+val () = inline$loop (agent, client)
+val () = pml$chan_send$ {ServerOpt}{chanref ServerOpt} (server, RETURN (agent))
+in end
+
+(* ****************** ****************** *)
 
 #define N 2
 fun proctype$server (): void = let
-  val agents = pml_array_create$
-               {channel0}{array_t} 
-               (N, pml_chan_create${AgentOpt}{channel0} (0))
 
-fun inline$loop (n: &int, arr: !array_t, pool: !chanptr (channel0)): void =
+val agents = pml$array_create$
+             {channel0}{chan_array} 
+             (N, pml$chan_create${AgentOpt}{channel0} (0))
+
+var pool = pml$chan_create$ {channel0} {chanptr (channel0)} (N)
+
+fun inline$loop_init (n: int, pool: &chanptr (channel0)): void =
 if n < N then let
-  val () = pml_chan_send$ (pool
-                    , pml_array_get${channel0} {array_t} (arr, n))
-in end
+  val ele = pml$array_get$ {channel0} {chan_array} (agents, n)
+  val () = pml$chan_send$ (pool, ele)
+in 
+  inline$loop_init (n + 1, pool) 
+end
 
+val () = inline$loop_init (0, pool)
 
-fun inline$loop (pool: &chanptr(channel0)): void = 
+fun inline$loop (pool: &chanptr(channel0) >> (chanptr(channel0))?): void = 
 case pml$random of
-| 0 => (case- pml_chan_recv$ {ServerOpt} {chanref ServerOpt} (theServer) 
+| 0 => (case- pml$chan_recv$ {ServerOpt} {chanref ServerOpt} (server) 
   of ~RETURN (agent) => let
-  val () = pml_chan_send$ (pool, agent)
-in end
+  val () = pml$chan_send$ (pool, agent)
+in inline$loop (pool) end
 )
-| 1 => (case- pml_chan_recv$ {ServerOpt} {chanref ServerOpt} (theServer) 
+| 1 => (case- pml$chan_recv$ {ServerOpt} {chanref ServerOpt} (server) 
   of ~REQUEST (client) =>
-  if pml_chan_isnotempty$ (pool) then
-    case- pml_chan_recv$ {channel0} (pool) of
+  if pml$chan_isnotempty$ (pool) then
+    case- pml$chan_recv$ {channel0} (pool) of
     | agent => let
       val _ = pml$run (proctype$agent (agent, client))
     in inline$loop (pool) end
   else let
-    val () = pml_chan_send$channeg1_client (client, DENY ())
+    val () = pml$chan_send$channeg1_client (client, DENY ())
     prval () = channeg1_nil_close (client)
   in inline$loop (pool) end
 )
-in end
+in 
+  inline$loop (pool)
+end
+
+(* ****************** ****************** *)
+
+fun proctype$client (): void = let
+val chan = pml$chan_create${ClientOpt}{channel0} (0)
+
+fun inline$loop1 (chan: channel0): void = let
+  val () = pml$wait_until0 (lam () => pml$timeout ())
+  val () = pml$chan_send$ {ServerOpt} {chanref ServerOpt} (
+      server, REQUEST (channel0_split (chan)))
+
+  fun inline$loop2 (chan: !chanpos1 (ss_client) >> chanpos1 (chnil)): void =
+    case+ pml$random of
+    | 0 => (case- pml$chan_recv$chanpos1_client{ss_client} (chan) of
+           | ~HOLD () => inline$loop2 (chan)
+           )
+    | 1 => (case- pml$chan_recv$chanpos1_client (chan) of
+           | ~DENY () => ()  // break
+           )
+    | 2 => (case- pml$chan_recv$chanpos1_client (chan) of
+           | ~GRANT (agent) => let
+             val () = pml$chan_send$channeg1_agent (agent, RETURN ())
+             prval () = channeg1_nil_close (agent)
+           in end  // break
+           )
+
+  val () = inline$loop2 (chan)
+
+  prval () = chanpos1_nil_close (chan)
+in
+  inline$loop1 (chan)
+end
+
+in
+  inline$loop1 (chan)
+end
+
+
+
+(* ****************** ****************** *)
 
 // Use tuple in ATS for typedef in PROMELA
 // Currently I don't want to fully support the pattern match in ATS/PML.
@@ -193,15 +239,4 @@ in end
 
 
 
-
-
-
-////
-
-(* ****** ****** *)
-
-fun pml$init (): void = let
-  val _ = pml$run (proctype$foo ())
-  val _ = pml$run (proctype$foo2 ())
-in end
 
