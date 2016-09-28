@@ -91,18 +91,14 @@ abstype pml$chan
 
 // create local channels
 // ATS/PML compiler shall generate the body of this function in PML.
-fun pml$chan_create$
-  {a:vt@ype}(*type of payload*) {b:vt@ype} (*type of channel*) (
-  int (*buffer size, must be constant when invoked*)
-  ): b
+fun {a:vt@ype} pml$chan_create$ (
+  int (*buffer size, must be constant when invoked*)): pml$chan
 
 // Patterns for operations are similar,
 // but types for operations can be very sophisticated.
-fun pml$chan_recv$
-  {pt:vt@ype} {b:vt@ype} (ch: !b): pt
+fun {a:vt@ype} pml$chan_recv$ (ch: pml$chan): a
 
-fun pml$chan_send$
-  {pt:vt@ype} {b:vt@ype} (ch: !b, ele: pt): void
+fun {a:vt@ype} pml$chan_send$ (ch: pml$chan, ele: a): void
 
 fun pml$chan_isempty$ {a:vt@ype} (ch: !a): bool
 

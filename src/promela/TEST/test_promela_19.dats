@@ -5,9 +5,17 @@ staload "./Promela.sats"
 
 abstype chanref(a:vt@ype) = pml$chan  // type in PROMELA
 
+extern fun {a:vt@ype} pml$chan_create$chanref (n: int): chanref(a)
+extern fun {a:vt@ype} pml$chan_send$chanref (chanref(a), a): void
+extern fun {a:vt@ype} pml$chan_recv$chanref (chanref(a)): a
+
 (* ****** ****** *)
 
 absvtype chanptr(a:vt@ype) = pml$chan  // type in PROMELA
+
+extern fun {a:vt@ype} pml$chan_create$chanptr (n: int): chanptr(a)
+extern fun {a:vt@ype} pml$chan_send$chanptr (!chanptr(a), a): void
+extern fun {a:vt@ype} pml$chan_recv$chanptr (!chanptr(a)): a
 
 (* ****** ****** *)
 // Can transfer any type of payload
@@ -15,6 +23,8 @@ absvtype channel0 = pml$chan  // type in PROMELA
 //
 absvtype chanpos1(ss:vt@ype) = pml$chan  // type in PROMELA
 absvtype channeg1(ss:vt@ype) = pml$chan  // type in PROMELA
+
+extern fun {a:vt@ype} pml$chan_create$channel0 (n: int): channel0
 
 (* ************** ************** *)
 
@@ -107,7 +117,7 @@ extern fun pml$timeout (): bool
 (* **************** **************** *)
 
 // Must input static arguments. Otherwise may cause type checking failure.
-val server = pml$chan_create${ServerOpt} {chanref ServerOpt} (0) 
+val server = pml$chan_create$chanref<ServerOpt> (0) 
 
 fun proctype$agent (
   agent: channel0, client: channeg1 (ss_client)): void = let
@@ -139,7 +149,7 @@ in
 end
 
 val () = inline$loop (agent, client)
-val () = pml$chan_send$ {ServerOpt}{chanref ServerOpt} (server, RETURN (agent))
+val () = pml$chan_send$chanref (server, RETURN (agent))
 in end
 
 (* ****************** ****************** *)
@@ -149,14 +159,14 @@ fun proctype$server (): void = let
 
 val agents = pml$array_create$
              {channel0}{chan_array} 
-             (N, pml$chan_create${AgentOpt}{channel0} (0))
+             (N, pml$chan_create$channel0 (0))
 
-var pool = pml$chan_create$ {channel0} {chanptr (channel0)} (N)
+var pool = pml$chan_create$chanptr (N)
 
 fun inline$loop_init (n: int, pool: &chanptr (channel0)): void =
 if n < N then let
   val ele = pml$array_get$ {channel0} {chan_array} (agents, n)
-  val () = pml$chan_send$ (pool, ele)
+  val () = pml$chan_send$chanptr<channel0> (pool, ele)
 in 
   inline$loop_init (n + 1, pool) 
 end
@@ -165,12 +175,12 @@ val () = inline$loop_init (0, pool)
 
 fun inline$loop (pool: &chanptr(channel0) >> (chanptr(channel0))?): void = 
 case pml$random of
-| 0 => (case- pml$chan_recv$ {ServerOpt} {chanref ServerOpt} (server) 
+| 0 => (case- pml$chan_recv$chanref (server) 
   of ~RETURN (agent) => let
-  val () = pml$chan_send$ (pool, agent)
+  val () = pml$chan_send$chanptr (pool, agent)
 in inline$loop (pool) end
 )
-| 1 => (case- pml$chan_recv$ {ServerOpt} {chanref ServerOpt} (server) 
+| 1 => (case- pml$chan_recv$chanref (server) 
   of ~REQUEST (client) =>
   case+ pml$random of
   | 0 => let
@@ -181,7 +191,7 @@ in inline$loop (pool) end
   | 1 => let
     val () = pml$wait_until0$ (pml$chan_isnotempty$ (pool))
   in
-    case- pml$chan_recv$ {channel0} (pool) of
+    case- pml$chan_recv$chanptr (pool) of
     | agent => let
       val _ = pml$run (proctype$agent (agent, client))
     in inline$loop (pool) end
@@ -195,11 +205,11 @@ end
 (* ****************** ****************** *)
 
 fun proctype$client (): void = let
-val me = pml$chan_create${ClientOpt}{channel0} (0)
+val me = pml$chan_create$channel0 (0)
 
 fun inline$loop1 (me: channel0): void = let
   val () = pml$wait_until0 (lam () => pml$timeout ())
-  val () = pml$chan_send$ {ServerOpt} {chanref ServerOpt} (
+  val () = pml$chan_send$chanref (
       server, REQUEST (channel0_split (me)))
 
   fun inline$loop2 (me: !chanpos1 (ss_client) >> chanpos1 (chnil)): void =
