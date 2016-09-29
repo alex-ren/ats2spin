@@ -108,25 +108,21 @@ prfun pml$chan_destroy$ {a:vt@ype} (ch: a): void
 
 (* ****** ****** *)
 
-abstype pml$array (a:t@ype)
+abstype pml$array
 
-fun pml$array_create$
-  {a: vt@ype (*type of element*)} {b:vt@ype} (
+fun {a: vt@ype (*type of element*)} pml$array_create$ (
   int (*array size, must be constant when invoked*)
   , ele: a // initial value
-  ): b
+  ): pml$array 
 
 fun pml$array_get$
-  {a: vt@ype (*type of element*)} {b:vt@ype} (
-  arr: !b
-  , n: int
-  ): a
+  {a: vt@ype (*type of element*)} (arr: pml$array, n: int): a
 
 fun pml$array_set$
-  {a: vt@ype (*type of element*)} {b:vt@ype} (
-  arr: !b
-  , ele: a
+  {a: vt@ype (*type of element*)} (
+  arr: pml$array
   , n: int
+  , ele: a
   ): void
 
 (* ****** ****** *)

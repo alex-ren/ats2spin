@@ -105,7 +105,16 @@ ServerOpt =
 
 (* **************** **************** *)
 
-abstype chan_array = pml$array (pml$chan)  // type in PROMELA
+abstype chan_array = pml$array
+
+extern fun pml$array_create$chan_array (
+  int, ele: channel0): chan_array 
+
+extern fun pml$array_get$chan_array (
+  arr: chan_array, n: int): channel0
+
+extern fun pml$array_set$chan_array (
+  arr: chan_array, ele: channel0, n: int): void
 
 (* **************** **************** *)
 extern fun pml$timeout (): bool
@@ -157,15 +166,13 @@ in end
 #define N 2
 fun proctype$server (): void = let
 
-val agents = pml$array_create$
-             {channel0}{chan_array} 
-             (N, pml$chan_create$channel0 (0))
+val agents = pml$array_create$chan_array (N, pml$chan_create$channel0 (0))
 
 var pool = pml$chan_create$chanptr (N)
 
 fun inline$loop_init (n: int, pool: &chanptr (channel0)): void =
 if n < N then let
-  val ele = pml$array_get$ {channel0} {chan_array} (agents, n)
+  val ele = pml$array_get$chan_array (agents, n)
   val () = pml$chan_send$chanptr<channel0> (pool, ele)
 in 
   inline$loop_init (n + 1, pool) 

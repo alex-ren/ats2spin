@@ -1,4 +1,31 @@
 
+staload "./Promela.sats"
+
+fun proctype$foo () = let
+  val ch = pml$chan_create$<int>(1)
+  val () = pml$chan_send$<int>(ch, 5)
+in
+  case pml$chan_recv$<int> (ch) of
+  | x => let
+  val () = $extfcall (void, "printf", "x is %d\\n", x)
+  in end
+end
+
+fun proctype$foo () = let
+  val ch = pml$chan_create$<int>(1)
+  val y = 1 + 2
+  val () = pml$chan_send$<int>(ch, 1)
+in
+  case- pml$chan_recv$<int> (ch) of
+  | 1 => let
+  val () = pml$chan_send$<int>(ch, 6)
+  in
+  case- pml$chan_recv$<int> (ch) of
+  | x when x = y + 3 => let
+  val () = $extfcall (void, "printf", "end\\n")
+  in end
+  end
+end
 
 // abstype chanx
 // 
