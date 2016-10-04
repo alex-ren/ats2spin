@@ -27,32 +27,15 @@ in
   end
 end
 
-// abstype chanx
-// 
-// extern fun chanx_create {a:t@ype} (n: int): chanx
-// extern fun chanx_read (ch: chanx): @(chanx, int)
-// 
-// val ch = chanx_create {@(chanx, int)} (3): chanx
-// 
-// 
-// abstype chan(a:t@ype)
-// 
-// typedef chanr = chan (@(x, int))
-// 
-// 
-// extern fun chanx_read {a:t@ype} (ch: chan a): a
-// 
-// typedef chanb (b:t@ype) = chan(b)
-// 
-// typedef chanx (x:t@ype) = chan (chanb (x))
-// 
-// typedef a = (int, b)
-// and b = int
+abstype chanref(a:vt@ype) = pml$chan
 
+extern fun {a:vt@ype} pml$chan_create$chanref (n: int): chanref(a)
+extern fun {a:vt@ype} pml$chan_send$chanref (chanref(a), a): void
+extern fun {a:vt@ype} pml$chan_recv$chanref (chanref(a)): a
 
+abstype chanrecur = pml$chan
 
-////
-
-
-typedef chana = chan (chana)
+extern fun pml$chan_create$chanrecur (n: int): chanrecur
+extern fun pml$chan_send$chanrecur (chanrecur, chanrecur): void
+extern fun pml$chan_recv$chanrecur (chanrecur): chanrecur
 
